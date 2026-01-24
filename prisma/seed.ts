@@ -10,7 +10,22 @@ const prisma = new PrismaClient({ adapter })
 
 async function main() {
   console.log('🌱 Seeding database...')
-  
+  const user = await prisma.user.create({
+    data: {
+      email: "alice@prisma.io",
+      name: "Alice",
+      sessions: {
+        create: {
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+          token: "session-token-alice",
+          id: "session-id-alice",
+        }
+      },
+      id: "user-id-alice",
+    }
+  })
+
+  console.log(user)
 }
 
 main()
