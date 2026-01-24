@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react';
 import { Key, Loader2, X } from "lucide-react";
+import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,6 @@ import { cn } from '@/lib/utils';
 import { authenticateSearchParams } from '@/schema/params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_auth/authenticate')({
 	validateSearch: authenticateSearchParams,
