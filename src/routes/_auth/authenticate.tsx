@@ -337,15 +337,7 @@ function AuthenticationPage() {
 											autoComplete="new-password"
 											placeholder="Password"
 										/>
-										<div className="flex items-center gap-2">
-											<Checkbox
-												id="remember"
-												onClick={() => {
-													setRememberMe(!rememberMe);
-												}}
-											/>
-											<Label htmlFor="remember">Remember me</Label>
-										</div>
+										
 									</Field>
 									<Field>
 										<FieldLabel htmlFor="image">Profile Image (optional)</FieldLabel>
