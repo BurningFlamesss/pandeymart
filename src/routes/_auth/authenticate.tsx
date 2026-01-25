@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react';
 import { Key, Loader2, X } from "lucide-react";
 import { toast } from 'sonner';
+import { useForm } from '@tanstack/react-form';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { authenticateSearchParams } from '@/schema/params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { signInSchema, signUpSchema } from '@/schema/auth';
 
 export const Route = createFileRoute('/_auth/authenticate')({
 	validateSearch: authenticateSearchParams,
@@ -20,6 +22,72 @@ export const Route = createFileRoute('/_auth/authenticate')({
 
 function AuthenticationPage() {
 	const { mode } = Route.useSearch();
+	const signInForm = useForm({
+		defaultValues: {
+			email: "",
+			password: "",
+			rememberMe: false,
+		},
+		validators: {
+			onSubmit: signInSchema
+		},
+		onSubmit: async (values) => {
+			await authClient.signIn.email({
+				email,
+				password,
+				rememberMe,
+				fetchOptions: {
+					onRequest: () => {
+						setLoading(true)
+					},
+					onResponse: () => {
+						setLoading(false)
+					},
+					onSuccess: () => {
+						navigate({ to: "/" })
+					}
+				},
+			})
+		}
+	});
+
+	const signUpForm = useForm({
+		defaultValues: {
+			firstName: "",
+			lastName: "",
+			email: "",
+			password: "",
+			image: ""
+		},
+		validators: {
+			onSubmit: signUpSchema
+		},
+		onSubmit: async (values) => {
+			await authClient.signUp.email({
+				email,
+				password,
+				name: `${firstName} ${lastName}`,
+				image: image ? await convertImageToBase64(image) : "",
+				fetchOptions: {
+					onResponse: () => {
+						setLoading(false);
+					},
+					onRequest: () => {
+						setLoading(true);
+					},
+					onError: (ctx) => {
+						toast.error(ctx.error.message);
+					},
+					onSuccess: () => {
+						navigate({
+							to: "/"
+						});
+					},
+				},
+			});
+		}
+	});
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
