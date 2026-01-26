@@ -10,8 +10,8 @@ function Header() {
                 <h1 className='brand-name'>PandeyMart</h1>
             </div>
             <nav className='nav-links inline-flex items-center gap-5 font-semibold' aria-label='Main Navigations'>
-                <Link to="/">Home</Link>
-                <Link to="/">Products</Link>
+                <Link className="links-border" to="/">Home</Link>
+                <Link className="links-border" to="/">Products</Link>
             </nav>
             <div className='header-actions inline-flex items-center gap-3 cursor-pointer'>
                 <Avatar>

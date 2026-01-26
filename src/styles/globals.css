@@ -1,4 +1,4 @@
-.nav-links a {
+.links-border {
     text-decoration: none;
     color: var(--color-foreground);
     opacity: 0.8;
@@ -6,11 +6,11 @@
     transition: opacity 0.2s ease;
 }
 
-.nav-links a:hover {
+.links-border:hover {
     opacity: 1;
 }
 
-.nav-links a::after {
+.links-border::after {
     content: "";
     position: absolute;
     left: 0;
@@ -23,7 +23,7 @@
     transition: transform 0.25s ease;
 }
 
-.nav-links a:hover::after,
-.nav-links a:focus-visible::after {
+.links-border:hover::after,
+.links-border:focus-visible::after {
     transform: scaleX(1);
 }
