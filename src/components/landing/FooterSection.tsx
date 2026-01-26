@@ -29,7 +29,7 @@ function FooterSection({ Heading, CTA, CTALink, LogoSrc, LogoAlt, Links, Attribu
             </div>
             <div className="foot flex flex-row justify-between items-center mt-16">
                 <div className="links flex flex-row gap-8">
-                    <img className="w-6 h-6" src={LogoSrc} alt={LogoAlt} />
+                    <img className="w-6! h-6!" src={LogoSrc} alt={LogoAlt} />
                     {Links.map((link, index) => (
                         <Link className="links-border" key={index} to={link.href}>{link.text}</Link>
                     ))}
