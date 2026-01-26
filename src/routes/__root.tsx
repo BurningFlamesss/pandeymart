@@ -85,13 +85,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       lenis.destroy()
     }
   }, [])
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <Header></Header>
+        <Header />
         <Toaster />
         {children}
         <TanStackDevtools

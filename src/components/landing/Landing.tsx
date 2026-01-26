@@ -49,9 +49,8 @@ function Landing({ children }: { children?: React.ReactNode }) {
         <div className="landing-page spotlight" ref={containerRef}>
             {children}
 
-            <div className="svg-path absolute top-[25svh] left-1/2 -translate-x-1/2 w-9/10 h-full -z-1">
+            <div className="svg-path">
                 <svg
-                    className='w-full h-auto'
                     viewBox="0 0 1378 2760"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

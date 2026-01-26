@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import Button from '../shared/Button';
 
 interface HeroSectionProps {
     Heading: string;
@@ -14,20 +15,24 @@ interface HeroSectionProps {
 function HeroSection({ Heading, Subheading, CTA, CTALink, HeroImageSrc, HeroImageAlt, HeroFloatingImageSrc, HeroFloatingImageAlt }: HeroSectionProps) {
 
     return (
-        <div className="hero relative w-full h-[120svh] p-0 bg-white flex flex-col items-center justify-center overflow-hidden">
-            <div className="content flex flex-col items-center justify-center gap-8 mt-18">
+        <div className="hero">
+            <div className="content">
                 <h1>{Heading}</h1>
                 <p>{Subheading}</p>
-                <Link to={CTALink}>
-                    <button>{CTA}</button>
-                </Link>
+                <Button href={CTALink} title={CTA}></Button>
             </div>
             <div className="hero-image">
                 <img src={HeroImageSrc} alt={HeroImageAlt} />
             </div>
-            <div className="hero-floating-image">
-                <img src={HeroFloatingImageSrc} alt={HeroFloatingImageAlt} />
-            </div>
+            {
+
+                HeroFloatingImageSrc && (
+                    <div className="hero-floating-image">
+                        <img src={HeroFloatingImageSrc} alt={HeroFloatingImageAlt} />
+                    </div>
+                )
+            }
+
         </div>
     )
 }
