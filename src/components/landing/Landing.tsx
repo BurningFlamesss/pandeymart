@@ -17,7 +17,7 @@ function Landing({ children }: { children?: React.ReactNode }) {
             ScrollTrigger.scrollerProxy(scroller, {})
         }
 
-        const length = path.getTotalLength() - 50
+        const length = path.getTotalLength() - 200
 
         gsap.set(path, {
             strokeDasharray: length,

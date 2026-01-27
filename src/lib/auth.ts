@@ -6,22 +6,30 @@ import { prisma } from '@/db';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-        provider: "postgresql", // or "mysql", "postgresql", ...etc
-    }),
+    provider: "postgresql", // or "mysql", "postgresql", ...etc
+  }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    async sendResetPassword(data, request) {
-            // Send an email to the user with a link to reset their password
+    async sendResetPassword({ user, url, token }, request) {
+      console.table({
+        to: user.email,
+        subject: 'Reset your password',
+        text: `Click the link to reset your password: ${url}`
+      })
     },
     resetPasswordTokenExpiresIn: 1000 * 60 * 60,
   },
   emailVerification: {
-    sendVerificationEmail(data, request) {
-      console.log(`Send verification email to ${data.user.email} with link: ${data.token}`)
-      return Promise.resolve()
+    async sendVerificationEmail({ user, url, token }, request) {
+      console.table({
+        to: user.email,
+        subject: 'Verify your email address',
+        text: `Click the link to verify your email: ${url}`
+      })
     },
-    sendOnSignUp: true
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true
   },
   plugins: [tanstackStartCookies(), passkey()]
 })

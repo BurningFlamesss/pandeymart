@@ -83,10 +83,12 @@ function AuthenticationPage() {
 						toast.error(ctx.error.message);
 					},
 					onSuccess: () => {
+						toast.success("Verification Email sent successfully! Please check out your email to login to the app")
 						navigate({
 							to: "/"
 						});
 					},
+					
 				},
 			});
 		},
@@ -177,12 +179,17 @@ function AuthenticationPage() {
 											<div className='flex flex-col gap-2'>
 												<div className="flex items-center">
 													<FieldLabel htmlFor="password">Password</FieldLabel>
-													<Link
-														to="/"
+													<button
+														onClick={async() => {
+															await authClient.requestPasswordReset({
+																email: field.form.getFieldValue("email"),
+																redirectTo: "http://localhost:3000/reset-password"
+															})
+														}}
 														className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
 													>
 														Forgot your password?
-													</Link>
+													</button>
 												</div>
 												<Input
 													className=''
@@ -218,7 +225,7 @@ function AuthenticationPage() {
 												<Button
 													type="submit"
 													className="w-full mt-2"
-													disabled={!canSubmit}
+													disabled={isSubmitting}
 												>
 													{isSubmitting ? (
 														<Loader2 size={16} className="animate-spin" />
@@ -445,7 +452,7 @@ function AuthenticationPage() {
 											<Button
 												type="submit"
 												className="w-full mt-2"
-												disabled={!canSubmit}
+												disabled={isSubmitting}
 											>
 												{isSubmitting ? (
 													<Loader2 size={16} className="animate-spin" />
