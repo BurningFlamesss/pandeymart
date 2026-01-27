@@ -12,8 +12,9 @@ import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
 import { authenticateSearchParams } from '@/schema/params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { signInSchema, signUpSchema } from '@/schema/auth';
+import { Separator } from '@/components/ui/separator';
 
 export const Route = createFileRoute('/_auth/authenticate')({
 	validateSearch: authenticateSearchParams,
@@ -31,24 +32,33 @@ function AuthenticationPage() {
 		validators: {
 			onSubmit: signInSchema
 		},
-		onSubmit: async ({value}) => {
+		async onSubmit({ value }) {
 			await authClient.signIn.email({
 				email: value.email,
 				password: value.password,
 				rememberMe: value.rememberMe,
 				fetchOptions: {
-					onRequest: () => {
-						setLoading(true)
-					},
-					onResponse: () => {
-						setLoading(false)
+					onError: (ctx) => {
+						toast.error(ctx.error.message);
 					},
 					onSuccess: () => {
 						navigate({ to: "/" })
 					}
 				},
 			})
-		}
+		},
+		onSubmitInvalid({ formApi }) {
+			const errors = formApi.state.errors;
+
+			Object.entries(errors.flat()[0] as object).map(([key, value]) => {
+				value.forEach((element: {
+					path: Array<string>;
+					message: string;
+				}) => {
+					toast.error(`${element.path[0].charAt(0).toUpperCase() + element.path[0].substring(1)} : ${element.message}`)
+				});
+			})
+		},
 	});
 
 	const signUpForm = useForm({
@@ -62,19 +72,13 @@ function AuthenticationPage() {
 		validators: {
 			onSubmit: signUpSchema
 		},
-		onSubmit: async (values) => {
+		async onSubmit({ value }) {
 			await authClient.signUp.email({
-				email,
-				password,
-				name: `${firstName} ${lastName}`,
+				email: value.email,
+				password: value.password,
+				name: `${value.firstName} ${value.lastName}`,
 				image: image ? await convertImageToBase64(image) : "",
 				fetchOptions: {
-					onResponse: () => {
-						setLoading(false);
-					},
-					onRequest: () => {
-						setLoading(true);
-					},
 					onError: (ctx) => {
 						toast.error(ctx.error.message);
 					},
@@ -85,15 +89,22 @@ function AuthenticationPage() {
 					},
 				},
 			});
-		}
+		},
+		onSubmitInvalid({ formApi }) {
+			const errors = formApi.state.errors;
+
+			Object.entries(errors.flat()[0] as object).map(([key, value]) => {
+				value.forEach((element: {
+					path: Array<string>;
+					message: string;
+				}) => {
+					toast.error(`${element.path[0].charAt(0).toUpperCase() + element.path[0].substring(1)} : ${element.message}`)
+				});
+			})
+		},
 	});
 
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [loading, setLoading] = useState(false);
-	const [rememberMe, setRememberMe] = useState(false);
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
+	const [loading, setLoading] = useState<number>(0);
 	const [image, setImage] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const navigate = useNavigate();
@@ -143,7 +154,7 @@ function AuthenticationPage() {
 								<FieldGroup>
 									<signInForm.Field name='email'>
 										{(field) => (
-											<>
+											<div className='flex flex-col gap-2'>
 												<FieldLabel htmlFor="email">Email</FieldLabel>
 												<Input
 													id="email"
@@ -155,13 +166,15 @@ function AuthenticationPage() {
 													}}
 													value={field.state.value}
 												/>
-											</>
+											</div>
 										)}
 
 									</signInForm.Field>
+
+
 									<signInForm.Field name='password'>
 										{(field) => (
-											<>
+											<div className='flex flex-col gap-2'>
 												<div className="flex items-center">
 													<FieldLabel htmlFor="password">Password</FieldLabel>
 													<Link
@@ -172,6 +185,7 @@ function AuthenticationPage() {
 													</Link>
 												</div>
 												<Input
+													className=''
 													id="password"
 													type="password"
 													placeholder="password"
@@ -179,22 +193,21 @@ function AuthenticationPage() {
 													value={field.state.value}
 													onChange={(e) => field.handleChange(e.target.value)}
 												/>
-											</>
-										)}
-									</signInForm.Field>
-
-									<signInForm.Field name='rememberMe'>
-										{(field) => (
-											<div className="flex items-center gap-2">
-												<Checkbox
-													id="remember"
-													name='rememberMe'
-													checked={field.state.value}
-													onCheckedChange={(checked) => {
-														field.handleChange(checked === true);
-													}}
-												/>
-												<Label htmlFor="remember">Remember me</Label>
+												<signInForm.Field name='rememberMe'>
+													{(checkboxField) => (
+														<div className="flex items-center gap-2">
+															<Checkbox
+																id="remember"
+																name='rememberMe'
+																checked={checkboxField.state.value}
+																onCheckedChange={(checked) => {
+																	checkboxField.handleChange(checked === true);
+																}}
+															/>
+															<Label htmlFor="remember">Remember me</Label>
+														</div>
+													)}
+												</signInForm.Field>
 											</div>
 										)}
 									</signInForm.Field>
@@ -204,7 +217,7 @@ function AuthenticationPage() {
 											<>
 												<Button
 													type="submit"
-													className="w-full"
+													className="w-full mt-2"
 													disabled={!canSubmit}
 												>
 													{isSubmitting ? (
@@ -213,57 +226,74 @@ function AuthenticationPage() {
 														<p>Login</p>
 													)}
 												</Button>
-												<Button
-													variant="secondary"
-													disabled={!canSubmit}
-													className="gap-2"
-													onClick={async () => {
-														await authClient.signIn.passkey({
-															fetchOptions: {
-																onRequest: () => {
-																	setLoading(true)
-																},
-																onResponse: () => {
-																	setLoading(false)
-																},
-															},
-														})
-													}}
-												>
-													<Key size={16} />
-													Sign-in with Passkey
-												</Button>
-												<div className={cn(
-													"w-full gap-2 flex items-center",
-													"justify-between flex-col"
-												)}>
+												<Separator></Separator>
+												<div className="flex flex-col gap-2">
+
 													<Button
-														variant="outline"
-														className="w-full gap-2"
-														disabled={!canSubmit}
+														variant="secondary"
+														disabled={isSubmitting}
+														className="gap-2"
 														onClick={async () => {
-															await authClient.signIn.social({
-																provider: "google",
-																callbackURL: "/dashboard",
+															await authClient.signIn.passkey({
 																fetchOptions: {
 																	onRequest: () => {
-																		setLoading(true)
+																		setLoading(1)
 																	},
 																	onResponse: () => {
-																		setLoading(false)
+																		setLoading(0)
 																	},
 																},
 															})
 														}}
 													>
-														<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 262">
-															<path fill="#4285F4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"></path>
-															<path fill="#34A853" d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path>
-															<path fill="#FBBC05" d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"></path>
-															<path fill="#EB4335" d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
-														</svg>
-														Sign in with Google
+														{loading === 1 ? (
+															<Loader2 size={16} className="animate-spin" />
+														) : (
+															<>
+																<Key size={16} />
+																Sign-in with Passkey
+															</>
+														)}
+
 													</Button>
+													<div className={cn(
+														"w-full gap-2 flex items-center",
+														"justify-between flex-col"
+													)}>
+														<Button
+															variant="outline"
+															className="w-full gap-2"
+															disabled={isSubmitting}
+															onClick={async () => {
+																await authClient.signIn.social({
+																	provider: "google",
+																	callbackURL: "/dashboard",
+																	fetchOptions: {
+																		onRequest: () => {
+																			setLoading(2)
+																		},
+																		onResponse: () => {
+																			setLoading(0)
+																		},
+																	},
+																})
+															}}
+														>
+															{loading === 2 ? (
+																<Loader2 size={16} className="animate-spin" />
+															) : (
+																<>
+																	<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 262">
+																		<path fill="#4285F4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"></path>
+																		<path fill="#34A853" d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path>
+																		<path fill="#FBBC05" d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"></path>
+																		<path fill="#EB4335" d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
+																	</svg>
+																	Sign in with Google
+																</>
+															)}
+														</Button>
+													</div>
 												</div>
 
 											</>
@@ -290,141 +320,146 @@ function AuthenticationPage() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<form>
+							<form onSubmit={(e) => {
+								e.preventDefault()
+								signUpForm.handleSubmit()
+							}}>
 								<FieldGroup>
 									<div className="grid grid-cols-2 gap-4">
 										<div className="grid gap-2">
-											<Field>
-												<FieldLabel htmlFor="first-name">First name</FieldLabel>
-												<Input
-													id="first-name"
-													placeholder="Max"
-													required
-													onChange={(e) => {
-														setFirstName(e.target.value);
-													}}
-													value={firstName}
-												/>
-											</Field>
+											<signUpForm.Field name='firstName'>
+												{(field) => (
+													<>
+														<FieldLabel htmlFor="first-name">First name</FieldLabel>
+														<Input
+															id="first-name"
+															placeholder="Max"
+															required
+															onChange={(e) => {
+																field.handleChange(e.target.value);
+															}}
+															value={field.state.value}
+														/>
 
+													</>
+												)}
+											</signUpForm.Field>
 										</div>
 										<div className="grid gap-2">
-											<Field>
-												<FieldLabel htmlFor="last-name">Last name</FieldLabel>
-												<Input
-													id="last-name"
-													placeholder="Robinson"
-													required
-													onChange={(e) => {
-														setLastName(e.target.value);
-													}}
-													value={lastName}
-												/>
-											</Field>
+
+											<signUpForm.Field name='lastName'>
+												{(field) => (
+													<>
+														<FieldLabel htmlFor="last-name">Last name</FieldLabel>
+														<Input
+															id="last-name"
+															placeholder="Robinson"
+															required
+															onChange={(e) => {
+																field.handleChange(e.target.value);
+															}}
+															value={field.state.value}
+														/>
+
+													</>
+												)}
+											</signUpForm.Field>
 
 										</div>
 
 									</div>
-									<Field>
-										<FieldLabel htmlFor="email">Email</FieldLabel>
-										<Input
-											id="email"
-											type="email"
-											placeholder="m@example.com"
-											required
-											onChange={(e) => {
-												setEmail(e.target.value);
-											}}
-											value={email}
-										/>
-									</Field>
-									<Field>
-										<FieldLabel htmlFor="password">Password</FieldLabel>
-										<Input
-											id="password"
-											type="password"
-											value={password}
-											onChange={(e) => setPassword(e.target.value)}
-											autoComplete="new-password"
-											placeholder="Password"
-										/>
-
-									</Field>
-									<Field>
-										<FieldLabel htmlFor="image">Profile Image (optional)</FieldLabel>
-										<div className="flex items-end gap-4">
-											{imagePreview && (
-												<div className="relative w-16 h-16 rounded-sm overflow-hidden">
-													<img
-														src={imagePreview}
-														alt="Profile preview"
-														style={{ objectFit: "cover" }}
-													/>
-												</div>
-											)}
-											<div className="flex items-center gap-2 w-full">
+									<signUpForm.Field name='email'>
+										{(field) => (
+											<div className='flex flex-col gap-2'>
+												<FieldLabel htmlFor="email">Email</FieldLabel>
 												<Input
-													id="image"
-													type="file"
-													accept="image/*"
-													onChange={handleImageChange}
-													className="w-full"
+													id="email"
+													type="email"
+													placeholder="m@example.com"
+													required
+													onChange={(e) => {
+														field.handleChange(e.target.value);
+													}}
+													value={field.state.value}
 												/>
-												{imagePreview && (
-													<X
-														className="cursor-pointer"
-														onClick={() => {
-															setImage(null);
-															setImagePreview(null);
-														}}
-													/>
-												)}
+
 											</div>
-										</div>
-									</Field>
+										)}
+									</signUpForm.Field>
+									<signUpForm.Field name='password'>
+										{(field) => (
+											<div className='flex flex-col gap-2'>
+												<FieldLabel htmlFor="password">Password</FieldLabel>
+												<Input
+													id="password"
+													type="password"
+													value={field.state.value}
+													onChange={(e) => field.handleChange(e.target.value)}
+													autoComplete="new-password"
+													placeholder="Password"
+												/>
+											</div>
+										)}
 
-									<Field>
-										<Button
-											type="submit"
-											className="w-full"
-											disabled={loading}
-											onClick={async () => {
-												await authClient.signUp.email({
-													email,
-													password,
-													name: `${firstName} ${lastName}`,
-													image: image ? await convertImageToBase64(image) : "",
-													callbackURL: "/dashboard",
-													fetchOptions: {
-														onResponse: () => {
-															setLoading(false);
-														},
-														onRequest: () => {
-															setLoading(true);
-														},
-														onError: (ctx) => {
-															toast.error(ctx.error.message);
-														},
-														onSuccess: () => {
-															navigate({
-																to: "/"
-															});
-														},
-													},
-												});
-											}}
-										>
-											{loading ? (
-												<Loader2 size={16} className="animate-spin" />
-											) : (
-												"Create your account"
-											)}
-										</Button>
-										<FieldDescription className="text-center">
-											Already have an account? <Link from={Route.fullPath} search={{ mode: "login" }} >Login</Link>
-										</FieldDescription>
+									</signUpForm.Field>
 
-									</Field>
+									<signUpForm.Field name='image'>
+										{() => (
+											<div className='flex flex-col gap-2'>
+												<FieldLabel htmlFor="image">Profile Image (optional)</FieldLabel>
+												<div className="flex items-end gap-4">
+													{imagePreview && (
+														<div className="relative w-16 h-16 rounded-sm overflow-hidden">
+															<img
+																src={imagePreview}
+																alt="Profile preview"
+																style={{ objectFit: "cover" }}
+															/>
+														</div>
+													)}
+													<div className="flex items-center gap-2 w-full">
+														<Input
+															id="image"
+															type="file"
+															accept="image/*"
+															onChange={handleImageChange}
+															className="w-full"
+														/>
+														{imagePreview && (
+															<X
+																className="cursor-pointer"
+																onClick={() => {
+																	setImage(null);
+																	setImagePreview(null);
+																}}
+															/>
+														)}
+													</div>
+												</div>
+											</div>
+										)}
+									</signUpForm.Field>
+
+									<signUpForm.Subscribe selector={(formState) => [formState.canSubmit, formState.isSubmitting]}>
+										{([canSubmit, isSubmitting]) => (
+											<Button
+												type="submit"
+												className="w-full mt-2"
+												disabled={!canSubmit}
+											>
+												{isSubmitting ? (
+													<Loader2 size={16} className="animate-spin" />
+												) : (
+													"Create your account"
+												)}
+											</Button>
+
+										)}
+									</signUpForm.Subscribe>
+
+									<FieldDescription className="text-center">
+										Already have an account? <Link from={Route.fullPath} search={{ mode: "login" }} >Login</Link>
+									</FieldDescription>
 								</FieldGroup>
 							</form>
 
