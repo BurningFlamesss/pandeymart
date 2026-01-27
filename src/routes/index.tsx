@@ -15,7 +15,7 @@ function App() {
         Heading="Welcome To PandeyMart"
         Subheading="Your one-stop shop for everything you need!"
         CTA="Shop Now"
-        CTALink="/products"
+        CTALink="/authenticate?mode=signup"
         HeroImageSrc='/hero.svg'
         HeroImageAlt='PandeyMart Hero Image'
         HeroFloatingImageSrc='/hero-phone.svg'
@@ -34,7 +34,7 @@ function App() {
       <FooterSection
         Heading="Get Started"
         CTA="Sign Up"
-        CTALink="/authenticate"
+        CTALink="/authenticate?mode=signup"
         LogoSrc="/pandeymart.png"
         LogoAlt="PandeyMart Logo"
         Links={[
