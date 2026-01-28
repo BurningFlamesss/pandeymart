@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { authenticateSearchParams } from '@/schema/params';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { signInSchema, signUpSchema } from '@/schema/auth';
+import { forgetPasswordSchema, signInSchema, signUpSchema } from '@/schema/auth';
 import { Separator } from '@/components/ui/separator';
 
 export const Route = createFileRoute('/_auth/authenticate')({
@@ -88,7 +88,7 @@ function AuthenticationPage() {
 							to: "/"
 						});
 					},
-					
+
 				},
 			});
 		},
@@ -122,6 +122,66 @@ function AuthenticationPage() {
 			reader.readAsDataURL(file);
 		}
 	};
+
+	const handleResetPassword = async () => {
+		const email = signInForm.getFieldValue("email");
+
+		const result = forgetPasswordSchema.safeParse({ email });
+		if (!result.success) {
+			toast.error(result.error.issues[0].message)
+			return
+		}
+
+		try {
+			await authClient.requestPasswordReset({
+				email,
+				redirectTo: "http://localhost:3000/reset-password"
+			})
+
+			toast.success("Reset Password email sent successfully. Please check out your mail!")
+		} catch (error: any) {
+			toast.error("Something went wrong");
+		}
+	}
+
+	const handlePasskeyLogin = async () => {
+		try {
+			await authClient.signIn.passkey({
+				fetchOptions: {
+					onRequest: () => {
+						setLoading(1)
+					},
+					onResponse: () => {
+						setLoading(0)
+					},
+				},
+			})
+		} catch (error: any) {
+			toast.error("Something went wrong");
+
+		}
+
+	}
+
+	const handleGoogleLogin = async () => {
+		try {
+			await authClient.signIn.social({
+				provider: "google",
+				callbackURL: "/dashboard",
+				fetchOptions: {
+					onRequest: () => {
+						setLoading(2)
+					},
+					onResponse: () => {
+						setLoading(0)
+					},
+				},
+			})
+		} catch (error: any) {
+			toast.error("Something went wrong");
+
+		}
+	}
 
 	return (
 		<div className="flex w-full h-screen flex-row items-center justify-center">
@@ -180,12 +240,9 @@ function AuthenticationPage() {
 												<div className="flex items-center">
 													<FieldLabel htmlFor="password">Password</FieldLabel>
 													<button
-														onClick={async() => {
-															await authClient.requestPasswordReset({
-																email: field.form.getFieldValue("email"),
-																redirectTo: "http://localhost:3000/reset-password"
-															})
-														}}
+														type='button'
+														disabled={!field.form.getFieldValue("email")}
+														onClick={() => handleResetPassword()}
 														className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
 													>
 														Forgot your password?
@@ -234,24 +291,15 @@ function AuthenticationPage() {
 													)}
 												</Button>
 												<Separator></Separator>
+
 												<div className="flex flex-col gap-2">
 
 													<Button
 														variant="secondary"
+														type='button'
 														disabled={isSubmitting}
 														className="gap-2"
-														onClick={async () => {
-															await authClient.signIn.passkey({
-																fetchOptions: {
-																	onRequest: () => {
-																		setLoading(1)
-																	},
-																	onResponse: () => {
-																		setLoading(0)
-																	},
-																},
-															})
-														}}
+														onClick={() => handlePasskeyLogin()}
 													>
 														{loading === 1 ? (
 															<Loader2 size={16} className="animate-spin" />
@@ -270,21 +318,9 @@ function AuthenticationPage() {
 														<Button
 															variant="outline"
 															className="w-full gap-2"
+															type='button'
 															disabled={isSubmitting}
-															onClick={async () => {
-																await authClient.signIn.social({
-																	provider: "google",
-																	callbackURL: "/dashboard",
-																	fetchOptions: {
-																		onRequest: () => {
-																			setLoading(2)
-																		},
-																		onResponse: () => {
-																			setLoading(0)
-																		},
-																	},
-																})
-															}}
+															onClick={() => handleGoogleLogin()}
 														>
 															{loading === 2 ? (
 																<Loader2 size={16} className="animate-spin" />
@@ -302,7 +338,6 @@ function AuthenticationPage() {
 														</Button>
 													</div>
 												</div>
-
 											</>
 										)}
 

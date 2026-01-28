@@ -14,4 +14,8 @@ const signInSchema = z.object({
     rememberMe: z.boolean()
 })
 
-export { signUpSchema, signInSchema };
+const forgetPasswordSchema = z.object({
+    email: z.email()
+})
+
+export { signUpSchema, signInSchema, forgetPasswordSchema };
