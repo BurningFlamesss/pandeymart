@@ -60,8 +60,8 @@
 }
 
 .brand img {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
 }
 
@@ -108,7 +108,8 @@
     cursor: pointer;
 }
 
-.hero .content button, .footer .cta button {
+.hero .content button,
+.footer .cta button {
     font-weight: 600;
     color: #000;
     background-color: #FAA016;
@@ -134,6 +135,7 @@
     z-index: 1;
     animation: float 1s ease-in-out 1;
 }
+
 
 @keyframes float {
     0% {
@@ -213,6 +215,10 @@
     justify-content: center;
 }
 
+.spotlight .row .col img {
+    opacity: 0.8;
+}
+
 .spotlight .card {
     width: 75%;
     margin: 0 auto;
@@ -234,7 +240,6 @@
     z-index: -1;
 }
 
-/* w-full h-auto */
 .svg-path svg {
     width: 100%;
     height: auto;
@@ -271,7 +276,9 @@
 }
 
 @media (max-width: 1000px) {
-    .landing-page h1, .landing-page h2 {
+
+    .landing-page h1,
+    .landing-page h2 {
         letter-spacing: 0;
     }
 
@@ -287,7 +294,7 @@
         font-size: 1rem;
     }
 
-    .landing-page  .hero {
+    .landing-page .hero {
         height: 90svh;
     }
 

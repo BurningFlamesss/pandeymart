@@ -18,7 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { AuthpageGuard } from '@/middleware/auth';
 
 export const Route = createFileRoute('/_auth/authenticate')({
-	async beforeLoad(ctx) {
+	async beforeLoad() {
 		await AuthpageGuard()
 	},
 	validateSearch: authenticateSearchParams,
@@ -46,7 +46,7 @@ function AuthenticationPage() {
 						toast.error(ctx.error.message);
 					},
 					onSuccess: () => {
-						navigate({ to: "/" })
+						navigate({ to: "/product" })
 					}
 				},
 			})
@@ -89,7 +89,7 @@ function AuthenticationPage() {
 					onSuccess: () => {
 						toast.success("Verification Email sent successfully! Please check out your email to login to the app")
 						navigate({
-							to: "/"
+							to: "/product"
 						});
 					},
 

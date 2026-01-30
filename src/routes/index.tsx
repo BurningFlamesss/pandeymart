@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Landing from '@/components/landing/Landing'
+import Landing from '@/components/container/Landing'
 import FooterSection from '@/components/landing/FooterSection'
 import HeroSection from '@/components/landing/HeroSection'
 import ContentSection from '@/components/landing/ContentSection'
@@ -15,7 +15,7 @@ function App() {
         Heading="Welcome To PandeyMart"
         Subheading="Your one-stop shop for everything you need!"
         CTA="Shop Now"
-        CTALink="/authenticate?mode=signup"
+        CTALink="/product"
         HeroImageSrc='/hero.svg'
         HeroImageAlt='PandeyMart Hero Image'
         HeroFloatingImageSrc='/hero-phone.svg'

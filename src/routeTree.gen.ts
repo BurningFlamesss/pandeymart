@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProductIndexRouteImport } from './routes/product/index'
+import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as AuthAuthenticateRouteImport } from './routes/_auth/authenticate'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductIndexRoute = ProductIndexRouteImport.update({
+  id: '/product/',
+  path: '/product/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
+  id: '/checkout/',
+  path: '/checkout/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthAuthenticateRoute = AuthAuthenticateRouteImport.update({
@@ -32,30 +44,44 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/authenticate': typeof AuthAuthenticateRoute
+  '/checkout/': typeof CheckoutIndexRoute
+  '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/authenticate': typeof AuthAuthenticateRoute
+  '/checkout': typeof CheckoutIndexRoute
+  '/product': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth/authenticate': typeof AuthAuthenticateRoute
+  '/checkout/': typeof CheckoutIndexRoute
+  '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/authenticate' | '/api/auth/$'
+  fullPaths: '/' | '/authenticate' | '/checkout/' | '/product/' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/authenticate' | '/api/auth/$'
-  id: '__root__' | '/' | '/_auth/authenticate' | '/api/auth/$'
+  to: '/' | '/authenticate' | '/checkout' | '/product' | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth/authenticate'
+    | '/checkout/'
+    | '/product/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthAuthenticateRoute: typeof AuthAuthenticateRoute
+  CheckoutIndexRoute: typeof CheckoutIndexRoute
+  ProductIndexRoute: typeof ProductIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -66,6 +92,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/': {
+      id: '/product/'
+      path: '/product'
+      fullPath: '/product/'
+      preLoaderRoute: typeof ProductIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/': {
+      id: '/checkout/'
+      path: '/checkout'
+      fullPath: '/checkout/'
+      preLoaderRoute: typeof CheckoutIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/authenticate': {
@@ -88,6 +128,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthAuthenticateRoute: AuthAuthenticateRoute,
+  CheckoutIndexRoute: CheckoutIndexRoute,
+  ProductIndexRoute: ProductIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
