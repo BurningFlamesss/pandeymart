@@ -1,17 +1,30 @@
 import { redirect } from "@tanstack/react-router";
-import { createMiddleware } from "@tanstack/react-start";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
+import type { AppContext } from "@/types/router-context";
 import { auth } from "@/lib/auth";
 
-export const authMiddleware = createMiddleware().server(
-    async ({ next, request }) => {
+export const getSessionMiddleware = createMiddleware({ type: "request" }).server(
+    async ({ next }) => {
         const headers = getRequestHeaders();
         const session = await auth.api.getSession({ headers })
 
-        if (!session) {
-            throw redirect({ to: "/login" })
-        }
-
-        return await next()
+        return await next({ context: { session: session } satisfies AppContext })
     }
 );
+
+export const requireAuth = createServerFn().middleware([getSessionMiddleware]).handler(
+    ({ context }) => {
+        if (!context.session) {
+            throw redirect({ to: "/authenticate", search: { mode: "signup" } })
+        }
+    }
+)
+
+export const AuthpageGuard = createServerFn().middleware([getSessionMiddleware]).handler(
+    ({ context }) => {
+        if (context.session) {
+            throw redirect({ to: "/" })
+        }
+    }
+)

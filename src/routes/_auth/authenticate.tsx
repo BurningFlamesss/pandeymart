@@ -15,8 +15,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { forgetPasswordSchema, signInSchema, signUpSchema } from '@/schema/auth';
 import { Separator } from '@/components/ui/separator';
+import { AuthpageGuard } from '@/middleware/auth';
 
 export const Route = createFileRoute('/_auth/authenticate')({
+	async beforeLoad(ctx) {
+		await AuthpageGuard()
+	},
 	validateSearch: authenticateSearchParams,
 	component: AuthenticationPage,
 })
@@ -241,7 +245,6 @@ function AuthenticationPage() {
 													<FieldLabel htmlFor="password">Password</FieldLabel>
 													<button
 														type='button'
-														disabled={!field.form.getFieldValue("email")}
 														onClick={() => handleResetPassword()}
 														className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
 													>
