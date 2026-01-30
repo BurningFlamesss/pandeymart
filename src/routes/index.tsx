@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Landing from '@/components/container/Landing'
-import FooterSection from '@/components/landing/FooterSection'
-import HeroSection from '@/components/landing/HeroSection'
-import ContentSection from '@/components/landing/ContentSection'
+import FooterSection from '@/components/layout/landing/FooterSection'
+import HeroSection from '@/components/layout/landing/HeroSection'
+import ContentSection from '@/components/layout/landing/ContentSection'
 
 export const Route = createFileRoute('/')({ component: App })
 
