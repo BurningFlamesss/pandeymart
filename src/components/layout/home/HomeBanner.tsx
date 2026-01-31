@@ -50,7 +50,7 @@ function HomeBanner() {
                     <CarouselContent>
                         {products.map(product => (
                             <CarouselItem key={product.id} className="w-full">
-                                <div className="relative w-full aspect-video md:h-[350px] lg:h-[400px] bg-white">
+                                <div className="relative w-full aspect-video md:h-87.5 lg:h-100 bg-white">
                                     <img
                                         src={product.image}
                                         className="w-full h-full object-cover"

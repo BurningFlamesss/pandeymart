@@ -1,4 +1,6 @@
 import { Link } from '@tanstack/react-router'
+import { ShoppingCart } from 'lucide-react'
+import { FaRegHeart } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
@@ -41,19 +43,36 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
     }
     return (
         <>
+            <Link to='/'>
+                <div className="relative w-8 h-8 p-1 flex flex-row items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#f0f0f0] border border-muted rounded-full">
+                    <FaRegHeart height={20} width={20}></FaRegHeart>
+                    {/* <span className="absolute top-0 -right-1 flex flex-row items-center justify-center bg-[#FAA016] text-white font-medium text-xs w-4 h-4 rounded-full">
+                        1
+                    </span> */}
+                </div>
+            </Link>
+            <Link to='/checkout'>
+                <div className="relative w-8 h-8 p-1 flex flex-row items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#f0f0f0] border border-muted rounded-full">
+                    <ShoppingCart height={20} width={20}></ShoppingCart>
+                    <span className="absolute top-0 -right-1 flex flex-row items-center justify-center bg-[#FAA016] text-white font-medium text-xs w-4 h-4 rounded-full">
+                        1
+                    </span>
+                </div>
+            </Link>
             <DropdownMenu>
                 <DropdownMenuTrigger className='cursor-pointer'>
-                    <Avatar>
+                    <Avatar className='border border-muted p-0.5'>
                         <AvatarImage src={session.user.image ? session.user.image : "/pandeymart.png"} alt="User Avatar" />
                         <AvatarFallback>UR</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-60' align='end'>
-                        <Button onClick={() => signOut()} variant={'destructive'} className='cursor-pointer w-full'>
-                            Logout
-                        </Button>
+                    <Button onClick={() => signOut()} variant={'destructive'} className='cursor-pointer w-full'>
+                        Logout
+                    </Button>
                 </DropdownMenuContent>
             </DropdownMenu>
+
         </>
     )
 }
