@@ -41,8 +41,8 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
     const [isZooming, setIsZooming] = useState(false);
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
-    const images = product.productImages || [product.productImage];
-    const price = product.productPrice || parseFloat(product.price || "0");
+    const images = product.productImages;
+    const price = product.productPrice || 0;
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -64,6 +64,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
 
     return (
         <div
+            data-lenis-prevent
             className={cn(
                 "fixed inset-0 z-50 flex items-center justify-center",
                 "bg-black/40 backdrop-blur-sm transition-opacity duration-300",
@@ -74,7 +75,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
             <div
                 className={cn(
                     "relative bg-white max-w-6xl w-full mx-4 rounded-lg p-5 lg:p-10",
-                    "flex lg:flex-row flex-col overflow-y-hidden max-h-screen gap-10",
+                    "flex lg:flex-row flex-col overflow-hidden max-h-screen gap-10",
                     "transform transition-all duration-300 ease-out",
                     isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
                 )}

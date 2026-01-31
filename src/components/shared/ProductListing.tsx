@@ -107,7 +107,6 @@ const ProductListing = ({ product, index }: productListingProps) => {
 
                     <div className="relative w-full h-64 rounded-t-lg overflow-hidden shrink-0">
                         <ImageSlider
-                            url={product.productImage}
                             images={product.productImages}
                         />
 
@@ -217,7 +216,7 @@ const ProductListing = ({ product, index }: productListingProps) => {
                             <span className="font-semibold text-black text-base">
                                 Rs.{" "}
                                 {(
-                                    product.productPrice || parseFloat(product.price || "0")
+                                    product.productPrice ?? 0
                                 ).toLocaleString()}
                             </span>
                             {product.originalPrice && (

@@ -1,31 +1,21 @@
-// @/types/Product.ts
-
 export interface UIProduct {
-    productId: string;
-    productName: string;
-    productImage: string;
-    productImages?: Array<string>; // Multiple images for gallery
-    
-    // Price fields (supports both formats)
-    productPrice?: number;
-    price?: string;
-    originalPrice?: number;
-    
-    // Stock and quantity
-    quantity?: string;
+    productId: string; //
+    productName: string; //
+    productImages: Array<string>; //
+    productPrice?: number; // 
+    originalPrice?: number; // 
+    quantity?: string; //
     inStock?: boolean;
-    
-    // Product details
-    description?: string;
+    description?: string; //
     category?: string;
-    rating?: number;
-    weight?: Array<string>;
-    
-    // Lifecycle information
+    rating?: number; //
+    customizations?: Array<Customizations>;
     createdAt?: string;
-    expectedLifeSpan?: string; // in days
-    
-    // Labels and badges
-    label?: "Best Seller" | "Super Saver" | "New Arrival" | "Limited" | "Hot Deal";
-    labelColor?: string;
+    label?: "Best Seller" | "Super Saver" | "New Arrival" | "Limited" | "Hot Deal"; //
+    labelColor?: string; // 
+}
+
+interface Customizations {
+    label: string;
+    additionalPrice: number;
 }

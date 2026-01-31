@@ -3,17 +3,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ImageSliderProps {
-    url: string;
-    images?: Array<string>;
+    images: Array<string>;
     imgClasses?: string;
     isHovered?: boolean;
 }
 
-const ImageSlider = ({ url, images, imgClasses }: ImageSliderProps) => {
+const ImageSlider = ({ images, imgClasses }: ImageSliderProps) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     
-    const imageArray = images && images.length > 0 ? images : [url];
+    const imageArray = images;
     const hasMultipleImages = imageArray.length > 1;
 
     const goToNext = (e: React.MouseEvent) => {
