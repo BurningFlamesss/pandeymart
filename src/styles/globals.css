@@ -38,7 +38,7 @@
     backdrop-filter: 2px;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
 }
 
 .header-inner {
@@ -339,4 +339,42 @@
         top: 15svh;
         width: 275%;
     }
+}
+
+/*  */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #FAA016;
+  outline-offset: 2px;
+}
+
+.image-zoom-container {
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.image-zoom-container img {
+  transition: transform 0.2s ease-out;
 }

@@ -1,81 +1,105 @@
-import { Swiper, SwiperSlide } from "swiper/react";
 import { useState } from "react";
-import { Pagination } from "swiper/modules";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-import "swiper/css";
-import "swiper/css/pagination";
 
 interface ImageSliderProps {
     url: string;
+    images?: Array<string>;
     imgClasses?: string;
     isHovered?: boolean;
 }
 
-const ImageSlider = ({ url, imgClasses, isHovered }: ImageSliderProps) => {
+const ImageSlider = ({ url, images, imgClasses }: ImageSliderProps) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
     
-    // Simulating two images for hover effect (you can pass multiple images as array)
-    const images = [url, url]; // Replace second with actual second image URL if available
+    const imageArray = images && images.length > 0 ? images : [url];
+    const hasMultipleImages = imageArray.length > 1;
+
+    const goToNext = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev + 1) % imageArray.length);
+    };
+
+    const goToPrevious = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev - 1 + imageArray.length) % imageArray.length);
+    };
 
     return (
-        <div className="group/slider relative bg-white overflow-hidden h-full w-full">
-            {/* Primary Image */}
+        <div 
+            className="relative bg-white overflow-hidden h-full w-full group"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <img
                 className={cn(
-                    "absolute top-0 left-0 h-full w-full object-cover transition-opacity duration-500",
-                    imgClasses,
-                    isHovered ? "opacity-0" : "opacity-100"
+                    "h-full w-full object-cover transition-none",
+                    imgClasses
                 )}
-                src={images[0]}
-                alt="Product primary view"
-            />
-            
-            {/* Hover Image */}
-            <img
-                className={cn(
-                    "absolute top-0 left-0 h-full w-full object-cover transition-opacity duration-500",
-                    imgClasses,
-                    isHovered ? "opacity-100" : "opacity-0"
-                )}
-                src={images[1]}
-                alt="Product secondary view"
+                src={imageArray[currentImageIndex]}
+                alt={`Product view ${currentImageIndex + 1}`}
             />
 
-            {/* Swiper for additional images (optional) */}
-            <div className={cn(
-                "absolute inset-0 transition-opacity duration-300",
-                "opacity-0 pointer-events-none"
-            )}>
-                <Swiper
-                    pagination={{
-                        renderBullet: (_, className) => {
-                            return `<span class="rounded-full transition ${className}"></span>`;
-                        },
-                    }}
-                    spaceBetween={0}
-                    modules={[Pagination]}
-                    slidesPerView={1}
-                    className="h-full w-full"
-                    onSlideChange={(swiper) => setCurrentImageIndex(swiper.activeIndex)}
-                >
-                    {images.map((image, idx) => (
-                        <SwiperSlide
-                            key={idx}
-                            className="relative h-full w-full bg-white flex items-center justify-center"
-                        >
-                            <img
+            {hasMultipleImages && (
+                <>
+                    <button
+                        onClick={goToPrevious}
+                        className={cn(
+                            "absolute left-2 top-1/2 -translate-y-1/2 z-10",
+                            "bg-white/90 hover:bg-white border border-gray-200",
+                            "rounded-full p-1.5 shadow-md",
+                            "transition-all duration-300",
+                            isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
+                        )}
+                        aria-label="Previous image"
+                    >
+                        <ChevronLeft className="h-4 w-4 text-gray-700" />
+                    </button>
+
+                    <button
+                        onClick={goToNext}
+                        className={cn(
+                            "absolute right-2 top-1/2 -translate-y-1/2 z-10",
+                            "bg-white/90 hover:bg-white border border-gray-200",
+                            "rounded-full p-1.5 shadow-md",
+                            "transition-all duration-300",
+                            isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"
+                        )}
+                        aria-label="Next image"
+                    >
+                        <ChevronRight className="h-4 w-4 text-gray-700" />
+                    </button>
+
+                    <div
+                        className={cn(
+                            "absolute bottom-3 left-1/2 -translate-x-1/2 z-10",
+                            "flex gap-1.5 transition-opacity duration-300",
+                            isHovered ? "opacity-100" : "opacity-0"
+                        )}
+                    >
+                        {imageArray.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setCurrentImageIndex(idx);
+                                }}
                                 className={cn(
-                                    "h-full w-full object-cover",
-                                    imgClasses
+                                    "w-2 h-2 rounded-full transition-all",
+                                    idx === currentImageIndex
+                                        ? "bg-[#FAA016] w-6"
+                                        : "bg-white/80 hover:bg-white"
                                 )}
-                                src={image}
-                                alt={`Product view ${idx + 1}`}
+                                aria-label={`Go to image ${idx + 1}`}
                             />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-            </div>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
     );
 };
