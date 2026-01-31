@@ -13,43 +13,52 @@ export const products: Array<UIProduct> = [
     ],
     productPrice: 120,
     originalPrice: 150,
-    quantity: "100",
+    quantity: 100,
     rating: 4.5,
     category: "Vegetables",
     inStock: true,
     createdAt: "2025-03-10",
     label: "Best Seller",
+    customizations: [{
+      title: "Quantity",
+      options: [
+        { label: "500g Pack", additionalPrice: 0 },
+        { label: "1kg Pack", additionalPrice: 80 },
+        { label: "Chopped", additionalPrice: 20 },
+      ]
+    }],
   },
   {
     productId: "2",
     productName: "Premium Farm Potato",
     description:
       "Locally harvested potatoes with excellent taste and quality, perfect for daily meals. Versatile cooking ingredient.",
-   productImages: [
+    productImages: [
       "https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/9737dd79-e949-5fc2-be36-c52eff17d81d/e91e73d4-022b-59db-9713-717a2a198855.jpg",
       "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&q=80",
     ],
-    
+
     productPrice: 80,
-    quantity: "200",
+    quantity: 200,
     rating: 4.7,
     category: "Vegetables",
     inStock: true,
     createdAt: "2023-03-12",
     label: "Super Saver",
+
   },
   {
     productId: "3",
     productName: "Fresh Green Cabbage",
     description:
       "Crisp and fresh green cabbage grown using sustainable farming methods. Packed with nutrients and fiber.",
-   productImages: [
+    productImages: [
       "https://i0.wp.com/live.staticflickr.com/65535/54473906289_30bdfbe1a2_z.jpg?resize=640%2C427&ssl=1",
       "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=800&q=80",
     ],
     productPrice: 60,
     originalPrice: 75,
-    quantity: "75",
+    quantity: 75,
     rating: 4.3,
     category: "Vegetables",
     inStock: true,
@@ -65,7 +74,7 @@ export const products: Array<UIProduct> = [
       "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=800&q=80",
     ],
     productPrice: 90,
-    quantity: "90",
+    quantity: 90,
     rating: 4.6,
     category: "Vegetables",
     inStock: true,
@@ -84,12 +93,20 @@ export const products: Array<UIProduct> = [
     ],
     productPrice: 1800,
     originalPrice: 2000,
-    quantity: "25",
+    quantity: 25,
     rating: 4.9,
     category: "Grains",
     inStock: true,
     createdAt: "2023-03-20",
     label: "Hot Deal",
+    customizations: [{
+      title: "Quantity",
+      options: [
+        { label: "5kg Bag", additionalPrice: 0 },
+        { label: "10kg Bag", additionalPrice: 1600 },
+        { label: "Premium Polished", additionalPrice: 200 },
+      ],
+    }]
   },
   {
     productId: "6",
@@ -101,7 +118,7 @@ export const products: Array<UIProduct> = [
       "https://images.unsplash.com/photo-1582515073490-39981397c445?w=800&q=80",
     ],
     productPrice: 100,
-    quantity: "150",
+    quantity: 150,
     rating: 4.4,
     category: "Vegetables",
     inStock: true,
@@ -112,30 +129,45 @@ export const products: Array<UIProduct> = [
     productName: "Organic Spinach",
     description:
       "Fresh leafy spinach packed with iron and nutrients. Perfect for healthy salads and traditional dishes.",
-     productImages: [
+    productImages: [
       "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&q=80",
       "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&q=80",
     ],
     productPrice: 70,
     originalPrice: 85,
-    quantity: "120",
+    quantity: 120,
     rating: 4.8,
     category: "Vegetables",
     inStock: true,
     createdAt: "2023-03-25",
     label: "Super Saver",
+    customizations: [{
+      title: "Quantity",
+      options: [
+        { label: "500g Pack", additionalPrice: 0 },
+        { label: "1kg Pack", additionalPrice: 80 },
+        { label: "Chopped", additionalPrice: 20 },
+      ]
+    }, {
+      title: "Quality",
+      options: [
+        { label: "Washed & Ready", additionalPrice: 15 },
+        { label: "Organic Certified", additionalPrice: 25 },
+        { label: "Loose (No Packaging)", additionalPrice: -10 },
+      ],
+    }]
   },
   {
     productId: "8",
     productName: "Red Onion",
     description:
       "Fresh red onions with strong flavor, essential for cooking. Adds depth to curries and salads.",
-   productImages: [
+    productImages: [
       "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&q=80",
       "https://images.unsplash.com/photo-1587486937149-5efe4e87e4e3?w=800&q=80",
     ],
     productPrice: 95,
-    quantity: "180",
+    quantity: 180,
     rating: 4.2,
     category: "Vegetables",
     inStock: true,
@@ -151,7 +183,7 @@ export const products: Array<UIProduct> = [
       "https://images.unsplash.com/photo-1589927986089-35812388d1f6?w=800&q=80",
     ],
     productPrice: 50,
-    quantity: "200",
+    quantity: 200,
     rating: 4.1,
     category: "Vegetables",
     inStock: true,
@@ -163,14 +195,14 @@ export const products: Array<UIProduct> = [
     productName: "Bell Pepper Mix",
     description:
       "Colorful mix of bell peppers - red, yellow, and green. Rich in vitamins and adds color to your dishes.",
-   productImages: [
+    productImages: [
       "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=800&q=80",
       "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=800&q=80",
       "https://images.unsplash.com/photo-1525607551316-4a8e16d1f9ba?w=800&q=80",
     ],
     productPrice: 150,
     originalPrice: 180,
-    quantity: "60",
+    quantity: 60,
     rating: 4.7,
     category: "Vegetables",
     inStock: true,

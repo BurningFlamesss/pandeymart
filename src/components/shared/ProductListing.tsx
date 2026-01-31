@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Heart, Eye, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
@@ -6,7 +6,9 @@ import { Badge } from "../ui/badge";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
@@ -24,9 +26,13 @@ const ProductListing = ({ product, index }: productListingProps) => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
     const [quantity, setQuantity] = useState<number>(1);
-    const [selectedWeight, setSelectedWeight] = useState<string>("1kg");
+    const [selectedCustomizations, setSelectedCustomizations] =
+        useState<Record<string, string>>({});
     const [isHovered, setIsHovered] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const maxQty = product?.maxOrderQuantity ?? product?.quantity ?? 1;
+    const minQty = product?.minOrderQuantity ?? 1;
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -36,14 +42,51 @@ const ProductListing = ({ product, index }: productListingProps) => {
         return () => clearTimeout(timer);
     }, [index]);
 
+    useEffect(() => {
+        if (!product?.customizations?.length) return;
+
+        const defaults: Record<string, string> = {};
+
+        product.customizations.forEach(group => {
+            if (group.options.length) {
+                defaults[group.title] = group.options[0].label;
+            }
+        });
+
+        setSelectedCustomizations(defaults);
+    }, [product]);
+
+    const customizationDelta = useMemo(() => {
+        if (!product?.customizations) return 0;
+
+        return product.customizations.reduce((total, group) => {
+            const selectedLabel = selectedCustomizations[group.title];
+            if (!selectedLabel) return total;
+
+            const option = group.options.find(
+                opt => opt.label === selectedLabel
+            );
+
+            return total + (option?.additionalPrice ?? 0);
+        }, 0);
+    }, [product, selectedCustomizations]);
+
+    const originalUnitPrice =
+    (product?.originalPrice ?? product?.productPrice ?? 0) + customizationDelta;
+    const finalUnitPrice =
+    (product?.productPrice ?? 0) + customizationDelta;
+    const finalTotalPrice = finalUnitPrice * quantity;
+    const originalTotalPrice = originalUnitPrice * quantity;
+
+
     const handleIncrement = (e: React.MouseEvent) => {
         e.preventDefault();
-        setQuantity((prev) => prev + 1);
+        setQuantity(prev => Math.min(prev + 1, maxQty));
     };
 
     const handleDecrement = (e: React.MouseEvent) => {
         e.preventDefault();
-        if (quantity > 1) setQuantity((prev) => prev - 1);
+        setQuantity(prev => Math.max(prev - 1, minQty));
     };
 
     const toggleFavorite = (e: React.MouseEvent) => {
@@ -53,8 +96,14 @@ const ProductListing = ({ product, index }: productListingProps) => {
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
-        console.log("Added to cart:", { product, quantity, selectedWeight });
+
+        console.log("Added to cart:", {
+            productId: product?.productId,
+            quantity,
+            customizations: selectedCustomizations,
+        });
     };
+
 
     const openModal = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -66,15 +115,15 @@ const ProductListing = ({ product, index }: productListingProps) => {
     const getLabelColor = (label?: string) => {
         switch (label) {
             case "Best Seller":
-                return "bg-blue-500";
+                return product.labelColor || "bg-blue-500";
             case "Super Saver":
-                return "bg-green-500";
+                return product.labelColor || "bg-green-500";
             case "New Arrival":
-                return "bg-purple-500";
+                return product.labelColor || "bg-purple-500";
             case "Limited":
-                return "bg-red-500";
+                return product.labelColor || "bg-red-500";
             case "Hot Deal":
-                return "bg-[#FAA016]";
+                return product.labelColor || "bg-[#FAA016]";
             default:
                 return product.labelColor || "bg-[#FAA016]";
         }
@@ -156,38 +205,81 @@ const ProductListing = ({ product, index }: productListingProps) => {
                                     variant="outline"
                                     className={cn(
                                         "text-xs",
-                                        parseInt(product.quantity) > 50
+                                        (product.quantity) > 50
                                             ? "border-green-300 text-green-700 bg-green-50"
-                                            : parseInt(product.quantity) > 0
-                                            ? "border-yellow-300 text-yellow-700 bg-yellow-50"
-                                            : "border-red-300 text-red-700 bg-red-50"
+                                            : (product.quantity) > 0
+                                                ? "border-yellow-300 text-yellow-700 bg-yellow-50"
+                                                : "border-red-300 text-red-700 bg-red-50"
                                     )}
                                 >
-                                    {parseInt(product.quantity) > 0
+                                    {(product.quantity) > 0
                                         ? `${product.quantity} units available`
-                                        : "Out of stock"}
+                                        : product.inStock ? "Available" : "Out of stock"}
                                 </Badge>
                             )}
                         </div>
 
-                        <div className="flex items-center justify-between mb-3 gap-3 h-10">
-                            <Select
-                                value={selectedWeight}
-                                onValueChange={setSelectedWeight}
-                            >
-                                <SelectTrigger
-                                    className="w-24 h-10 cursor-pointer"
-                                    onClick={(e) => e.preventDefault()}
-                                >
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem className="cursor-pointer" value="1kg">1 kg</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="2kg">2 kg</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="3kg">3 kg</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="5kg">5 kg</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        <div className="flex items-center justify-between mb-3 gap-3 h-10 overflow-x-auto overflow-y-hidden">
+                            {product.customizations?.length ? (
+                                product.customizations.map((group) => (
+                                    <Select
+                                        key={group.title}
+                                        value={selectedCustomizations[group.title]}
+                                        onValueChange={(value) =>
+                                            setSelectedCustomizations(prev => ({
+                                                ...prev,
+                                                [group.title]: value,
+                                            }))
+                                        }
+                                    >
+                                        <SelectTrigger className="w-28 h-10">
+                                            <SelectValue placeholder={group.title} />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>{group.title}</SelectLabel>
+                                                {group.options.map(option => (
+                                                    <SelectItem
+                                                        key={option.label}
+                                                        value={option.label}
+                                                        className="cursor-pointer"
+                                                    >
+                                                        {option.label}
+                                                        {option.additionalPrice !== 0 && (
+                                                        <span className="ml-2 text-xs text-gray-500">
+                                                            ({option.additionalPrice > 0 ? "+" : ""}
+                                                            Rs. {option.additionalPrice})/ 1unit
+                                                        </span>
+                                                    )}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                ))
+                            ) : (
+                                !product.customizations?.length && (
+                                    <Select
+                                        value={quantity.toString()}
+                                        onValueChange={(v) => setQuantity(Number(v))}
+                                    >
+                                        <SelectTrigger className="w-24 h-10">
+                                            <SelectValue />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            {Array.from(new Set([minQty, maxQty])).map(qty => (
+                                                <SelectItem key={qty} value={qty.toString()}>
+                                                    {qty} units
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )
+
+                            )}
+
 
                             <div className="flex items-center border border-gray-200 rounded-md h-10">
                                 <Button
@@ -213,15 +305,14 @@ const ProductListing = ({ product, index }: productListingProps) => {
                         </div>
 
                         <div className="flex items-center gap-2 mb-3 h-8">
-                            <span className="font-semibold text-black text-base">
-                                Rs.{" "}
-                                {(
-                                    product.productPrice ?? 0
-                                ).toLocaleString()}
-                            </span>
+                            {product.productPrice && (
+                                <span className="font-semibold text-black text-base">
+                                    Rs. {(finalTotalPrice).toLocaleString()}
+                                </span>
+                            )}
                             {product.originalPrice && (
                                 <span className="line-through text-gray-400 text-sm">
-                                    Rs. {product.originalPrice.toLocaleString()}
+                                    Rs. {(originalTotalPrice).toLocaleString()}
                                 </span>
                             )}
                             <Badge
