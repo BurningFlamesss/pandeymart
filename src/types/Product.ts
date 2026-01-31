@@ -1,45 +1,14 @@
-export interface Product {
-  id: string;
-  name: {
-    english: string;
-    nepali: string;
-  };
-  description: string;
-  imageUrl: string;
-  price: number;
-  quantity: number;
-  location: string;
-  sellerContact: string;
-  createdAt: string;
-  expectedLifeSpan: number;
-}
+// @/types/Product.ts
 
 export interface UIProduct {
-  productId: string;
-  productName: string;
-  description: string;
-  productImage: string;
-  price: string;
-  quantity: string;
-  createdAt: string;
-  expectedLifeSpan: string;
-}
-
-export interface IndividualProduct {
-  productId: string;
-  productName: string;
-  description: string;
-  productImage: string;
-  price: string;
-  quantity: string;
-  createdAt: string;
-  expectedLifeSpan: string;
-  seller: {
-    farmerID: string;
-    verified: boolean;
-    username: string;
-    contact: string;
-    gmail: string;
-    address: string;
-  };
+    productId: string;
+    productName: string;
+    productImage: string;
+    productPrice: number;
+    originalPrice?: number;
+    rating?: number;
+    category?: string;
+    description?: string;
+    inStock?: boolean;
+    weight?: Array<string>;
 }
