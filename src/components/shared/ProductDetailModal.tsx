@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { X, Minus, Plus, ShoppingBag, ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { X, Minus, Plus, ShoppingBag, ChevronDown, Star } from "lucide-react";
 import { Button } from "../ui/button";
 import type { UIProduct } from "@/types/Product";
 import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
 
 interface ProductDetailModalProps {
     product: UIProduct;
@@ -36,13 +37,52 @@ const faqs = [
 const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProps) => {
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
-    const [selectedSize, setSelectedSize] = useState("1 KG");
+    const [selectedCustomizations, setSelectedCustomizations] =
+        useState<Record<string, string>>({});
     const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
     const [isZooming, setIsZooming] = useState(false);
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-
     const images = product.productImages;
     const price = product.productPrice || 0;
+    const maxQty = product.maxOrderQuantity ?? product.quantity ?? 1;
+    const minQty = product.minOrderQuantity ?? 1;
+
+    useEffect(() => {
+        if (!product.customizations?.length) return;
+
+        const defaults: Record<string, string> = {};
+
+        product.customizations.forEach(group => {
+            if (group.options.length) {
+                defaults[group.title] = group.options[0].label;
+            }
+        });
+
+        setSelectedCustomizations(defaults);
+    }, [product]);
+
+    const customizationDelta = useMemo(() => {
+        if (!product.customizations) return 0;
+
+        return product.customizations.reduce((total, group) => {
+            const selectedLabel = selectedCustomizations[group.title];
+            if (!selectedLabel) return total;
+
+            const option = group.options.find(
+                opt => opt.label === selectedLabel
+            );
+
+            return total + (option?.additionalPrice ?? 0);
+        }, 0);
+    }, [product, selectedCustomizations]);
+
+    const originalUnitPrice =
+        (product.originalPrice ?? product.productPrice ?? 0) + customizationDelta;
+    const finalUnitPrice =
+        (product.productPrice ?? 0) + customizationDelta;
+    const finalTotalPrice = finalUnitPrice * quantity;
+    const originalTotalPrice = originalUnitPrice * quantity;
+
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -51,9 +91,14 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
         setZoomPosition({ x, y });
     };
 
-    const handleIncrement = () => setQuantity((prev) => prev + 1);
-    const handleDecrement = () => {
-        if (quantity > 1) setQuantity((prev) => prev - 1);
+    const handleIncrement = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setQuantity(prev => Math.min(prev + 1, maxQty));
+    };
+
+    const handleDecrement = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setQuantity(prev => Math.max(prev - 1, minQty));
     };
 
     const toggleFaq = (index: number) => {
@@ -133,7 +178,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
                     )}
                 </div>
 
-                <div className="w-full lg:w-1/2 h-full lg:overflow-y-auto lg:max-h-150 overflow-clip">
+                <div className="w-full lg:w-1/2 h-full lg:overflow-y-auto lg:max-h-150 overflow-clip pr-4">
                     <h3 className="text-3xl font-bold mb-2">{product.productName}</h3>
                     <p className="mb-3 text-gray-600">
                         Tax included. Shipping calculated at checkout.
@@ -141,13 +186,20 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
 
                     <div className="flex items-center gap-4 mb-4">
                         <div className="text-3xl font-bold text-[#FAA016]">
-                            Rs. {price.toLocaleString()}
+                            Rs. {finalTotalPrice.toLocaleString()}
                         </div>
                         {product.originalPrice && (
                             <div className="text-xl text-gray-400 line-through">
-                                Rs. {product.originalPrice.toLocaleString()}
+                                Rs. {originalTotalPrice.toLocaleString()}
                             </div>
                         )}
+                        <Badge
+                                variant="secondary"
+                                className="ml-auto bg-yellow-100 text-yellow-700 hover:bg-yellow-100 font-bold h-7"
+                            >
+                                <Star className="h-3 w-3 mr-1 fill-yellow-700" />
+                                {product.rating?.toFixed(1) || "0"}
+                            </Badge>
                     </div>
 
                     <div className="flex items-center gap-2 border-b border-gray-200 pb-5 pt-2 mb-4">
@@ -167,36 +219,55 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
                             "Lorem Ipsum is simply dummy text of the printing and typesetting industry dummy text and typesetting industry"}
                     </p>
 
-                    <div className="mb-4">
-                        <div className="flex items-center mb-3">
-                            <strong className="text-base">Size:</strong>
-                            <span className="ml-2 text-sm font-medium text-gray-500">
-                                {selectedSize}
-                            </span>
+                    {product.customizations && product.customizations.map((group) => (
+                        <div key={group.title} className="mb-4">
+                            <div className="flex items-center mb-3">
+                                <strong className="text-base">{group.title}:</strong>
+                                <span className="ml-2 text-sm font-medium text-gray-500">
+                                    {selectedCustomizations[group.title] || "None"}
+                                </span>
+                            </div>
+                            <ul className="flex gap-2">
+                                {group.options.map((option) => {
+                                    const isSelected = selectedCustomizations[group.title] === option.label;
+
+                                    return (
+                                        <li
+                                            key={option.label}
+                                            className={cn(
+                                                "w-full border-2 rounded-lg px-4 py-2 cursor-pointer transition-all font-medium",
+                                                isSelected
+                                                    ? "bg-black text-white border-black"
+                                                    : "border-gray-200 hover:border-[#FAA016] hover:text-[#FAA016]"
+                                            )}
+                                            onClick={() => {
+                                                setSelectedCustomizations((prev) => ({
+                                                    ...prev,
+                                                    [group.title]: isSelected ? "" : option.label, 
+                                                }));
+                                            }}
+                                        >
+                                            {option.label} <br />
+                                            {option.additionalPrice !== 0 && (
+                                                <span className="ml-1 text-xs text-gray-400">
+                                                    ({option.additionalPrice > 0 ? "+" : ""}
+                                                    Rs. {option.additionalPrice})
+                                                </span>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </div>
-                        <ul className="flex gap-2">
-                            {["1 KG", "2 KG", "3 KG", "5 KG"].map((size) => (
-                                <li
-                                    key={size}
-                                    className={cn(
-                                        "border-2 rounded-lg px-4 py-2 cursor-pointer transition-all font-medium",
-                                        selectedSize === size
-                                            ? "bg-black text-white border-black"
-                                            : "border-gray-200 hover:border-[#FAA016] hover:text-[#FAA016]"
-                                    )}
-                                    onClick={() => setSelectedSize(size)}
-                                >
-                                    {size}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    ))}
+
+
 
                     <div className="flex items-center border-2 border-gray-200 rounded-lg w-fit mb-5">
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-12 w-12 rounded-none hover:bg-gray-100"
+                            className="h-12 w-12 rounded-none hover:bg-gray-100 cursor-pointer"
                             onClick={handleDecrement}
                         >
                             <Minus className="h-5 w-5" />
@@ -207,24 +278,24 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-12 w-12 rounded-none hover:bg-gray-100"
+                            className="h-12 w-12 rounded-none hover:bg-gray-100 cursor-pointer"
                             onClick={handleIncrement}
                         >
                             <Plus className="h-5 w-5" />
                         </Button>
                     </div>
 
-                    <div className="w-full flex flex-col sm:flex-row gap-3 mb-6">
+                    <div className="w-full flex flex-col gap-3 mb-6">
                         <Button
-                            className="bg-[#FAA016] hover:bg-black text-white px-6 py-6 rounded-lg transition-all duration-300 font-bold w-full text-base"
-                            onClick={() => console.log("Add to cart", { product, quantity, selectedSize })}
+                            className="bg-[#FAA016] hover:bg-black text-white px-6 py-6 rounded-lg transition-all duration-300 font-bold w-full text-base cursor-pointer"
+                            onClick={() => console.log("Add to cart", { product, quantity })}
                         >
                             <ShoppingBag className="mr-2 h-5 w-5" />
                             ADD TO CART
                         </Button>
                         <Button
-                            className="bg-black hover:bg-[#FAA016] text-white px-6 py-6 rounded-lg transition-all duration-300 w-full font-bold text-base"
-                            onClick={() => console.log("Buy now", { product, quantity, selectedSize })}
+                            className="bg-black hover:bg-[#FAA016] text-white px-6 py-6 rounded-lg transition-all duration-300 w-full font-bold text-base cursor-pointer"
+                            onClick={() => console.log("Buy now", { product, quantity })}
                         >
                             BUY IT NOW
                         </Button>
