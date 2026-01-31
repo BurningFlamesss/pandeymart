@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import type { CarouselApi } from "@/components/ui/carousel"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import Button from '@/components/shared/Button';
 
 
 const products = [
@@ -50,12 +51,14 @@ function HomeBanner() {
                     <CarouselContent>
                         {products.map(product => (
                             <CarouselItem key={product.id} className="w-full">
-                                <div className="relative w-full aspect-video md:h-87.5 lg:h-100 bg-white">
+                                <div className="relative w-full aspect-video md:h-87.5 lg:h-100 bg-white flex flex-row items-center justify-center">
                                     <img
                                         src={product.image}
-                                        className="w-full h-full object-cover"
+                                        className="absolute inset-0 w-full h-full object-cover"
                                         alt=""
                                     />
+
+                                    <Button href='/' title="BUY NOW"></Button>
                                 </div>
                             </CarouselItem>
                         ))}
