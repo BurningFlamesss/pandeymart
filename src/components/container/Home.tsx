@@ -1,5 +1,6 @@
+import HomeAd from '../layout/home/HomeAd'
 import HomeBanner from '../layout/home/HomeBanner'
-import Products from '../shared/Products'
+import Products from '../layout/home/Products'
 import { products } from '@/config/mockProducts'
 
 function Home() {
@@ -7,6 +8,7 @@ function Home() {
         <>
             <HomeBanner />
             <Products products={products} />
+            <HomeAd />
         </>
     )
 }

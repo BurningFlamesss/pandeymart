@@ -36,9 +36,8 @@ function HomeBanner() {
     }, [api])
 
     return (
-        <div className="h-full flex flex-col items-center justify-center gap-4">
-
-            <div className="max-w-300 relative">
+        <div className="h-full w-full flex flex-col items-center justify-center gap-4 mx-auto">
+            <div className="max-w-300 w-full relative">
                 <Carousel
                     setApi={setApi}
                     opts={{
@@ -48,10 +47,10 @@ function HomeBanner() {
                     }}
                     className="w-full overflow-hidden"
                 >
-                    <CarouselContent>
+                    <CarouselContent className='w-full'>
                         {products.map(product => (
                             <CarouselItem key={product.id} className="w-full">
-                                <div className="relative w-full aspect-video md:h-87.5 lg:h-100 bg-white flex flex-row items-center justify-center">
+                                <div className="relative w-full aspect-video lg:h-100 bg-white flex flex-row items-center justify-center">
                                     <img
                                         src={product.image}
                                         className="absolute inset-0 w-full h-full object-cover"
