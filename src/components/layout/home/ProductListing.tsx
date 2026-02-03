@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import ImageSlider from "@/components/shared/ImageSlider";
+import { useFavourite } from "@/hooks/use-favourite";
 
 interface productListingProps {
     product: Product | null;
@@ -24,7 +25,7 @@ interface productListingProps {
 
 const ProductListing = ({ product, index }: productListingProps) => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [isFavorite, setIsFavorite] = useState<boolean>(false);
+    const { favourite, addToFavourite, removeFromFavourite } = useFavourite()
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedCustomizations, setSelectedCustomizations] =
         useState<Record<string, string>>({});
@@ -72,9 +73,9 @@ const ProductListing = ({ product, index }: productListingProps) => {
     }, [product, selectedCustomizations]);
 
     const originalUnitPrice =
-    (product?.originalPrice ?? product?.productPrice ?? 0) + customizationDelta;
+        (product?.originalPrice ?? product?.productPrice ?? 0) + customizationDelta;
     const finalUnitPrice =
-    (product?.productPrice ?? 0) + customizationDelta;
+        (product?.productPrice ?? 0) + customizationDelta;
     const finalTotalPrice = finalUnitPrice * quantity;
     const originalTotalPrice = originalUnitPrice * quantity;
 
@@ -89,10 +90,22 @@ const ProductListing = ({ product, index }: productListingProps) => {
         setQuantity(prev => Math.max(prev - 1, minQty));
     };
 
+    const isFavorite = useMemo(() => {
+        if (!product?.productId) return false;
+        return favourite.includes(product.productId);
+    }, [favourite, product?.productId]);
+
     const toggleFavorite = (e: React.MouseEvent) => {
         e.preventDefault();
-        setIsFavorite((prev) => !prev);
+        if (!product?.productId) return;
+
+        if (isFavorite) {
+            removeFromFavourite(product.productId);
+        } else {
+            addToFavourite(product.productId);
+        }
     };
+
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -247,11 +260,11 @@ const ProductListing = ({ product, index }: productListingProps) => {
                                                     >
                                                         {option.label}
                                                         {option.additionalPrice !== 0 && (
-                                                        <span className="ml-2 text-xs text-gray-500">
-                                                            ({option.additionalPrice > 0 ? "+" : ""}
-                                                            Rs. {option.additionalPrice})/ 1unit
-                                                        </span>
-                                                    )}
+                                                            <span className="ml-2 text-xs text-gray-500">
+                                                                ({option.additionalPrice > 0 ? "+" : ""}
+                                                                Rs. {option.additionalPrice})/ 1unit
+                                                            </span>
+                                                        )}
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>

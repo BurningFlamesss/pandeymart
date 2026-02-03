@@ -7,8 +7,8 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import appCss from '../styles.css?url'
 import "../styles/globals.css"
-import { Toaster } from "@/components/ui/sonner"
 import Header from '@/components/global/Header'
+import GlobalProvider from '@/provider/GlobalProvider'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -93,8 +93,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <Header />
-        <Toaster />
-        {children}
+        <GlobalProvider>
+          {children}
+        </GlobalProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
