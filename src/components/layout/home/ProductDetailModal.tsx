@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { X, Minus, Plus, ShoppingBag, ChevronDown, Star } from "lucide-react";
-import type { UIProduct } from "@/types/Product";
+import type { Product } from "@/types/Product";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface ProductDetailModalProps {
-    product: UIProduct;
+    product: Product;
     isOpen: boolean;
     onClose: () => void;
 }

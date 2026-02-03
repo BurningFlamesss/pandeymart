@@ -1,4 +1,4 @@
-export interface UIProduct {
+export interface Product {
     productId: string;
     productName: string;
     slug?: string;
@@ -25,13 +25,21 @@ export interface UIProduct {
     updatedAt?: string;
 }
 
+export interface IndividualProduct {
+    cartItemId: string;
+    productId: string;
+    basePrice: number;
+    quantity: number;
+    customizations?: Array<CustomizationGroup>
+}
+
 
 interface Customizations {
     label: string;
     additionalPrice: number;
 }
 
-interface CustomizationGroup {
+export interface CustomizationGroup {
     title: string;
     options: Array<Customizations>;
 }

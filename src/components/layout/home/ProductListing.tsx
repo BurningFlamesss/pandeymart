@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Heart, Eye, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import ProductDetailModal from "./ProductDetailModal";
-import type { UIProduct } from "@/types/Product";
+import type { Product } from "@/types/Product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import ImageSlider from "@/components/shared/ImageSlider";
 
 interface productListingProps {
-    product: UIProduct | null;
+    product: Product | null;
     index: number;
 }
 

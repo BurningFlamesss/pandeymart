@@ -1,7 +1,7 @@
 import ProductListing from "./ProductListing";
-import type { UIProduct } from "@/types/Product";
+import type { Product } from "@/types/Product";
 
-const Products = ({ products, children }: { products?: Array<UIProduct>, children?: React.ReactNode }) => {
+const Products = ({ products, children }: { products?: Array<Product>, children?: React.ReactNode }) => {
     return (
         <div className="flex justify-center items-center w-full px-4 py-8 lg:py-16">
             <div className="w-full max-w-300">
