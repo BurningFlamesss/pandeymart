@@ -5,7 +5,6 @@ interface FavouriteContextType {
     addToFavourite: (product: string) => void,
     removeFromFavourite: (productId: string) => void;
     clearFavourite: () => void;
-
 }
 
 export const FavouriteContext = createContext<FavouriteContextType | null>(null)
