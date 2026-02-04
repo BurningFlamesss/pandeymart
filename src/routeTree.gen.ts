@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductIndexRouteImport } from './routes/product/index'
+import { Route as FavouriteIndexRouteImport } from './routes/favourite/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as ProductProductIdRouteImport } from './routes/product/$productId'
 import { Route as AuthAuthenticateRouteImport } from './routes/_auth/authenticate'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const ProductIndexRoute = ProductIndexRouteImport.update({
   id: '/product/',
   path: '/product/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavouriteIndexRoute = FavouriteIndexRouteImport.update({
+  id: '/favourite/',
+  path: '/favourite/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/favourite/': typeof FavouriteIndexRoute
   '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/favourite': typeof FavouriteIndexRoute
   '/product': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/_auth/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/favourite/': typeof FavouriteIndexRoute
   '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/authenticate'
     | '/product/$productId'
     | '/checkout/'
+    | '/favourite/'
     | '/product/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/authenticate'
     | '/product/$productId'
     | '/checkout'
+    | '/favourite'
     | '/product'
     | '/api/auth/$'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/_auth/authenticate'
     | '/product/$productId'
     | '/checkout/'
+    | '/favourite/'
     | '/product/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   AuthAuthenticateRoute: typeof AuthAuthenticateRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
+  FavouriteIndexRoute: typeof FavouriteIndexRoute
   ProductIndexRoute: typeof ProductIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/product'
       fullPath: '/product/'
       preLoaderRoute: typeof ProductIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favourite/': {
+      id: '/favourite/'
+      path: '/favourite'
+      fullPath: '/favourite/'
+      preLoaderRoute: typeof FavouriteIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout/': {
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthAuthenticateRoute: AuthAuthenticateRoute,
   ProductProductIdRoute: ProductProductIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
+  FavouriteIndexRoute: FavouriteIndexRoute,
   ProductIndexRoute: ProductIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

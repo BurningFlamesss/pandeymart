@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import ImageSlider from "@/components/shared/ImageSlider";
 import { useFavourite } from "@/hooks/use-favourite";
+import { useCart } from "@/hooks/use-cart";
 
 interface productListingProps {
     product: Product | null;
@@ -26,6 +27,7 @@ interface productListingProps {
 const ProductListing = ({ product, index }: productListingProps) => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const { favourite, addToFavourite, removeFromFavourite } = useFavourite()
+    const { addToCart, updateQuantity, cart } = useCart()
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedCustomizations, setSelectedCustomizations] =
         useState<Record<string, string>>({});
@@ -106,12 +108,49 @@ const ProductListing = ({ product, index }: productListingProps) => {
         }
     };
 
+    const resolvedCustomizations = useMemo(() => {
+        if (!product?.customizations) return [];
+
+        return product.customizations.map(group => ({
+            title: group.title,
+            options: group.options.filter(
+                opt => selectedCustomizations[group.title] === opt.label
+            ),
+        }));
+    }, [product, selectedCustomizations]);
+
+    const cartItemId = useMemo(() => {
+        if (!product?.productId) return "";
+
+        return `${product.productId}-${JSON.stringify(resolvedCustomizations)}`;
+    }, [product?.productId, resolvedCustomizations]);
+
+    const existingCartItem = useMemo(() => {
+        return cart.find(item => item.cartItemId === cartItemId);
+    }, [cart, cartItemId]);
+
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
 
+        if (!product) return;
+
+        const cartItem = {
+            cartItemId,
+            productId: product.productId,
+            quantity,
+            basePrice: product.productPrice ?? 0,
+            customizations: resolvedCustomizations
+        }
+
+        if (existingCartItem) {
+            updateQuantity(cartItemId, existingCartItem.quantity + quantity)
+        } else {
+            addToCart(cartItem)
+        }
+
         console.log("Added to cart:", {
-            productId: product?.productId,
+            productId: product.productId,
             quantity,
             customizations: selectedCustomizations,
         });
