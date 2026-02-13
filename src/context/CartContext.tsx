@@ -2,7 +2,7 @@ import { createContext, useEffect, useMemo, useState } from "react";
 import type { IndividualProduct } from "@/types/Product";
 import { calculateItemUnitPrice } from "@/utils/productUtils";
 
-interface CartContextType {
+export interface CartContextType {
     cart: Array<IndividualProduct>;
     addToCart: (product: IndividualProduct) => void;
     removeFromCart: (cartItemId: string) => void;

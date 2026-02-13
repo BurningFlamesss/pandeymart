@@ -5,10 +5,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import type { AppContext } from '@/types/router-context'
+import type { IndividualProduct } from '@/types/Product';
 import { authClient } from '@/lib/auth-client'
+import { useCart } from '@/hooks/use-cart';
 
 function Header() {
     const { data: session, isPending } = authClient.useSession()
+    const {cart} = useCart()
 
     const signOut = async () => {
         await authClient.signOut()
@@ -26,14 +29,14 @@ function Header() {
                     <Link className="links-border" to="/product">Products</Link>
                 </nav>
                 <div className='header-actions cursor-pointer'>
-                    <DropdownUserMenu session={session} signOut={() => signOut()} />
+                    <DropdownUserMenu cart={cart} session={session} signOut={() => signOut()} />
                 </div>
             </div>
         </header>
     )
 }
 
-const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session'], signOut: () => void }) => {
+const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['session'], signOut: () => void, cart: Array<IndividualProduct>}) => {
     if (!session?.user.id) {
         return <Link to='/authenticate' search={{ mode: "signup" }}>
             <Button size={"sm"}>
@@ -43,7 +46,7 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
     }
     return (
         <>
-            <Link to='/'>
+            <Link to='/favourite'>
                 <div className="relative w-8 h-8 p-1 flex flex-row items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#f0f0f0] border border-muted rounded-full">
                     <FaRegHeart height={20} width={20}></FaRegHeart>
                     {/* <span className="absolute top-0 -right-1 flex flex-row items-center justify-center bg-[#FAA016] text-white font-medium text-xs w-4 h-4 rounded-full">
@@ -55,7 +58,7 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
                 <div className="relative w-8 h-8 p-1 flex flex-row items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#f0f0f0] border border-muted rounded-full">
                     <ShoppingCart height={20} width={20}></ShoppingCart>
                     <span className="absolute top-0 -right-1 flex flex-row items-center justify-center bg-[#FAA016] text-white font-medium text-xs w-4 h-4 rounded-full">
-                        1
+                        {cart.length}
                     </span>
                 </div>
             </Link>

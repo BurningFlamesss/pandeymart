@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart, Eye, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { Eye, Heart, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import ProductDetailModal from "./ProductDetailModal";
 import type { Product } from "@/types/Product";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -103,8 +105,10 @@ const ProductListing = ({ product, index }: productListingProps) => {
 
         if (isFavorite) {
             removeFromFavourite(product.productId);
+            toast("Removed to Favourite")
         } else {
             addToFavourite(product.productId);
+            toast("Added to Favourite")
         }
     };
 
@@ -145,8 +149,10 @@ const ProductListing = ({ product, index }: productListingProps) => {
 
         if (existingCartItem) {
             updateQuantity(cartItemId, existingCartItem.quantity + quantity)
+            toast("Updated the Cart")
         } else {
             addToCart(cartItem)
+            toast("Added to the Cart")
         }
 
         console.log("Added to cart:", {
@@ -183,14 +189,17 @@ const ProductListing = ({ product, index }: productListingProps) => {
 
     return (
         <>
-            <a
+            <Link
                 className={cn(
                     "invisible h-full w-full cursor-pointer group/main overflow-hidden block",
                     {
                         "visible animate-in fade-in-5": isVisible,
                     }
                 )}
-                href={`/product/${product.productId}`}
+                to={`/product/$productId`}
+                params={{
+                    productId: product.productId
+                }}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -385,7 +394,7 @@ const ProductListing = ({ product, index }: productListingProps) => {
                         </Button>
                     </div>
                 </div>
-            </a>
+            </Link>
 
             {product && (
                 <ProductDetailModal

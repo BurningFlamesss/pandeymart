@@ -1,6 +1,6 @@
-import type { UIProduct } from "@/types/Product";
+import type { Product } from "@/types/Product";
 
-export const products: Array<UIProduct> = [
+export const products: Array<Product> = [
   {
     productId: "1",
     productName: "Fresh Organic Tomato",

@@ -92,8 +92,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <Header />
         <GlobalProvider>
+        <Header />
           {children}
         </GlobalProvider>
         <TanStackDevtools
