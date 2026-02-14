@@ -2,16 +2,17 @@ import { Link } from '@tanstack/react-router'
 import { ShoppingCart } from 'lucide-react'
 import { FaRegHeart } from "react-icons/fa6";
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Button } from '../ui/button'
+import { Button, buttonVariants } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import type { AppContext } from '@/types/router-context'
 import type { IndividualProduct } from '@/types/Product';
 import { authClient } from '@/lib/auth-client'
 import { useCart } from '@/hooks/use-cart';
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 
 function Header() {
     const { data: session, isPending } = authClient.useSession()
-    const {cart} = useCart()
+    const { cart } = useCart()
 
     const signOut = async () => {
         await authClient.signOut()
@@ -22,7 +23,7 @@ function Header() {
             <div className='header-inner'>
                 <Link to='/' className='brand'>
                     <img src="/pandeymart.png" alt="" />
-                    <h1 className='brand-name'>PandeyMart</h1>
+                    <h1 className='brand-name hidden lg:inline'>PandeyMart</h1>
                 </Link>
                 <nav className='nav-links' aria-label='Main Navigations'>
                     <Link className="links-border" to="/">Home</Link>
@@ -36,7 +37,7 @@ function Header() {
     )
 }
 
-const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['session'], signOut: () => void, cart: Array<IndividualProduct>}) => {
+const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['session'], signOut: () => void, cart: Array<IndividualProduct> }) => {
     if (!session?.user.id) {
         return <Link to='/authenticate' search={{ mode: "signup" }}>
             <Button size={"sm"}>
@@ -54,14 +55,28 @@ const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['ses
                     </span> */}
                 </div>
             </Link>
-            <Link to='/checkout'>
-                <div className="relative w-8 h-8 p-1 flex flex-row items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#f0f0f0] border border-muted rounded-full">
-                    <ShoppingCart height={20} width={20}></ShoppingCart>
-                    <span className="absolute top-0 -right-1 flex flex-row items-center justify-center bg-[#FAA016] text-white font-medium text-xs w-4 h-4 rounded-full">
-                        {cart.length}
-                    </span>
-                </div>
-            </Link>
+            <Sheet>
+                <SheetTrigger>
+                    <div className="relative w-8 h-8 p-1 flex flex-row items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#f0f0f0] border border-muted rounded-full">
+                        <ShoppingCart height={20} width={20}></ShoppingCart>
+                        <span className="absolute top-0 -right-1 flex flex-row items-center justify-center bg-[#FAA016] text-white font-medium text-xs w-4 h-4 rounded-full">
+                            {cart.length}
+                        </span>
+                    </div>
+                </SheetTrigger>
+                <SheetContent>
+                    <SheetHeader>
+                        <SheetTitle>Edit your cart</SheetTitle>
+                        <SheetDescription>Manage your orders</SheetDescription>
+                    </SheetHeader>
+                    <div data-lenis-prevent className="no-scrollbar overflow-y-auto px-4 py-2">
+                        Dummy Data
+                    </div>
+                    <SheetFooter>
+                        <Link to='/checkout' className={buttonVariants()}>Checkout</Link>
+                    </SheetFooter>
+                </SheetContent>
+            </Sheet>
             <DropdownMenu>
                 <DropdownMenuTrigger className='cursor-pointer'>
                     <Avatar className='border border-muted p-0.5'>
