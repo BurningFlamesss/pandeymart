@@ -50,7 +50,7 @@ const ImageSlider = ({ images, imgClasses }: ImageSliderProps) => {
                             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
                             "bg-white/90 hover:bg-white border border-gray-200",
                             "rounded-full p-1.5 shadow-md",
-                            "transition-all duration-300",
+                            "transition-all duration-300 cursor-pointer",
                             isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
                         )}
                         aria-label="Previous image"
@@ -64,7 +64,7 @@ const ImageSlider = ({ images, imgClasses }: ImageSliderProps) => {
                             "absolute right-2 top-1/2 -translate-y-1/2 z-10",
                             "bg-white/90 hover:bg-white border border-gray-200",
                             "rounded-full p-1.5 shadow-md",
-                            "transition-all duration-300",
+                            "transition-all duration-300 cursor-pointer",
                             isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"
                         )}
                         aria-label="Next image"

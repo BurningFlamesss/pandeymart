@@ -33,7 +33,6 @@ export interface IndividualProduct {
     customizations?: Array<CustomizationGroup>
 }
 
-
 interface Customizations {
     label: string;
     additionalPrice: number;

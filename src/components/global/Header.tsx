@@ -1,18 +1,20 @@
 import { Link } from '@tanstack/react-router'
 import { ShoppingCart } from 'lucide-react'
 import { FaRegHeart } from "react-icons/fa6";
+import { useQuery } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button, buttonVariants } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import CartProductLists from '../layout/home/CartProductLists';
 import type { AppContext } from '@/types/router-context'
-import type { IndividualProduct } from '@/types/Product';
 import { authClient } from '@/lib/auth-client'
 import { useCart } from '@/hooks/use-cart';
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import { getProducts } from '@/server/functions/getProducts';
+import { useMemo } from 'react';
 
 function Header() {
     const { data: session, isPending } = authClient.useSession()
-    const { cart } = useCart()
 
     const signOut = async () => {
         await authClient.signOut()
@@ -30,14 +32,40 @@ function Header() {
                     <Link className="links-border" to="/product">Products</Link>
                 </nav>
                 <div className='header-actions cursor-pointer'>
-                    <DropdownUserMenu cart={cart} session={session} signOut={() => signOut()} />
+                    <DropdownUserMenu session={session} signOut={() => signOut()} />
                 </div>
             </div>
         </header>
     )
 }
 
-const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['session'], signOut: () => void, cart: Array<IndividualProduct> }) => {
+const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session'], signOut: () => void }) => {
+    const { cart, totalPrice } = useCart()
+
+    const { data: realProducts = [], isError, isPending } = useQuery({
+        queryKey: ['cart-products', cart.map(cartItem => cartItem.productId).sort().join(",")],
+        queryFn: () => {
+            if (cart.length === 0) return []
+            const uniqueIds = [...new Set(cart.map(item => item.productId))]
+
+            return getProducts({ data: uniqueIds })
+        },
+    })
+
+    console.log("Cart: ", cart)
+    console.log("Products: ", realProducts)
+
+    const productMap = useMemo(() => {
+        return new Map(realProducts.map(product => [product.productId, product]))
+    }, [realProducts])
+
+    const mergedItems = useMemo(() => {
+        return cart.map((cartItem) => ({
+            ...cartItem,
+            product: productMap.get(cartItem.productId)
+        }))
+    }, [cart, productMap])
+
     if (!session?.user.id) {
         return <Link to='/authenticate' search={{ mode: "signup" }}>
             <Button size={"sm"}>
@@ -45,6 +73,7 @@ const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['ses
             </Button>
         </Link>
     }
+
     return (
         <>
             <Link to='/favourite'>
@@ -67,13 +96,34 @@ const DropdownUserMenu = ({ session, signOut, cart }: { session: AppContext['ses
                 <SheetContent>
                     <SheetHeader>
                         <SheetTitle>Edit your cart</SheetTitle>
-                        <SheetDescription>Manage your orders</SheetDescription>
+                        <SheetDescription>Manage your orders ({cart.length})</SheetDescription>
                     </SheetHeader>
                     <div data-lenis-prevent className="no-scrollbar overflow-y-auto px-4 py-2">
-                        Dummy Data
+                        {
+                            isPending ? (
+                                <div className='h-[60vh] w-full flex items-center justify-center'>
+                                    Getting the items...
+                                </div>
+                            ) : isError ? (
+                                <div className='h-[60vh] w-full flex items-center justify-center'>
+                                    Something Went Wrong!
+                                </div>
+                            ) : mergedItems.length === 0 ? (
+                                <div className='h-[60vh] w-full flex items-center justify-center'>
+                                    Looks like you dont have added any item to the cart
+                                </div>
+                            ) : <div className='h-full w-full flex flex-col items-center gap-2'>
+                                {mergedItems.map((item, i) => {
+                                    if (!item.product) return null
+                                    return (
+                                        <CartProductLists product={item.product} cartItem={item} key={`cart-${item.cartItemId}`} index={i} />
+                                    )
+                                })}
+                            </div>
+                        }
                     </div>
                     <SheetFooter>
-                        <Link to='/checkout' className={buttonVariants()}>Checkout</Link>
+                        <Link to='/checkout' className={buttonVariants()}>Checkout (Rs. {totalPrice})</Link>
                     </SheetFooter>
                 </SheetContent>
             </Sheet>
