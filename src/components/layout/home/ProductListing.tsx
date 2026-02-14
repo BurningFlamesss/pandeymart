@@ -143,7 +143,7 @@ const ProductListing = ({ product, index }: productListingProps) => {
             cartItemId,
             productId: product.productId,
             quantity,
-            basePrice: product.productPrice ?? 0,
+            basePrice: product.productPrice ?? product.originalPrice ?? 0,
             customizations: resolvedCustomizations
         }
 

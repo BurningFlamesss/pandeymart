@@ -1,11 +1,12 @@
 import type { CustomizationGroup } from "@/types/Product";
 
-export const calculateItemUnitPrice = (basePrice: number, customizations: Array<CustomizationGroup>) => {
-    if (!customizations.length) return 0
-
+export const calculateItemUnitPrice = (
+    basePrice: number,
+    customizations: Array<CustomizationGroup> = []
+) => {
     const customizationTotal = customizations.reduce((sum, group) => {
-        return sum + group.options.reduce((groupSum, option) => groupSum + option.additionalPrice, 0)
+        return sum + group.options.reduce((groupSum, option) => groupSum + (option.additionalPrice ?? 0), 0)
     }, 0)
 
-    return basePrice + customizationTotal
+    return (basePrice ?? 0) + customizationTotal
 }
