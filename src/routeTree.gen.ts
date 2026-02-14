@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductIndexRouteImport } from './routes/product/index'
 import { Route as FavouriteIndexRouteImport } from './routes/favourite/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProductProductIdRouteImport } from './routes/product/$productId'
 import { Route as AuthAuthenticateRouteImport } from './routes/_auth/authenticate'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -37,6 +38,11 @@ const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
   path: '/checkout/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductProductIdRoute = ProductProductIdRouteImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
   '/favourite/': typeof FavouriteIndexRoute
   '/product/': typeof ProductIndexRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/admin': typeof AdminIndexRoute
   '/checkout': typeof CheckoutIndexRoute
   '/favourite': typeof FavouriteIndexRoute
   '/product': typeof ProductIndexRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
   '/favourite/': typeof FavouriteIndexRoute
   '/product/': typeof ProductIndexRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/authenticate'
     | '/product/$productId'
+    | '/admin/'
     | '/checkout/'
     | '/favourite/'
     | '/product/'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/authenticate'
     | '/product/$productId'
+    | '/admin'
     | '/checkout'
     | '/favourite'
     | '/product'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth/authenticate'
     | '/product/$productId'
+    | '/admin/'
     | '/checkout/'
     | '/favourite/'
     | '/product/'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthAuthenticateRoute: typeof AuthAuthenticateRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
   FavouriteIndexRoute: typeof FavouriteIndexRoute
   ProductIndexRoute: typeof ProductIndexRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$productId': {
       id: '/product/$productId'
       path: '/product/$productId'
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthAuthenticateRoute: AuthAuthenticateRoute,
   ProductProductIdRoute: ProductProductIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
   FavouriteIndexRoute: FavouriteIndexRoute,
   ProductIndexRoute: ProductIndexRoute,
