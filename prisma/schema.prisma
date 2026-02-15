@@ -7,17 +7,41 @@ datasource db {
   provider = "postgresql"
 }
 
+enum PaymentMethod {
+  COD
+  ESEWA
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
 model User {
-  id             String          @id
-  name           String
-  email          String
-  emailVerified  Boolean         @default(false)
-  image          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  sessions       Session[]
-  accounts       Account[]
-  productRatings ProductRating[]
+  id            String  @id
+  name          String
+  email         String
+  emailVerified Boolean @default(false)
+  phoneNumber   String? @unique
+  image         String?
+
+  addresses Address[]
+  orders    Order[]
+  ratings   ProductRating[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  sessions  Session[]
+  accounts  Account[]
 
   @@unique([email])
   @@map("user")
@@ -71,11 +95,32 @@ model Verification {
   @@map("verification")
 }
 
+model Address {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  postalCode   String
+
+  latitude  Float?
+  longitude Float?
+
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("address")
+}
+
 model Product {
   id          String @id @default(uuid())
   name        String
   slug        String @unique
-  description String
+  description String?
 
   price              Float?
   originalPrice      Float?
@@ -98,22 +143,27 @@ model Product {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
 
-  images  ProductImages[]
-  tags    ProductTag[]
-  ratings ProductRating[]
+  images     ProductImage[]
+  tags       ProductTag[]
+  ratings    ProductRating[]
+  orderItems OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([isFeatured])
   @@map("product")
 }
 
-model ProductImages {
+model ProductImage {
   id        String  @id @default(uuid())
   url       String
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  @@index([productId])
   @@map("product_image")
 }
 
@@ -132,6 +182,7 @@ model ProductTag {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  @@index([productId])
   @@map("product_tag")
 }
 
@@ -148,5 +199,65 @@ model ProductRating {
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])
+  @@index([productId])
+  @@index([userId])
   @@map("product_rating")
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  total         Float
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+  status        OrderStatus   @default(PENDING)
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  shippingAddress1   String
+  shippingAddress2   String?
+  shippingCity       String
+  shippingState      String
+  shippingPostalCode String
+  shippingLatitude   Float?
+  shippingLongitude  Float?
+
+  orderNotes  String?
+  sellerNotes String?
+
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("order")
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  productName  String
+  productPrice Float
+  quantity     Int
+
+  customizations Json?
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_item")
 }
