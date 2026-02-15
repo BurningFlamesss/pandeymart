@@ -21,6 +21,18 @@ export const requireAuth = createServerFn().middleware([getSessionMiddleware]).h
     }
 )
 
+export const requireAdminAccess = createServerFn().middleware([getSessionMiddleware]).handler(
+    ({ context }) => {
+        if (!context.session) {
+            throw redirect({ to: "/authenticate", search: { mode: "signup" } })
+        }
+
+        if (!context.session.user.id) {
+            throw redirect({to: '/'})
+        }
+    }
+)
+
 export const AuthpageGuard = createServerFn().middleware([getSessionMiddleware]).handler(
     ({ context }) => {
         if (context.session) {
