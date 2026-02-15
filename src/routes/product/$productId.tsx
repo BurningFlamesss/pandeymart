@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from "react";
-import { Minus, Plus, ShoppingBag, ChevronDown, Star } from "lucide-react";
+import { ChevronDown, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

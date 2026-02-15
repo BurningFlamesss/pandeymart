@@ -1,14 +1,38 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Tabs, TabsContent, TabsList, tabsListVariants, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { StatsBar } from '@/components/layout/admin/StatsBar'
 
 export const Route = createFileRoute('/admin/')({
   component: RouteComponent,
 })
 
+const stats = [{
+  label: "Total Revenue",
+  value: "Rs. 45099.89",
+  change: "+12%",
+  positive: true,
+}, {
+  label: "Active Orders",
+  value: "3",
+  change: "2 pending",
+  positive: null,
+}, {
+  label: "Products",
+  value: "6",
+  change: "2 low stock",
+  positive: false,
+}, {
+  label: "Active Users",
+  value: "4",
+  change: "1 suspended",
+  positive: null,
+},]
+
 function RouteComponent() {
   return (
     <>
+      <StatsBar stats={stats}></StatsBar>
       <Tabs id='Data Managing Dashboard' defaultValue='orders'>
         <div className="flex flex-row items-center gap-2">
           <TabsList>
@@ -120,3 +144,4 @@ function RouteComponent() {
     </>
   )
 }
+
