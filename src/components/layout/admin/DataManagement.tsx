@@ -79,10 +79,10 @@ function DataManagement() {
         const selectedCount = selectedItems[tab].size;
         return (
             <div className="flex gap-2">
-                {selectedCount === 1 && <button className={cn(tabsListVariants(), "px-2 text-sm cursor-pointer")}>View</button>}
+                {selectedCount === 1 && <button className={cn(tabsListVariants(), "px-2 text-sm text-black cursor-pointer")}>View</button>}
                 {selectedCount === 1 && tab === "products" && (
                     <button
-                        className={cn(tabsListVariants(), "px-2 text-sm cursor-pointer")}
+                        className={cn(tabsListVariants(), "px-2 text-sm text-black cursor-pointer")}
                         onClick={() => {
                             const id = Array.from(selectedItems.products)[0];
                             const prod = productsState.find(p => p.productId === id);
@@ -98,14 +98,14 @@ function DataManagement() {
                 )}
                 {selectedCount >= 1 && (
                     <button
-                        className={cn(tabsListVariants(), "px-2 text-sm cursor-pointer")}
+                        className={cn(tabsListVariants(), "px-2 text-sm text-black hover:text-red-500 transition-all duration-150 cursor-pointer")}
                         onClick={() => handleDelete(tab)}
                     >
                         Delete
                     </button>
                 )}
                 <button
-                    className={cn(tabsListVariants(), "px-2 text-sm cursor-pointer")}
+                    className={cn(tabsListVariants(), "px-2 text-sm text-black cursor-pointer")}
                     onClick={() => {
                         setSelectedItems(prev => ({ ...prev, products: new Set() }));
                         setSheetMode('add');
