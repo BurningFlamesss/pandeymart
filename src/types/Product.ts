@@ -6,7 +6,7 @@ export interface Product {
     productPrice?: number;
     originalPrice?: number;
     discountPercentage?: number;
-    unit?: "kg" | "g" | "ltr" | "pcs";
+    unit?: "kg" | "g" | "ltr" | "pcs" | string;
     quantity?: number;
     minOrderQuantity?: number;
     maxOrderQuantity?: number;
