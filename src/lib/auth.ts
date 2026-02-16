@@ -22,7 +22,7 @@ export const auth = betterAuth({
         type: "reset",
         receiverEmail: user.email,
         receiverName: user.name,
-        token: token,
+        token: url,
         callToAction: "Reset Your Password"
       })
     },
@@ -40,7 +40,7 @@ export const auth = betterAuth({
         type: "verify",
         receiverEmail: user.email,
         receiverName: user.name,
-        token: token,
+        token: url,
         callToAction: "Verify Your Email"
       })
     },
