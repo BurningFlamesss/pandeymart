@@ -25,40 +25,40 @@ export type AggregateProductTag = {
 }
 
 export type ProductTagMinAggregateOutputType = {
-  id: string | null
-  name: string | null
+  tagId: string | null
+  tagName: string | null
   productId: string | null
 }
 
 export type ProductTagMaxAggregateOutputType = {
-  id: string | null
-  name: string | null
+  tagId: string | null
+  tagName: string | null
   productId: string | null
 }
 
 export type ProductTagCountAggregateOutputType = {
-  id: number
-  name: number
+  tagId: number
+  tagName: number
   productId: number
   _all: number
 }
 
 
 export type ProductTagMinAggregateInputType = {
-  id?: true
-  name?: true
+  tagId?: true
+  tagName?: true
   productId?: true
 }
 
 export type ProductTagMaxAggregateInputType = {
-  id?: true
-  name?: true
+  tagId?: true
+  tagName?: true
   productId?: true
 }
 
 export type ProductTagCountAggregateInputType = {
-  id?: true
-  name?: true
+  tagId?: true
+  tagName?: true
   productId?: true
   _all?: true
 }
@@ -136,8 +136,8 @@ export type ProductTagGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 export type ProductTagGroupByOutputType = {
-  id: string
-  name: string
+  tagId: string
+  tagName: string
   productId: string
   _count: ProductTagCountAggregateOutputType | null
   _min: ProductTagMinAggregateOutputType | null
@@ -163,32 +163,32 @@ export type ProductTagWhereInput = {
   AND?: Prisma.ProductTagWhereInput | Prisma.ProductTagWhereInput[]
   OR?: Prisma.ProductTagWhereInput[]
   NOT?: Prisma.ProductTagWhereInput | Prisma.ProductTagWhereInput[]
-  id?: Prisma.StringFilter<"ProductTag"> | string
-  name?: Prisma.StringFilter<"ProductTag"> | string
+  tagId?: Prisma.StringFilter<"ProductTag"> | string
+  tagName?: Prisma.StringFilter<"ProductTag"> | string
   productId?: Prisma.StringFilter<"ProductTag"> | string
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
 }
 
 export type ProductTagOrderByWithRelationInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
+  tagName?: Prisma.SortOrder
   productId?: Prisma.SortOrder
   product?: Prisma.ProductOrderByWithRelationInput
 }
 
 export type ProductTagWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
+  tagId?: string
   AND?: Prisma.ProductTagWhereInput | Prisma.ProductTagWhereInput[]
   OR?: Prisma.ProductTagWhereInput[]
   NOT?: Prisma.ProductTagWhereInput | Prisma.ProductTagWhereInput[]
-  name?: Prisma.StringFilter<"ProductTag"> | string
+  tagName?: Prisma.StringFilter<"ProductTag"> | string
   productId?: Prisma.StringFilter<"ProductTag"> | string
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
-}, "id">
+}, "tagId">
 
 export type ProductTagOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
+  tagName?: Prisma.SortOrder
   productId?: Prisma.SortOrder
   _count?: Prisma.ProductTagCountOrderByAggregateInput
   _max?: Prisma.ProductTagMaxOrderByAggregateInput
@@ -199,49 +199,49 @@ export type ProductTagScalarWhereWithAggregatesInput = {
   AND?: Prisma.ProductTagScalarWhereWithAggregatesInput | Prisma.ProductTagScalarWhereWithAggregatesInput[]
   OR?: Prisma.ProductTagScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProductTagScalarWhereWithAggregatesInput | Prisma.ProductTagScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"ProductTag"> | string
-  name?: Prisma.StringWithAggregatesFilter<"ProductTag"> | string
+  tagId?: Prisma.StringWithAggregatesFilter<"ProductTag"> | string
+  tagName?: Prisma.StringWithAggregatesFilter<"ProductTag"> | string
   productId?: Prisma.StringWithAggregatesFilter<"ProductTag"> | string
 }
 
 export type ProductTagCreateInput = {
-  id?: string
-  name: string
+  tagId?: string
+  tagName: string
   product: Prisma.ProductCreateNestedOneWithoutTagsInput
 }
 
 export type ProductTagUncheckedCreateInput = {
-  id?: string
-  name: string
+  tagId?: string
+  tagName: string
   productId: string
 }
 
 export type ProductTagUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
   product?: Prisma.ProductUpdateOneRequiredWithoutTagsNestedInput
 }
 
 export type ProductTagUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
   productId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ProductTagCreateManyInput = {
-  id?: string
-  name: string
+  tagId?: string
+  tagName: string
   productId: string
 }
 
 export type ProductTagUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ProductTagUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
   productId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -256,20 +256,20 @@ export type ProductTagOrderByRelationAggregateInput = {
 }
 
 export type ProductTagCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
+  tagName?: Prisma.SortOrder
   productId?: Prisma.SortOrder
 }
 
 export type ProductTagMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
+  tagName?: Prisma.SortOrder
   productId?: Prisma.SortOrder
 }
 
 export type ProductTagMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
+  tagName?: Prisma.SortOrder
   productId?: Prisma.SortOrder
 }
 
@@ -316,13 +316,13 @@ export type ProductTagUncheckedUpdateManyWithoutProductNestedInput = {
 }
 
 export type ProductTagCreateWithoutProductInput = {
-  id?: string
-  name: string
+  tagId?: string
+  tagName: string
 }
 
 export type ProductTagUncheckedCreateWithoutProductInput = {
-  id?: string
-  name: string
+  tagId?: string
+  tagName: string
 }
 
 export type ProductTagCreateOrConnectWithoutProductInput = {
@@ -355,61 +355,61 @@ export type ProductTagScalarWhereInput = {
   AND?: Prisma.ProductTagScalarWhereInput | Prisma.ProductTagScalarWhereInput[]
   OR?: Prisma.ProductTagScalarWhereInput[]
   NOT?: Prisma.ProductTagScalarWhereInput | Prisma.ProductTagScalarWhereInput[]
-  id?: Prisma.StringFilter<"ProductTag"> | string
-  name?: Prisma.StringFilter<"ProductTag"> | string
+  tagId?: Prisma.StringFilter<"ProductTag"> | string
+  tagName?: Prisma.StringFilter<"ProductTag"> | string
   productId?: Prisma.StringFilter<"ProductTag"> | string
 }
 
 export type ProductTagCreateManyProductInput = {
-  id?: string
-  name: string
+  tagId?: string
+  tagName: string
 }
 
 export type ProductTagUpdateWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ProductTagUncheckedUpdateWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ProductTagUncheckedUpdateManyWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagName?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
 
 export type ProductTagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
+  tagId?: boolean
+  tagName?: boolean
   productId?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productTag"]>
 
 export type ProductTagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
+  tagId?: boolean
+  tagName?: boolean
   productId?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productTag"]>
 
 export type ProductTagSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
+  tagId?: boolean
+  tagName?: boolean
   productId?: boolean
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productTag"]>
 
 export type ProductTagSelectScalar = {
-  id?: boolean
-  name?: boolean
+  tagId?: boolean
+  tagName?: boolean
   productId?: boolean
 }
 
-export type ProductTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "productId", ExtArgs["result"]["productTag"]>
+export type ProductTagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"tagId" | "tagName" | "productId", ExtArgs["result"]["productTag"]>
 export type ProductTagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
 }
@@ -426,8 +426,8 @@ export type $ProductTagPayload<ExtArgs extends runtime.Types.Extensions.Internal
     product: Prisma.$ProductPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: string
-    name: string
+    tagId: string
+    tagName: string
     productId: string
   }, ExtArgs["result"]["productTag"]>
   composites: {}
@@ -512,8 +512,8 @@ export interface ProductTagDelegate<ExtArgs extends runtime.Types.Extensions.Int
    * // Get first 10 ProductTags
    * const productTags = await prisma.productTag.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const productTagWithIdOnly = await prisma.productTag.findMany({ select: { id: true } })
+   * // Only select the `tagId`
+   * const productTagWithTagIdOnly = await prisma.productTag.findMany({ select: { tagId: true } })
    * 
    */
   findMany<T extends ProductTagFindManyArgs>(args?: Prisma.SelectSubset<T, ProductTagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -557,9 +557,9 @@ export interface ProductTagDelegate<ExtArgs extends runtime.Types.Extensions.Int
    *   ]
    * })
    * 
-   * // Create many ProductTags and only return the `id`
-   * const productTagWithIdOnly = await prisma.productTag.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many ProductTags and only return the `tagId`
+   * const productTagWithTagIdOnly = await prisma.productTag.createManyAndReturn({
+   *   select: { tagId: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -648,9 +648,9 @@ export interface ProductTagDelegate<ExtArgs extends runtime.Types.Extensions.Int
    *   ]
    * })
    * 
-   * // Update zero or more ProductTags and only return the `id`
-   * const productTagWithIdOnly = await prisma.productTag.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more ProductTags and only return the `tagId`
+   * const productTagWithTagIdOnly = await prisma.productTag.updateManyAndReturn({
+   *   select: { tagId: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -853,8 +853,8 @@ export interface Prisma__ProductTagClient<T, Null = never, ExtArgs extends runti
  * Fields of the ProductTag model
  */
 export interface ProductTagFieldRefs {
-  readonly id: Prisma.FieldRef<"ProductTag", 'String'>
-  readonly name: Prisma.FieldRef<"ProductTag", 'String'>
+  readonly tagId: Prisma.FieldRef<"ProductTag", 'String'>
+  readonly tagName: Prisma.FieldRef<"ProductTag", 'String'>
   readonly productId: Prisma.FieldRef<"ProductTag", 'String'>
 }
     

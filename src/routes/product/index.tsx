@@ -3,6 +3,7 @@ import Home from '@/components/container/Home'
 
 export const Route = createFileRoute('/product/')({
   component: RouteComponent,
+  
 })
 
 function RouteComponent() {

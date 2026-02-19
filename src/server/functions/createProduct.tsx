@@ -14,10 +14,10 @@ const customizationGroupSchema = z.object({
 
 
 const paramSchema = z.object({
-    name: z.string(),
+    productName: z.string(),
     slug: z.string(),
     description: z.string().optional(),
-    price: z.number().optional(),
+    productPrice: z.number().optional(),
     originalPrice: z.number().optional(),
     discountPercentage: z.number().optional(),
     unit: z.string().optional(),
@@ -31,7 +31,7 @@ const paramSchema = z.object({
     isActive: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
     categoryId: z.string().optional(),
-    images: z.array(z.string()),
+    productImages: z.array(z.string()),
     tags: z.array(z.string()).optional(),
     customizations: z.array(customizationGroupSchema).optional()
 })
@@ -41,10 +41,10 @@ export const createProduct = createServerFn({ method: "POST" }).inputValidator(p
 
     const product = await prisma.product.create({
         data: {
-            name: data.name,
+            productName: data.productName,
             slug: data.slug,
             description: data.description,
-            price: data.price,
+            productPrice: data.productPrice,
             originalPrice: data.originalPrice,
             discountPercentage: data.discountPercentage,
             unit: data.unit,
@@ -59,15 +59,15 @@ export const createProduct = createServerFn({ method: "POST" }).inputValidator(p
             isFeatured: data.isFeatured ?? false,
             categoryId: data.categoryId,
             customizations: data.customizations,
-            images: {
-                create: data.images.map((url) => ({
+            productImages: {
+                create: data.productImages.map((url) => ({
                     url
                 }))
             },
             tags: data.tags
                 ? {
-                    create: data.tags.map((name) => ({
-                        name
+                    create: data.tags.map((tagName) => ({
+                        tagName
                     }))
                 }
                 : undefined

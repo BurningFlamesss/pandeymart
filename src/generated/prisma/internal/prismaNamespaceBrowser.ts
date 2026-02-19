@@ -141,7 +141,7 @@ export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[k
 
 
 export const AddressScalarFieldEnum = {
-  id: 'id',
+  addressId: 'addressId',
   userId: 'userId',
   addressLine1: 'addressLine1',
   addressLine2: 'addressLine2',
@@ -158,11 +158,11 @@ export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeo
 
 
 export const ProductScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
+  productId: 'productId',
+  productName: 'productName',
   slug: 'slug',
   description: 'description',
-  price: 'price',
+  productPrice: 'productPrice',
   originalPrice: 'originalPrice',
   discountPercentage: 'discountPercentage',
   unit: 'unit',
@@ -185,7 +185,7 @@ export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeo
 
 
 export const ProductImageScalarFieldEnum = {
-  id: 'id',
+  productImageId: 'productImageId',
   url: 'url',
   productId: 'productId'
 } as const
@@ -194,8 +194,8 @@ export type ProductImageScalarFieldEnum = (typeof ProductImageScalarFieldEnum)[k
 
 
 export const CategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
+  categoryId: 'categoryId',
+  categoryName: 'categoryName',
   slug: 'slug'
 } as const
 
@@ -203,8 +203,8 @@ export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typ
 
 
 export const ProductTagScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
+  tagId: 'tagId',
+  tagName: 'tagName',
   productId: 'productId'
 } as const
 
@@ -212,7 +212,7 @@ export type ProductTagScalarFieldEnum = (typeof ProductTagScalarFieldEnum)[keyof
 
 
 export const ProductRatingScalarFieldEnum = {
-  id: 'id',
+  ratingId: 'ratingId',
   rating: 'rating',
   review: 'review',
   userId: 'userId',
@@ -224,7 +224,7 @@ export type ProductRatingScalarFieldEnum = (typeof ProductRatingScalarFieldEnum)
 
 
 export const OrderScalarFieldEnum = {
-  id: 'id',
+  orderId: 'orderId',
   userId: 'userId',
   total: 'total',
   paymentMethod: 'paymentMethod',
@@ -250,7 +250,7 @@ export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof Or
 
 
 export const OrderItemScalarFieldEnum = {
-  id: 'id',
+  orderItemId: 'orderItemId',
   orderId: 'orderId',
   productId: 'productId',
   productName: 'productName',

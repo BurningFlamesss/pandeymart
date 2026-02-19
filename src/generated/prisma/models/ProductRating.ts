@@ -35,7 +35,7 @@ export type ProductRatingSumAggregateOutputType = {
 }
 
 export type ProductRatingMinAggregateOutputType = {
-  id: string | null
+  ratingId: string | null
   rating: number | null
   review: string | null
   userId: string | null
@@ -44,7 +44,7 @@ export type ProductRatingMinAggregateOutputType = {
 }
 
 export type ProductRatingMaxAggregateOutputType = {
-  id: string | null
+  ratingId: string | null
   rating: number | null
   review: string | null
   userId: string | null
@@ -53,7 +53,7 @@ export type ProductRatingMaxAggregateOutputType = {
 }
 
 export type ProductRatingCountAggregateOutputType = {
-  id: number
+  ratingId: number
   rating: number
   review: number
   userId: number
@@ -72,7 +72,7 @@ export type ProductRatingSumAggregateInputType = {
 }
 
 export type ProductRatingMinAggregateInputType = {
-  id?: true
+  ratingId?: true
   rating?: true
   review?: true
   userId?: true
@@ -81,7 +81,7 @@ export type ProductRatingMinAggregateInputType = {
 }
 
 export type ProductRatingMaxAggregateInputType = {
-  id?: true
+  ratingId?: true
   rating?: true
   review?: true
   userId?: true
@@ -90,7 +90,7 @@ export type ProductRatingMaxAggregateInputType = {
 }
 
 export type ProductRatingCountAggregateInputType = {
-  id?: true
+  ratingId?: true
   rating?: true
   review?: true
   userId?: true
@@ -186,7 +186,7 @@ export type ProductRatingGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 export type ProductRatingGroupByOutputType = {
-  id: string
+  ratingId: string
   rating: number
   review: string | null
   userId: string
@@ -218,7 +218,7 @@ export type ProductRatingWhereInput = {
   AND?: Prisma.ProductRatingWhereInput | Prisma.ProductRatingWhereInput[]
   OR?: Prisma.ProductRatingWhereInput[]
   NOT?: Prisma.ProductRatingWhereInput | Prisma.ProductRatingWhereInput[]
-  id?: Prisma.StringFilter<"ProductRating"> | string
+  ratingId?: Prisma.StringFilter<"ProductRating"> | string
   rating?: Prisma.IntFilter<"ProductRating"> | number
   review?: Prisma.StringNullableFilter<"ProductRating"> | string | null
   userId?: Prisma.StringFilter<"ProductRating"> | string
@@ -229,7 +229,7 @@ export type ProductRatingWhereInput = {
 }
 
 export type ProductRatingOrderByWithRelationInput = {
-  id?: Prisma.SortOrder
+  ratingId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   review?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -240,7 +240,7 @@ export type ProductRatingOrderByWithRelationInput = {
 }
 
 export type ProductRatingWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
+  ratingId?: string
   userId_productId?: Prisma.ProductRatingUserIdProductIdCompoundUniqueInput
   AND?: Prisma.ProductRatingWhereInput | Prisma.ProductRatingWhereInput[]
   OR?: Prisma.ProductRatingWhereInput[]
@@ -252,10 +252,10 @@ export type ProductRatingWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ProductRating"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
-}, "id" | "userId_productId">
+}, "ratingId" | "userId_productId">
 
 export type ProductRatingOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder
+  ratingId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   review?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -272,7 +272,7 @@ export type ProductRatingScalarWhereWithAggregatesInput = {
   AND?: Prisma.ProductRatingScalarWhereWithAggregatesInput | Prisma.ProductRatingScalarWhereWithAggregatesInput[]
   OR?: Prisma.ProductRatingScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProductRatingScalarWhereWithAggregatesInput | Prisma.ProductRatingScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"ProductRating"> | string
+  ratingId?: Prisma.StringWithAggregatesFilter<"ProductRating"> | string
   rating?: Prisma.IntWithAggregatesFilter<"ProductRating"> | number
   review?: Prisma.StringNullableWithAggregatesFilter<"ProductRating"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"ProductRating"> | string
@@ -281,7 +281,7 @@ export type ProductRatingScalarWhereWithAggregatesInput = {
 }
 
 export type ProductRatingCreateInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   createdAt?: Date | string
@@ -290,7 +290,7 @@ export type ProductRatingCreateInput = {
 }
 
 export type ProductRatingUncheckedCreateInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   userId: string
@@ -299,7 +299,7 @@ export type ProductRatingUncheckedCreateInput = {
 }
 
 export type ProductRatingUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -308,7 +308,7 @@ export type ProductRatingUpdateInput = {
 }
 
 export type ProductRatingUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -317,7 +317,7 @@ export type ProductRatingUncheckedUpdateInput = {
 }
 
 export type ProductRatingCreateManyInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   userId: string
@@ -326,14 +326,14 @@ export type ProductRatingCreateManyInput = {
 }
 
 export type ProductRatingUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProductRatingUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -357,7 +357,7 @@ export type ProductRatingUserIdProductIdCompoundUniqueInput = {
 }
 
 export type ProductRatingCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
+  ratingId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   review?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -370,7 +370,7 @@ export type ProductRatingAvgOrderByAggregateInput = {
 }
 
 export type ProductRatingMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
+  ratingId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   review?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -379,7 +379,7 @@ export type ProductRatingMaxOrderByAggregateInput = {
 }
 
 export type ProductRatingMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
+  ratingId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   review?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -484,7 +484,7 @@ export type IntFieldUpdateOperationsInput = {
 }
 
 export type ProductRatingCreateWithoutUserInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   createdAt?: Date | string
@@ -492,7 +492,7 @@ export type ProductRatingCreateWithoutUserInput = {
 }
 
 export type ProductRatingUncheckedCreateWithoutUserInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   productId: string
@@ -529,7 +529,7 @@ export type ProductRatingScalarWhereInput = {
   AND?: Prisma.ProductRatingScalarWhereInput | Prisma.ProductRatingScalarWhereInput[]
   OR?: Prisma.ProductRatingScalarWhereInput[]
   NOT?: Prisma.ProductRatingScalarWhereInput | Prisma.ProductRatingScalarWhereInput[]
-  id?: Prisma.StringFilter<"ProductRating"> | string
+  ratingId?: Prisma.StringFilter<"ProductRating"> | string
   rating?: Prisma.IntFilter<"ProductRating"> | number
   review?: Prisma.StringNullableFilter<"ProductRating"> | string | null
   userId?: Prisma.StringFilter<"ProductRating"> | string
@@ -538,7 +538,7 @@ export type ProductRatingScalarWhereInput = {
 }
 
 export type ProductRatingCreateWithoutProductInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   createdAt?: Date | string
@@ -546,7 +546,7 @@ export type ProductRatingCreateWithoutProductInput = {
 }
 
 export type ProductRatingUncheckedCreateWithoutProductInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   userId: string
@@ -580,7 +580,7 @@ export type ProductRatingUpdateManyWithWhereWithoutProductInput = {
 }
 
 export type ProductRatingCreateManyUserInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   productId: string
@@ -588,7 +588,7 @@ export type ProductRatingCreateManyUserInput = {
 }
 
 export type ProductRatingUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -596,7 +596,7 @@ export type ProductRatingUpdateWithoutUserInput = {
 }
 
 export type ProductRatingUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -604,7 +604,7 @@ export type ProductRatingUncheckedUpdateWithoutUserInput = {
 }
 
 export type ProductRatingUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -612,7 +612,7 @@ export type ProductRatingUncheckedUpdateManyWithoutUserInput = {
 }
 
 export type ProductRatingCreateManyProductInput = {
-  id?: string
+  ratingId?: string
   rating: number
   review?: string | null
   userId: string
@@ -620,7 +620,7 @@ export type ProductRatingCreateManyProductInput = {
 }
 
 export type ProductRatingUpdateWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -628,7 +628,7 @@ export type ProductRatingUpdateWithoutProductInput = {
 }
 
 export type ProductRatingUncheckedUpdateWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -636,7 +636,7 @@ export type ProductRatingUncheckedUpdateWithoutProductInput = {
 }
 
 export type ProductRatingUncheckedUpdateManyWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ratingId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   review?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -646,7 +646,7 @@ export type ProductRatingUncheckedUpdateManyWithoutProductInput = {
 
 
 export type ProductRatingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
+  ratingId?: boolean
   rating?: boolean
   review?: boolean
   userId?: boolean
@@ -657,7 +657,7 @@ export type ProductRatingSelect<ExtArgs extends runtime.Types.Extensions.Interna
 }, ExtArgs["result"]["productRating"]>
 
 export type ProductRatingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
+  ratingId?: boolean
   rating?: boolean
   review?: boolean
   userId?: boolean
@@ -668,7 +668,7 @@ export type ProductRatingSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 }, ExtArgs["result"]["productRating"]>
 
 export type ProductRatingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
+  ratingId?: boolean
   rating?: boolean
   review?: boolean
   userId?: boolean
@@ -679,7 +679,7 @@ export type ProductRatingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 }, ExtArgs["result"]["productRating"]>
 
 export type ProductRatingSelectScalar = {
-  id?: boolean
+  ratingId?: boolean
   rating?: boolean
   review?: boolean
   userId?: boolean
@@ -687,7 +687,7 @@ export type ProductRatingSelectScalar = {
   createdAt?: boolean
 }
 
-export type ProductRatingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "rating" | "review" | "userId" | "productId" | "createdAt", ExtArgs["result"]["productRating"]>
+export type ProductRatingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"ratingId" | "rating" | "review" | "userId" | "productId" | "createdAt", ExtArgs["result"]["productRating"]>
 export type ProductRatingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
@@ -708,7 +708,7 @@ export type $ProductRatingPayload<ExtArgs extends runtime.Types.Extensions.Inter
     product: Prisma.$ProductPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: string
+    ratingId: string
     rating: number
     review: string | null
     userId: string
@@ -797,8 +797,8 @@ export interface ProductRatingDelegate<ExtArgs extends runtime.Types.Extensions.
    * // Get first 10 ProductRatings
    * const productRatings = await prisma.productRating.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const productRatingWithIdOnly = await prisma.productRating.findMany({ select: { id: true } })
+   * // Only select the `ratingId`
+   * const productRatingWithRatingIdOnly = await prisma.productRating.findMany({ select: { ratingId: true } })
    * 
    */
   findMany<T extends ProductRatingFindManyArgs>(args?: Prisma.SelectSubset<T, ProductRatingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductRatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -842,9 +842,9 @@ export interface ProductRatingDelegate<ExtArgs extends runtime.Types.Extensions.
    *   ]
    * })
    * 
-   * // Create many ProductRatings and only return the `id`
-   * const productRatingWithIdOnly = await prisma.productRating.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many ProductRatings and only return the `ratingId`
+   * const productRatingWithRatingIdOnly = await prisma.productRating.createManyAndReturn({
+   *   select: { ratingId: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -933,9 +933,9 @@ export interface ProductRatingDelegate<ExtArgs extends runtime.Types.Extensions.
    *   ]
    * })
    * 
-   * // Update zero or more ProductRatings and only return the `id`
-   * const productRatingWithIdOnly = await prisma.productRating.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more ProductRatings and only return the `ratingId`
+   * const productRatingWithRatingIdOnly = await prisma.productRating.updateManyAndReturn({
+   *   select: { ratingId: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1139,7 +1139,7 @@ export interface Prisma__ProductRatingClient<T, Null = never, ExtArgs extends ru
  * Fields of the ProductRating model
  */
 export interface ProductRatingFieldRefs {
-  readonly id: Prisma.FieldRef<"ProductRating", 'String'>
+  readonly ratingId: Prisma.FieldRef<"ProductRating", 'String'>
   readonly rating: Prisma.FieldRef<"ProductRating", 'Int'>
   readonly review: Prisma.FieldRef<"ProductRating", 'String'>
   readonly userId: Prisma.FieldRef<"ProductRating", 'String'>

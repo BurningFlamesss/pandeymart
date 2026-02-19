@@ -5,17 +5,18 @@ import Products from '../layout/home/Products'
 import Reviews from '../layout/home/Reviews'
 import WhyChooseUs from '../layout/home/WhyChooseUs'
 import SectionStarter from '../shared/SectionStarter'
-import { products } from '@/config/mockProducts'
+import { getAllProducts } from '@/server/functions/getProducts'
 
-function Home() {
+async function Home() {
+    const databaseProducts = await getAllProducts()
     return (
         <>
             <HomeBanner />
-            <Products products={products.slice(0, 6)} >
+            <Products products={databaseProducts.slice(0, 6)} >
                 <SectionStarter title="Top Selling Products" src="/sectionstarter/skincare.png" description="Fresh and Fabulous From Herbs to Face" />
             </Products>
             <Offers></Offers>
-            <Products products={products.slice(6)} >
+            <Products products={databaseProducts.slice(6)} >
                 <SectionStarter title="Top Category products" src="/sectionstarter/spicy.png" description="Stocking up on goodness, one aisle at a time." />
             </Products>
             <HomeAd />

@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import z from "zod"
 import { prisma } from "@/db"
+import { mapProduct } from "@/utils/mapProducts"
 
 const paramSchema = z.array(z.string())
 
@@ -8,17 +9,33 @@ export const getProducts = createServerFn({ method: "GET" }).inputValidator(para
 
     const products = await prisma.product.findMany({
         where: {
-            id: {
+            productId: {
                 in: data
             },
             isActive: true
         },
         include: {
-            images: true,
+            productImages: true,
             category: true,
             tags: true
         }
     })
 
-    return products
+    return products.map(mapProduct)
+})
+
+export const getAllProducts = createServerFn({ method: "GET" }).handler(async () => {
+
+    const products = await prisma.product.findMany({
+        where: {
+            isActive: true
+        },
+        include: {
+            productImages: true,
+            category: true,
+            tags: true
+        }
+    })
+
+    return products.map(mapProduct)
 })

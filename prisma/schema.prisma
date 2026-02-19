@@ -96,7 +96,7 @@ model Verification {
 }
 
 model Address {
-  id String @id @default(uuid())
+  addressId String @id @default(uuid())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -117,12 +117,12 @@ model Address {
 }
 
 model Product {
-  id          String  @id @default(uuid())
-  name        String
+  productId          String  @id @default(uuid())
+  productName        String
   slug        String  @unique
   description String?
 
-  price              Float?
+  productPrice              Float?
   originalPrice      Float?
   discountPercentage Float?
 
@@ -143,9 +143,9 @@ model Product {
   customizations Json?
 
   categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id])
+  category   Category? @relation(fields: [categoryId], references: [categoryId])
 
-  images     ProductImage[]
+  productImages     ProductImage[]
   tags       ProductTag[]
   ratings    ProductRating[]
   orderItems OrderItem[]
@@ -160,18 +160,18 @@ model Product {
 }
 
 model ProductImage {
-  id        String  @id @default(uuid())
+  productImageId        String  @id @default(uuid())
   url       String
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
 
   @@index([productId])
   @@map("product_image")
 }
 
 model Category {
-  id       String    @id @default(uuid())
-  name     String
+  categoryId       String    @id @default(uuid())
+  categoryName     String
   slug     String    @unique
   products Product[]
 
@@ -179,24 +179,24 @@ model Category {
 }
 
 model ProductTag {
-  id        String  @id @default(uuid())
-  name      String
+  tagId        String  @id @default(uuid())
+  tagName      String
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
 
   @@index([productId])
   @@map("product_tag")
 }
 
 model ProductRating {
-  id        String  @id @default(uuid())
+  ratingId        String  @id @default(uuid())
   rating    Int
   review    String?
   userId    String
   productId String
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -207,7 +207,7 @@ model ProductRating {
 }
 
 model Order {
-  id String @id @default(uuid())
+  orderId String @id @default(uuid())
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -245,13 +245,13 @@ model Order {
 }
 
 model OrderItem {
-  id String @id @default(uuid())
+  orderItemId String @id @default(uuid())
 
   orderId String
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order   Order  @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
 
   productId String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [productId])
 
   productName  String
   productPrice Float

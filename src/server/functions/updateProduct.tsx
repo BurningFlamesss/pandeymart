@@ -15,10 +15,10 @@ const customizationGroupSchema = z.object({
 
 const paramSchema = z.object({
     id: z.string(),
-    name: z.string(),
+    productName: z.string(),
     slug: z.string(),
     description: z.string().optional(),
-    price: z.number().optional(),
+    productPrice: z.number().optional(),
     originalPrice: z.number().optional(),
     discountPercentage: z.number().optional(),
     unit: z.string().optional(),
@@ -32,7 +32,7 @@ const paramSchema = z.object({
     isActive: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
     categoryId: z.string().optional(),
-    images: z.array(z.string()),
+    productImages: z.array(z.string()),
     tags: z.array(z.string()).optional(),
     customizations: z.array(customizationGroupSchema).optional()
 })
@@ -42,13 +42,13 @@ export const updateProduct = createServerFn({ method: "POST" }).inputValidator(p
 
     const product = await prisma.product.update({
         where: {
-            id: data.id
+            productId: data.id
         },
         data: {
-            name: data.name,
+            productName: data.productName,
             slug: data.slug,
             description: data.description,
-            price: data.price,
+            productPrice: data.productPrice,
             originalPrice: data.originalPrice,
             discountPercentage: data.discountPercentage,
             unit: data.unit,
@@ -63,11 +63,11 @@ export const updateProduct = createServerFn({ method: "POST" }).inputValidator(p
             isFeatured: data.isFeatured ?? false,
             categoryId: data.categoryId,
             customizations: data.customizations,
-            images: {
+            productImages: {
                 deleteMany: {
                     productId: data.id
                 },  
-                create: data.images.map((url) => ({
+                create: data.productImages.map((url) => ({
                     url
                 }))
             },
@@ -75,8 +75,8 @@ export const updateProduct = createServerFn({ method: "POST" }).inputValidator(p
                 deleteMany: {
                     productId: data.id
                 },
-                create: data.tags?.map((name) => ({
-                    name
+                create: data.tags?.map((tagName) => ({
+                    tagName
                 })) ?? []
             }
         },
