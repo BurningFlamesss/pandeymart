@@ -117,12 +117,12 @@ model Address {
 }
 
 model Product {
-  productId          String  @id @default(uuid())
-  productName        String
+  productId   String  @id @default(uuid())
+  productName String
   slug        String  @unique
   description String?
 
-  productPrice              Float?
+  productPrice       Float?
   originalPrice      Float?
   discountPercentage Float?
 
@@ -145,10 +145,10 @@ model Product {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [categoryId])
 
-  productImages     ProductImage[]
-  tags       ProductTag[]
-  ratings    ProductRating[]
-  orderItems OrderItem[]
+  productImages ProductImage[]
+  tags          ProductTag[]
+  ratings       ProductRating[]
+  orderItems    OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -160,27 +160,27 @@ model Product {
 }
 
 model ProductImage {
-  productImageId        String  @id @default(uuid())
-  url       String
-  productId String
-  product   Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
+  productImageId String  @id @default(uuid())
+  url            String
+  productId      String
+  product        Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
 
   @@index([productId])
   @@map("product_image")
 }
 
 model Category {
-  categoryId       String    @id @default(uuid())
-  categoryName     String
-  slug     String    @unique
-  products Product[]
+  categoryId   String    @id @default(uuid())
+  categoryName String
+  slug         String    @unique
+  products     Product[]
 
   @@map("category")
 }
 
 model ProductTag {
-  tagId        String  @id @default(uuid())
-  tagName      String
+  tagId     String  @id @default(uuid())
+  tagName   String
   productId String
   product   Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
 
@@ -189,7 +189,7 @@ model ProductTag {
 }
 
 model ProductRating {
-  ratingId        String  @id @default(uuid())
+  ratingId  String  @id @default(uuid())
   rating    Int
   review    String?
   userId    String

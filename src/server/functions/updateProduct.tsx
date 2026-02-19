@@ -14,7 +14,7 @@ const customizationGroupSchema = z.object({
 
 
 const paramSchema = z.object({
-    id: z.string(),
+    productId: z.string(),
     productName: z.string(),
     slug: z.string(),
     description: z.string().optional(),
@@ -42,7 +42,7 @@ export const updateProduct = createServerFn({ method: "POST" }).inputValidator(p
 
     const product = await prisma.product.update({
         where: {
-            productId: data.id
+            productId: data.productId
         },
         data: {
             productName: data.productName,
@@ -65,7 +65,7 @@ export const updateProduct = createServerFn({ method: "POST" }).inputValidator(p
             customizations: data.customizations,
             productImages: {
                 deleteMany: {
-                    productId: data.id
+                    productId: data.productId
                 },  
                 create: data.productImages.map((url) => ({
                     url
@@ -73,7 +73,7 @@ export const updateProduct = createServerFn({ method: "POST" }).inputValidator(p
             },
             tags: {
                 deleteMany: {
-                    productId: data.id
+                    productId: data.productId
                 },
                 create: data.tags?.map((tagName) => ({
                     tagName
