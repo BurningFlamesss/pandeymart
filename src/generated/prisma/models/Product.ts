@@ -110,6 +110,7 @@ export type ProductCountAggregateOutputType = {
   labelColor: number
   isActive: number
   isFeatured: number
+  customizations: number
   categoryId: number
   createdAt: number
   updatedAt: number
@@ -201,6 +202,7 @@ export type ProductCountAggregateInputType = {
   labelColor?: true
   isActive?: true
   isFeatured?: true
+  customizations?: true
   categoryId?: true
   createdAt?: true
   updatedAt?: true
@@ -311,6 +313,7 @@ export type ProductGroupByOutputType = {
   labelColor: string | null
   isActive: boolean
   isFeatured: boolean
+  customizations: runtime.JsonValue | null
   categoryId: string | null
   createdAt: Date
   updatedAt: Date
@@ -357,6 +360,7 @@ export type ProductWhereInput = {
   labelColor?: Prisma.StringNullableFilter<"Product"> | string | null
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
+  customizations?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -385,6 +389,7 @@ export type ProductOrderByWithRelationInput = {
   labelColor?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  customizations?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -416,6 +421,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   labelColor?: Prisma.StringNullableFilter<"Product"> | string | null
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
+  customizations?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -444,6 +450,7 @@ export type ProductOrderByWithAggregationInput = {
   labelColor?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  customizations?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -475,6 +482,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   labelColor?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
+  customizations?: Prisma.JsonNullableWithAggregatesFilter<"Product">
   categoryId?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -498,6 +506,7 @@ export type ProductCreateInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
@@ -525,6 +534,7 @@ export type ProductUncheckedCreateInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -552,6 +562,7 @@ export type ProductUpdateInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
@@ -579,6 +590,7 @@ export type ProductUncheckedUpdateInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -606,6 +618,7 @@ export type ProductCreateManyInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -629,6 +642,7 @@ export type ProductUpdateManyMutationInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -651,6 +665,7 @@ export type ProductUncheckedUpdateManyInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -674,6 +689,7 @@ export type ProductCountOrderByAggregateInput = {
   labelColor?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  customizations?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -884,6 +900,7 @@ export type ProductCreateWithoutImagesInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
@@ -910,6 +927,7 @@ export type ProductUncheckedCreateWithoutImagesInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -952,6 +970,7 @@ export type ProductUpdateWithoutImagesInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
@@ -978,6 +997,7 @@ export type ProductUncheckedUpdateWithoutImagesInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1004,6 +1024,7 @@ export type ProductCreateWithoutCategoryInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageCreateNestedManyWithoutProductInput
@@ -1030,6 +1051,7 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -1085,6 +1107,7 @@ export type ProductScalarWhereInput = {
   labelColor?: Prisma.StringNullableFilter<"Product"> | string | null
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
+  customizations?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -1108,6 +1131,7 @@ export type ProductCreateWithoutTagsInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
@@ -1134,6 +1158,7 @@ export type ProductUncheckedCreateWithoutTagsInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1176,6 +1201,7 @@ export type ProductUpdateWithoutTagsInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
@@ -1202,6 +1228,7 @@ export type ProductUncheckedUpdateWithoutTagsInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1228,6 +1255,7 @@ export type ProductCreateWithoutRatingsInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
@@ -1254,6 +1282,7 @@ export type ProductUncheckedCreateWithoutRatingsInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1296,6 +1325,7 @@ export type ProductUpdateWithoutRatingsInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
@@ -1322,6 +1352,7 @@ export type ProductUncheckedUpdateWithoutRatingsInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1348,6 +1379,7 @@ export type ProductCreateWithoutOrderItemsInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
@@ -1374,6 +1406,7 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1416,6 +1449,7 @@ export type ProductUpdateWithoutOrderItemsInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
@@ -1442,6 +1476,7 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1468,6 +1503,7 @@ export type ProductCreateManyCategoryInput = {
   labelColor?: string | null
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1490,6 +1526,7 @@ export type ProductUpdateWithoutCategoryInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUpdateManyWithoutProductNestedInput
@@ -1516,6 +1553,7 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -1542,6 +1580,7 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
   labelColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customizations?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1622,6 +1661,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   labelColor?: boolean
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: boolean
   categoryId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1651,6 +1691,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   labelColor?: boolean
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: boolean
   categoryId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1675,6 +1716,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   labelColor?: boolean
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: boolean
   categoryId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1699,12 +1741,13 @@ export type ProductSelectScalar = {
   labelColor?: boolean
   isActive?: boolean
   isFeatured?: boolean
+  customizations?: boolean
   categoryId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "price" | "originalPrice" | "discountPercentage" | "unit" | "quantity" | "minOrderQuantity" | "maxOrderQuantity" | "inStock" | "lowStockThreshold" | "label" | "labelColor" | "isActive" | "isFeatured" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "price" | "originalPrice" | "discountPercentage" | "unit" | "quantity" | "minOrderQuantity" | "maxOrderQuantity" | "inStock" | "lowStockThreshold" | "label" | "labelColor" | "isActive" | "isFeatured" | "customizations" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Product$categoryArgs<ExtArgs>
   images?: boolean | Prisma.Product$imagesArgs<ExtArgs>
@@ -1747,6 +1790,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     labelColor: string | null
     isActive: boolean
     isFeatured: boolean
+    customizations: runtime.JsonValue | null
     categoryId: string | null
     createdAt: Date
     updatedAt: Date
@@ -2195,6 +2239,7 @@ export interface ProductFieldRefs {
   readonly labelColor: Prisma.FieldRef<"Product", 'String'>
   readonly isActive: Prisma.FieldRef<"Product", 'Boolean'>
   readonly isFeatured: Prisma.FieldRef<"Product", 'Boolean'>
+  readonly customizations: Prisma.FieldRef<"Product", 'Json'>
   readonly categoryId: Prisma.FieldRef<"Product", 'String'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>

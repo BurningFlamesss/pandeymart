@@ -140,6 +140,8 @@ model Product {
   isActive   Boolean @default(true)
   isFeatured Boolean @default(false)
 
+  customizations Json?
+
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
 

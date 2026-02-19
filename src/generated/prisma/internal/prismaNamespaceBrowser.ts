@@ -175,6 +175,7 @@ export const ProductScalarFieldEnum = {
   labelColor: 'labelColor',
   isActive: 'isActive',
   isFeatured: 'isFeatured',
+  customizations: 'customizations',
   categoryId: 'categoryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
