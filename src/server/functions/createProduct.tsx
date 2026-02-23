@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import z from "zod"
 import { prisma } from "@/db"
+import { mapProduct } from "@/utils/mapProducts"
 
 const customizationOptionSchema = z.object({
     label: z.string(),
@@ -35,48 +36,54 @@ const paramSchema = z.object({
     tags: z.array(z.string()).optional(),
     customizations: z.array(customizationGroupSchema).optional()
 })
+export type CreateProductInput = z.infer<typeof paramSchema>;
 
 
 export const createProduct = createServerFn({ method: "POST" }).inputValidator(paramSchema).handler(async ({ data }) => {
-
-    const product = await prisma.product.create({
-        data: {
-            productName: data.productName,
-            slug: data.slug,
-            description: data.description,
-            productPrice: data.productPrice,
-            originalPrice: data.originalPrice,
-            discountPercentage: data.discountPercentage,
-            unit: data.unit,
-            quantity: data.quantity,
-            minOrderQuantity: data.minOrderQuantity,
-            maxOrderQuantity: data.maxOrderQuantity,
-            inStock: data.inStock ?? true,
-            lowStockThreshold: data.lowStockThreshold,
-            label: data.label,
-            labelColor: data.labelColor,
-            isActive: data.isActive ?? true,
-            isFeatured: data.isFeatured ?? false,
-            categoryId: data.categoryId,
-            customizations: data.customizations,
-            productImages: {
-                create: data.productImages.map((url) => ({
-                    url
-                }))
-            },
-            tags: data.tags
-                ? {
-                    create: data.tags.map((tagName) => ({
-                        tagName
+    try {
+        const product = await prisma.product.create({
+            data: {
+                productName: data.productName,
+                slug: data.slug,
+                description: data.description,
+                productPrice: data.productPrice,
+                originalPrice: data.originalPrice,
+                discountPercentage: data.discountPercentage,
+                unit: data.unit,
+                quantity: data.quantity,
+                minOrderQuantity: data.minOrderQuantity,
+                maxOrderQuantity: data.maxOrderQuantity,
+                inStock: data.inStock ?? true,
+                lowStockThreshold: data.lowStockThreshold,
+                label: data.label,
+                labelColor: data.labelColor,
+                isActive: data.isActive ?? true,
+                isFeatured: data.isFeatured ?? false,
+                categoryId: data.categoryId,
+                customizations: data.customizations,
+                productImages: {
+                    create: data.productImages.map((url) => ({
+                        url
                     }))
-                }
-                : undefined
-        },
-        include: {
-            images: true,
-            tags: true
-        }
-    })
+                },
+                tags: data.tags
+                    ? {
+                        create: data.tags.map((tagName) => ({
+                            tagName
+                        }))
+                    }
+                    : undefined
+            },
+            include: {
+                productImages: true,
+                tags: true
+            }
+        })
 
-    return product
+        return mapProduct(product)
+    } catch (error) {
+        console.error("Error creating product:", error);
+        throw new Error("Failed to create product. Please try again.");
+
+    }
 })

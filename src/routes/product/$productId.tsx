@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getProduct } from '@/server/functions/getProducts';
-import { toast } from 'sonner';
 import { useCart } from '@/hooks/use-cart';
 
 export const Route = createFileRoute('/product/$productId')({

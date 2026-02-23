@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start"
 import z from "zod"
 import { prisma } from "@/db"
+import { mapProduct } from "@/utils/mapProducts"
 
 const customizationOptionSchema = z.object({
     label: z.string(),
@@ -39,52 +40,56 @@ const paramSchema = z.object({
 
 
 export const updateProduct = createServerFn({ method: "POST" }).inputValidator(paramSchema).handler(async ({ data }) => {
-
-    const product = await prisma.product.update({
-        where: {
-            productId: data.productId
-        },
-        data: {
-            productName: data.productName,
-            slug: data.slug,
-            description: data.description,
-            productPrice: data.productPrice,
-            originalPrice: data.originalPrice,
-            discountPercentage: data.discountPercentage,
-            unit: data.unit,
-            quantity: data.quantity,
-            minOrderQuantity: data.minOrderQuantity,
-            maxOrderQuantity: data.maxOrderQuantity,
-            inStock: data.inStock ?? true,
-            lowStockThreshold: data.lowStockThreshold,
-            label: data.label,
-            labelColor: data.labelColor,
-            isActive: data.isActive ?? true,
-            isFeatured: data.isFeatured ?? false,
-            categoryId: data.categoryId,
-            customizations: data.customizations,
-            productImages: {
-                deleteMany: {
-                    productId: data.productId
-                },  
-                create: data.productImages.map((url) => ({
-                    url
-                }))
+    try {
+        const product = await prisma.product.update({
+            where: {
+                productId: data.productId
             },
-            tags: {
-                deleteMany: {
-                    productId: data.productId
+            data: {
+                productName: data.productName,
+                slug: data.slug,
+                description: data.description,
+                productPrice: data.productPrice,
+                originalPrice: data.originalPrice,
+                discountPercentage: data.discountPercentage,
+                unit: data.unit,
+                quantity: data.quantity,
+                minOrderQuantity: data.minOrderQuantity,
+                maxOrderQuantity: data.maxOrderQuantity,
+                inStock: data.inStock ?? true,
+                lowStockThreshold: data.lowStockThreshold,
+                label: data.label,
+                labelColor: data.labelColor,
+                isActive: data.isActive ?? true,
+                isFeatured: data.isFeatured ?? false,
+                categoryId: data.categoryId,
+                customizations: data.customizations,
+                productImages: {
+                    deleteMany: {
+                        productId: data.productId
+                    },
+                    create: data.productImages.map((url) => ({
+                        url
+                    }))
                 },
-                create: data.tags?.map((tagName) => ({
-                    tagName
-                })) ?? []
+                tags: {
+                    deleteMany: {
+                        productId: data.productId
+                    },
+                    create: data.tags?.map((tagName) => ({
+                        tagName
+                    })) ?? []
+                }
+            },
+            include: {
+                productImages: true,
+                tags: true
             }
-        },
-        include: {
-            images: true,
-            tags: true
-        }
-    })
+        })
 
-    return product
+        return mapProduct(product)
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw new Error("Failed to update product. Please try again.");
+    }
 })

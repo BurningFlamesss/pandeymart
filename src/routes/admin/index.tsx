@@ -6,6 +6,9 @@ export const Route = createFileRoute('/admin/')({
   async beforeLoad() {
     await requireAdminAccess()
   },
+  async loader() {
+    
+  },
   component: RouteComponent,
 })
 

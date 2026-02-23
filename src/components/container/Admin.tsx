@@ -2,25 +2,25 @@ import DataManagement from "../layout/admin/DataManagement"
 import { StatsBar } from "../layout/admin/StatsBar"
 
 const stats = [{
-  label: "Total Revenue",
-  value: "Rs. 45099.89",
-  change: "+12%",
-  positive: true,
+    label: "Total Revenue",
+    value: "Rs. 45099.89",
+    change: "+12%",
+    positive: true,
 }, {
-  label: "Active Orders",
-  value: "3",
-  change: "2 pending",
-  positive: null,
+    label: "Active Orders",
+    value: "3",
+    change: "2 pending",
+    positive: null,
 }, {
-  label: "Products",
-  value: "6",
-  change: "2 low stock",
-  positive: false,
+    label: "Products",
+    value: "6",
+    change: "2 low stock",
+    positive: false,
 }, {
-  label: "Active Users",
-  value: "4",
-  change: "1 suspended",
-  positive: null,
+    label: "Active Users",
+    value: "4",
+    change: "1 suspended",
+    positive: null,
 }]
 
 function Admin() {
