@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { ShoppingCart } from 'lucide-react'
 import { FaRegHeart } from "react-icons/fa6";
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button, buttonVariants } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
@@ -11,7 +12,6 @@ import type { AppContext } from '@/types/router-context'
 import { authClient } from '@/lib/auth-client'
 import { useCart } from '@/hooks/use-cart';
 import { getProducts } from '@/server/functions/getProducts';
-import { useMemo } from 'react';
 
 function Header() {
     const { data: session, isPending } = authClient.useSession()

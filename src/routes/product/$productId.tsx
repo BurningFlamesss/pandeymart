@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getProduct } from '@/server/functions/getProducts';
+import { toast } from 'sonner';
+import { useCart } from '@/hooks/use-cart';
 
 export const Route = createFileRoute('/product/$productId')({
     component: RouteComponent,
@@ -56,6 +58,7 @@ const faqs = [
 
 function RouteComponent() {
     const product = Route.useLoaderData();
+    const { addToCart, updateQuantity, cart } = useCart()
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [selectedCustomizations, setSelectedCustomizations] =
@@ -97,12 +100,60 @@ function RouteComponent() {
         }, 0);
     }, [product, selectedCustomizations]);
 
+
     const originalUnitPrice =
         (product.originalPrice ?? product.productPrice ?? 0) + customizationDelta;
     const finalUnitPrice =
         (product.productPrice ?? 0) + customizationDelta;
     const finalTotalPrice = finalUnitPrice * quantity;
     const originalTotalPrice = originalUnitPrice * quantity;
+
+    const resolvedCustomizations = useMemo(() => {
+        if (!product.customizations) return [];
+
+        return product.customizations.map(group => ({
+            title: group.title,
+            options: group.options.filter(
+                opt => selectedCustomizations[group.title] === opt.label
+            ),
+        }));
+    }, [product, selectedCustomizations]);
+
+    const cartItemId = useMemo(() => {
+        if (!product.productId) return "";
+
+        return `${product.productId}-${JSON.stringify(resolvedCustomizations)}`;
+    }, [product.productId, resolvedCustomizations]);
+
+    const existingCartItem = useMemo(() => {
+        return cart.find(item => item.cartItemId === cartItemId);
+    }, [cart, cartItemId]);
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        const cartItem = {
+            cartItemId,
+            productId: product.productId,
+            quantity,
+            basePrice: product.productPrice ?? product.originalPrice ?? 0,
+            customizations: resolvedCustomizations
+        }
+
+        if (existingCartItem) {
+            updateQuantity(cartItemId, existingCartItem.quantity + quantity)
+            toast("Updated the Cart")
+        } else {
+            addToCart(cartItem)
+            toast("Added to the Cart")
+        }
+
+        console.log("Added to cart:", {
+            productId: product.productId,
+            quantity,
+            customizations: selectedCustomizations,
+        });
+    };
 
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -290,7 +341,7 @@ function RouteComponent() {
                         <div className="w-full flex flex-col gap-3 mb-6">
                             <Button
                                 className="bg-[#FAA016] hover:bg-black text-white px-6 py-6 rounded-lg transition-all duration-300 font-bold w-full text-base cursor-pointer"
-                                onClick={() => console.log("Add to cart", { product, quantity })}
+                                onClick={handleAddToCart}
                             >
                                 <ShoppingBag className="mr-2 h-5 w-5" />
                                 ADD TO CART

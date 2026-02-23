@@ -20,6 +20,7 @@ export const getProduct = createServerFn({ method: "GET" }).inputValidator(z.str
     })
 
     if (!product) return null
+
     return mapProduct(product)
 })
 
@@ -39,7 +40,7 @@ export const getProducts = createServerFn({ method: "GET" }).inputValidator(para
         }
     })
 
-    return products.map(mapProduct)
+    return products.map(mapProduct) 
 })
 
 export const getAllProducts = createServerFn({ method: "GET" }).handler(async () => {

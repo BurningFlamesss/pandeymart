@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { X, Minus, Plus, ShoppingBag, ChevronDown, Star } from "lucide-react";
+import { toast } from "sonner";
 import type { Product } from "@/types/Product";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/hooks/use-cart";
 
 interface ProductDetailModalProps {
     product: Product;
@@ -35,6 +37,7 @@ const faqs = [
 ];
 
 const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProps) => {
+    const { addToCart, updateQuantity, cart } = useCart()
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [selectedCustomizations, setSelectedCustomizations] =
@@ -82,6 +85,53 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
         (product.productPrice ?? 0) + customizationDelta;
     const finalTotalPrice = finalUnitPrice * quantity;
     const originalTotalPrice = originalUnitPrice * quantity;
+
+    const resolvedCustomizations = useMemo(() => {
+        if (!product.customizations) return [];
+
+        return product.customizations.map(group => ({
+            title: group.title,
+            options: group.options.filter(
+                opt => selectedCustomizations[group.title] === opt.label
+            ),
+        }));
+    }, [product, selectedCustomizations]);
+
+    const cartItemId = useMemo(() => {
+        if (!product.productId) return "";
+
+        return `${product.productId}-${JSON.stringify(resolvedCustomizations)}`;
+    }, [product.productId, resolvedCustomizations]);
+
+    const existingCartItem = useMemo(() => {
+        return cart.find(item => item.cartItemId === cartItemId);
+    }, [cart, cartItemId]);
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        const cartItem = {
+            cartItemId,
+            productId: product.productId,
+            quantity,
+            basePrice: product.productPrice ?? product.originalPrice ?? 0,
+            customizations: resolvedCustomizations
+        }
+
+        if (existingCartItem) {
+            updateQuantity(cartItemId, existingCartItem.quantity + quantity)
+            toast("Updated the Cart")
+        } else {
+            addToCart(cartItem)
+            toast("Added to the Cart")
+        }
+
+        console.log("Added to cart:", {
+            productId: product.productId,
+            quantity,
+            customizations: selectedCustomizations,
+        });
+    };
 
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -288,14 +338,14 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
                     <div className="w-full flex flex-col gap-3 mb-6">
                         <Button
                             className="bg-[#FAA016] hover:bg-black text-white px-6 py-6 rounded-lg transition-all duration-300 font-bold w-full text-base cursor-pointer"
-                            onClick={() => console.log("Add to cart", { product, quantity })}
+                            onClick={handleAddToCart}
                         >
                             <ShoppingBag className="mr-2 h-5 w-5" />
                             ADD TO CART
                         </Button>
                         <Button
                             className="bg-black hover:bg-[#FAA016] text-white px-6 py-6 rounded-lg transition-all duration-300 w-full font-bold text-base cursor-pointer"
-                            onClick={() => console.log("Buy now", { product, quantity })}
+                            // onClick={handleAddToCart}
                         >
                             BUY IT NOW
                         </Button>
