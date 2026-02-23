@@ -12,13 +12,14 @@ export const Route = createFileRoute('/favourite/')({
 function RouteComponent() {
   const { favourite, addToFavourite, removeFromFavourite, clearFavourite } = useFavourite()
 
-  const { data, isError, isPending } = useQuery({
+  const { data = [], isError, isPending } = useQuery({
     queryKey: ['favourite-products', favourite],
     queryFn: () => {
       if (favourite.length === 0) return []
 
       return getProducts({ data: favourite })
     },
+    enabled: favourite.length > 0
   })
 
   if (isPending) {

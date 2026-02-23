@@ -4,10 +4,30 @@ import { ChevronDown, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { products } from '@/config/mockProducts';
+import { getProduct } from '@/server/functions/getProducts';
 
 export const Route = createFileRoute('/product/$productId')({
     component: RouteComponent,
+    async loader({ params }) {
+        const { productId } = params;
+        console.log("Loading product with ID:", productId);
+        const product = await getProduct({
+            data: productId
+        });
+
+        if (!product) {
+            throw new Error("Product Not Found!")
+        }
+
+        return product
+    },
+    errorComponent: () => {
+        return (
+            <div className='h-[calc(100vh-64px)] w-full flex flex-row items-center justify-center'>
+                Product Not Found
+            </div>
+        )
+    }
 })
 
 
@@ -35,7 +55,7 @@ const faqs = [
 ];
 
 function RouteComponent() {
-    const product = products[0]
+    const product = Route.useLoaderData();
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [selectedCustomizations, setSelectedCustomizations] =

@@ -5,6 +5,24 @@ import { mapProduct } from "@/utils/mapProducts"
 
 const paramSchema = z.array(z.string())
 
+export const getProduct = createServerFn({ method: "GET" }).inputValidator(z.string()).handler(async ({ data }) => {
+
+    const product = await prisma.product.findFirst({
+        where: {
+            productId: data,
+            isActive: true
+        },
+        include: {
+            productImages: true,
+            category: true,
+            tags: true
+        }
+    })
+
+    if (!product) return null
+    return mapProduct(product)
+})
+
 export const getProducts = createServerFn({ method: "GET" }).inputValidator(paramSchema).handler(async ({ data }) => {
 
     const products = await prisma.product.findMany({
