@@ -1,7 +1,19 @@
 import DataManagement from "../layout/admin/DataManagement"
 import { StatsBar } from "../layout/admin/StatsBar"
+import { mapStatsToUI } from "@/utils/mapStats"
 
-const stats = [{
+type AdminStats = {
+    totalRevenue: number
+    previousRevenue: number
+    activeOrders: number
+    pendingOrders: number
+    totalProducts: number
+    lowStockProducts: number
+    activeUsers: number
+    suspendedUsers: number
+}
+
+const dummyStats = [{
     label: "Total Revenue",
     value: "Rs. 45099.89",
     change: "+12%",
@@ -23,7 +35,9 @@ const stats = [{
     positive: null,
 }]
 
-function Admin() {
+function Admin({ stats }: { stats?: AdminStats }) {
+    const mappedStats = stats ? mapStatsToUI(stats) : dummyStats;
+
     return (
         <div className='min-h-screen bg-gray-50 text-gray-900'>
 
@@ -37,7 +51,7 @@ function Admin() {
                     </p>
                 </div>
 
-                <StatsBar stats={stats}></StatsBar>
+                <StatsBar stats={mappedStats}></StatsBar>
                 <DataManagement />
             </main>
         </div>

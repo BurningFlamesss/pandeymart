@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start"
 import z from "zod"
 import { prisma } from "@/db"
 import { mapProduct } from "@/utils/mapProducts"
+import { requireAdminAccess } from "@/middleware/auth"
 
 const customizationOptionSchema = z.object({
     label: z.string(),
@@ -40,6 +41,8 @@ export type CreateProductInput = z.infer<typeof paramSchema>;
 
 
 export const createProduct = createServerFn({ method: "POST" }).inputValidator(paramSchema).handler(async ({ data }) => {
+    await requireAdminAccess()
+    
     try {
         const product = await prisma.product.create({
             data: {
