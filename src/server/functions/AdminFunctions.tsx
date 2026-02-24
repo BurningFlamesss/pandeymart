@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireAdminAccess } from "@/middleware/auth";
 import { prisma } from "@/db";
+import { mapProduct } from "@/utils/mapProducts";
 
-export const getAdminData = createServerFn({ method: "GET" }).handler(async () => {
+export const getAdminPanelStatsData = createServerFn({ method: "GET" }).handler(async () => {
     await requireAdminAccess()
 
     const now = new Date()
@@ -47,7 +48,7 @@ export const getAdminData = createServerFn({ method: "GET" }).handler(async () =
                 where: {
                     inStock: true,
                     quantity: {
-                        lte: 2
+                        lte: prisma.product.fields.lowStockThreshold
                     }
                 }
             }),
@@ -79,6 +80,25 @@ export const getAdminData = createServerFn({ method: "GET" }).handler(async () =
         return data
     } catch (error) {
         console.error("Error fetching admin data:", error)
+        throw error
+    }
+})
+
+export const getAdminPanelProductsData = createServerFn({ method: "GET" }).handler(async () => {
+    await requireAdminAccess()
+
+    try {
+        const products = await prisma.product.findMany({
+            include: {
+                productImages: true,
+                category: true,
+                tags: true
+            }
+        })
+
+        return products.map(mapProduct)
+    } catch (error) {
+        console.error("Error fetching admin products data:", error)
         throw error
     }
 })
