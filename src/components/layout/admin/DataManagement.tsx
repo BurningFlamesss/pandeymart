@@ -1,6 +1,7 @@
 import { ChevronDown, Star } from 'lucide-react';
 import { useOptimistic, useState } from 'react';
 import { toast } from 'sonner';
+import { Link } from '@tanstack/react-router';
 import { ProductSheet } from './ProductSheet';
 import type { Product } from '@/types/Product';
 import { Checkbox } from '@/components/ui/checkbox'
@@ -114,16 +115,16 @@ function DataManagement({ products }: { products: Array<Product> }) {
     };
 
     const ActionButtons = ({ tab }: { tab: keyof typeof tableColumns }) => {
+        const id = Array.from(selectedItems.products)[0];
+        const prod = productsState.find(product => product.productId === id);
         const selectedCount = selectedItems[tab].size;
         return (
             <div className="flex gap-2">
-                {selectedCount === 1 && <button className={cn(tabsListVariants(), "px-2 text-sm text-black cursor-pointer")}>View</button>}
+                {selectedCount === 1 && <Link to='/product/$productId' params={{ productId: prod?.productId ?? ""}} target='_blank' className={cn(tabsListVariants(), "px-2 text-sm text-black cursor-pointer")}>View</Link>}
                 {selectedCount === 1 && tab === "products" && (
                     <button
                         className={cn(tabsListVariants(), "px-2 text-sm text-black cursor-pointer")}
                         onClick={() => {
-                            const id = Array.from(selectedItems.products)[0];
-                            const prod = productsState.find(product => product.productId === id);
                             if (prod) {
                                 setCurrentProduct(prod);
                                 setSheetMode('edit');
@@ -161,14 +162,19 @@ function DataManagement({ products }: { products: Array<Product> }) {
     return (
         <>
             <Tabs id='Data Managing Dashboard' defaultValue={activeTab}>
-                <div className="flex flex-row items-center justify-between">
-                    <TabsList>
-                        {(['orders', 'products', 'users'] as const).map(tab => (
-                            <TabsTrigger key={tab} value={tab} onClick={() => setActiveTab(tab)}>
-                                {tab[0].toUpperCase() + tab.slice(1)}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
+                <div className="z-30 sticky top-16 bg-gray-50 p-2 flex flex-row items-center justify-between">
+                    <div className="flex items-center justify-center gap-4">
+                        <TabsList>
+                            {(['orders', 'products', 'users'] as const).map(tab => (
+                                <TabsTrigger key={tab} value={tab} onClick={() => setActiveTab(tab)}>
+                                    {tab[0].toUpperCase() + tab.slice(1)}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                        <div className="flex items-center justify-center">
+                            {selectedItems[activeTab].size} selected
+                        </div>
+                    </div>
                     <div className="flex flex-row items-center justify-center gap-2">
                         <ActionButtons tab={activeTab} />
                     </div>
@@ -230,7 +236,7 @@ function OrdersTable({
 
     return (
         <table className='w-full'>
-            <thead className='bg-gray-50'>
+            <thead className='z-25 sticky top-28 bg-gray-50'>
                 <tr>
                     <th className='w-10 px-6 py-3 text-left text-xs font-medium uppercase text-gray-600 tracking-wide'>
                         <Checkbox className='cursor-pointer' checked={selectedItems.size === INITIAL_ORDERS.length} onCheckedChange={() => toggleSelectAll(allIds)} />
@@ -359,7 +365,7 @@ function ProductsTable({
 
     return (
         <table className='w-full'>
-            <thead className='bg-gray-50'>
+            <thead className='z-25 sticky top-28 bg-gray-50'>
                 <tr>
                     <th className='w-10 px-6 py-3 text-left text-xs font-medium uppercase text-gray-600 tracking-wide'>
                         <Checkbox className='cursor-pointer' checked={selectedItems.size === products.length} onCheckedChange={() => toggleSelectAll(allIds)} />
@@ -395,7 +401,7 @@ function ProductsTable({
                                             />
                                         </button>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.productId}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={product.productId}>{product.productId.slice(0, 5)}...</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.productName}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.category}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{format.currency(product.productPrice ?? 0)} <span className='line-through text-gray-400 text-sm'>{product.originalPrice}</span></td>
@@ -488,7 +494,7 @@ function UsersTable({
 
     return (
         <table className='w-full'>
-            <thead className='bg-gray-50'>
+            <thead className='z-25 sticky top-28 bg-gray-50'>
                 <tr>
                     <th className='w-10 px-6 py-3 text-left text-xs font-medium uppercase text-gray-600 tracking-wide'>
                         <Checkbox checked={selectedItems.size === allIds.length} onCheckedChange={() => toggleSelectAll(allIds)} />

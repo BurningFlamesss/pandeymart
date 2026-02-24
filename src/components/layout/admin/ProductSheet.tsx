@@ -435,7 +435,7 @@ function CustomizationsEditor({ groups, onChange }: CustomizationsEditorProps) {
 
                                     <div className="relative w-1/2">
                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                                            + Rs.
+                                            {option.additionalPrice >= 0 ? "+" : "-"} Rs.
                                         </span>
                                         <Input
                                             type="number"
