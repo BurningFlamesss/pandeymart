@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import ImageSlider from "@/components/shared/ImageSlider";
+import { createOrder } from "@/server/functions/orderFunctions";
 
 export const Route = createFileRoute('/checkout/')({
   async beforeLoad() {
@@ -417,7 +418,7 @@ function RouteComponent() {
   });
 
   const productMap = useMemo(
-    () => new Map(realProducts.map((p) => [p.productId, p])),
+    () => new Map(realProducts.map((product) => [product.productId, product])),
     [realProducts]
   );
 
@@ -437,7 +438,7 @@ function RouteComponent() {
 
   const { subtotal, shippingCost, grandTotal } = useMemo(() => {
     const subtotalAmount = cart.reduce((sum, cartItem) => {
-      const validation = validations.find((v) => v.cartItemId === cartItem.cartItemId);
+      const validation = validations.find((validationEntity) => validationEntity.cartItemId === cartItem.cartItemId);
       const price = validation?.correctedPrice ?? cartItem.basePrice;
       const quantity = validation?.correctedQuantity ?? cartItem.quantity;
       const unitPrice = calculateItemUnitPrice(price, cartItem.customizations ?? []);
@@ -451,12 +452,8 @@ function RouteComponent() {
   const canProceed = unavailableItems.length === 0 && cart.length > 0;
 
   const { mutate: placeOrder, isPending: isPlacing } = useMutation({
-    mutationFn: submitOrder,
-    onSuccess: ({ orderId }, { addressToSave }) => {
-      if (addressToSave) {
-        const updated = addSavedAddress(addressToSave);
-        setSavedAddresses(updated);
-      }
+    mutationFn: createOrder,
+    onSuccess: ({ orderId }) => {
       setConfirmedOrderId(orderId);
       setStep("confirmed");
       clearCart();
@@ -582,7 +579,28 @@ function RouteComponent() {
       createdAt: new Date().toISOString(),
     };
 
-    placeOrder({ order, addressToSave: null });
+    placeOrder({
+      data: {
+        paymentMethod: form.paymentMethod,
+        customerName: `${form.firstName} ${form.lastName}`,
+        customerEmail: form.email,
+        customerPhone: form.phone,
+
+        shippingAddress1: form.addressLine1,
+        shippingAddress2: form.addressLine2,
+        shippingCity: form.city,
+        shippingState: form.stateProvince,
+        shippingPostalCode: form.postalCode,
+
+        orderNotes: form.notes,
+
+        items: cart.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          customizations: item.customizations ?? null,
+        }))
+      }
+    })
   }
 
   if (cart.length === 0) {
