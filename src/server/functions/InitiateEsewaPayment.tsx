@@ -10,10 +10,8 @@ const initiateEsewaSchema = z.object({
 export const initiateEsewaPayment = createServerFn({ method: "POST" })
   .inputValidator(initiateEsewaSchema)
   .handler(async ({ data }) => {
-    const paymentUrl = createEsewaPayment({
+    return createEsewaPayment({
       amount: data.amount,
       orderId: data.orderId,
     })
-
-    return { paymentUrl }
   })

@@ -356,6 +356,7 @@ function RouteComponent() {
 
   const [step, setStep] = useState<"details" | "payment" | "confirmed">("details");
   const [isValidating, setIsValidating] = useState(true);
+  // ✅ Local submitting state — replaces the unused useMutation isPlacing
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState<Array<SavedAddress>>([]);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState<string | null>(null);
@@ -498,14 +499,27 @@ function RouteComponent() {
       });
 
       if (formValues.paymentMethod === "Online") {
-        const { paymentUrl } = await initiateEsewaPayment({
+        const { url, fields } = await initiateEsewaPayment({
           data: {
             orderId,
             amount: grandTotal,
           },
         });
 
-        window.location.href = paymentUrl;
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = url;
+
+        Object.entries(fields).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = value;
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
         return;
       }
 
