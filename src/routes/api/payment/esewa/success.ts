@@ -2,47 +2,97 @@ import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 import { prisma } from "@/db"
 import { ESEWA_CONFIG } from "@/server/payment/paymentConfig"
+import { hmacSha256Base64 } from "@/server/payment/paymentFunctions"
 
-const querySchema = z.object({
-  transaction_uuid: z.string()
+const esewaCallbackSchema = z.object({
+  transaction_code: z.string(),
+  status: z.string(),
+  total_amount: z.string(),
+  transaction_uuid: z.string(),
+  product_code: z.string(),
+  signed_field_names: z.string(),
+  signature: z.string(),
 })
 
 export const Route = createFileRoute("/api/payment/esewa/success")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-
         const url = new URL(request.url)
+        const origin = url.origin
 
-        const parsed = querySchema.safeParse({
-          transaction_uuid: url.searchParams.get("transaction_uuid")
-        })
-
-        if (!parsed.success) {
-          return Response.redirect("/payment-failed")
+        const rawData = url.searchParams.get("data")
+        if (!rawData) {
+          console.error("eSewa callback: missing data param")
+          return Response.redirect(`${origin}/payment-failed`)
         }
 
-        const { transaction_uuid } = parsed.data
+        let decoded: unknown
+        try {
+          decoded = JSON.parse(Buffer.from(rawData, "base64").toString("utf-8"))
+        } catch {
+          console.error("eSewa callback: failed to decode data param")
+          return Response.redirect(`${origin}/payment-failed`)
+        }
 
-        const verifyUrl =
-          `${ESEWA_CONFIG.VERIFY_URL}?product_code=${ESEWA_CONFIG.MERCHANT_ID}&transaction_uuid=${transaction_uuid}`
+        const parsed = esewaCallbackSchema.safeParse(decoded)
+        if (!parsed.success) {
+          console.error("eSewa callback: invalid payload shape", parsed.error)
+          return Response.redirect(`${origin}/payment-failed`)
+        }
 
-        const response = await fetch(verifyUrl)
-        const result = await response.json()
+        const {
+          transaction_code,
+          status,
+          total_amount,
+          transaction_uuid,
+          product_code,
+          signed_field_names,
+          signature,
+        } = parsed.data
 
-        if (result.status === "COMPLETE") {
+        const fieldValues: Record<string, string> = {
+          transaction_code,
+          status,
+          total_amount,
+          transaction_uuid,
+          product_code,
+          signed_field_names,
+        }
+
+        const message = signed_field_names
+          .split(",")
+          .map((field) => `${field}=${fieldValues[field] ?? ""}`)
+          .join(",")
+
+        const computedSignature = hmacSha256Base64(message, ESEWA_CONFIG.SECRET_KEY)
+
+        if (computedSignature !== signature) {
+          console.error("eSewa callback: signature mismatch — possible forgery")
+          return Response.redirect(`${origin}/payment-failed`)
+        }
+
+        if (status !== "COMPLETE") {
+          console.error("eSewa callback: payment not complete, status =", status)
+          return Response.redirect(`${origin}/payment-failed`)
+        }
+
+        try {
           await prisma.order.update({
             where: { orderId: transaction_uuid },
             data: {
               paymentStatus: "PAID",
-              esewaTransactionId: result.transaction_code,
-            }
+              status: "PROCESSING",
+              esewaTransactionId: transaction_code,
+            },
           })
-
-          return Response.redirect(`/payment-success?order=${transaction_uuid}`)
+        } catch (error) {
+          console.error("eSewa callback: failed to update order", error)
+          return Response.redirect(`${origin}/payment-failed`)
         }
-        return Response.redirect("/payment-failed")
-      }
-    }
-  }
+
+        return Response.redirect(`${origin}/payment-success?order=${transaction_uuid}`)
+      },
+    },
+  },
 })
