@@ -230,6 +230,7 @@ export const OrderScalarFieldEnum = {
   paymentMethod: 'paymentMethod',
   paymentStatus: 'paymentStatus',
   status: 'status',
+  esewaTransactionId: 'esewaTransactionId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
   customerPhone: 'customerPhone',

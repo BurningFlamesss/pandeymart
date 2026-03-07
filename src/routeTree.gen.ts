@@ -17,6 +17,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProductProductIdRouteImport } from './routes/product/$productId'
 import { Route as AuthAuthenticateRouteImport } from './routes/_auth/authenticate'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiPaymentEsewaSuccessRouteImport } from './routes/api/payment/esewa/success'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPaymentEsewaSuccessRoute = ApiPaymentEsewaSuccessRouteImport.update({
+  id: '/api/payment/esewa/success',
+  path: '/api/payment/esewa/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/favourite/': typeof FavouriteIndexRoute
   '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/payment/esewa/success': typeof ApiPaymentEsewaSuccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/favourite': typeof FavouriteIndexRoute
   '/product': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/payment/esewa/success': typeof ApiPaymentEsewaSuccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/favourite/': typeof FavouriteIndexRoute
   '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/payment/esewa/success': typeof ApiPaymentEsewaSuccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/favourite/'
     | '/product/'
     | '/api/auth/$'
+    | '/api/payment/esewa/success'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/favourite'
     | '/product'
     | '/api/auth/$'
+    | '/api/payment/esewa/success'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/favourite/'
     | '/product/'
     | '/api/auth/$'
+    | '/api/payment/esewa/success'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   FavouriteIndexRoute: typeof FavouriteIndexRoute
   ProductIndexRoute: typeof ProductIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiPaymentEsewaSuccessRoute: typeof ApiPaymentEsewaSuccessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payment/esewa/success': {
+      id: '/api/payment/esewa/success'
+      path: '/api/payment/esewa/success'
+      fullPath: '/api/payment/esewa/success'
+      preLoaderRoute: typeof ApiPaymentEsewaSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavouriteIndexRoute: FavouriteIndexRoute,
   ProductIndexRoute: ProductIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiPaymentEsewaSuccessRoute: ApiPaymentEsewaSuccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

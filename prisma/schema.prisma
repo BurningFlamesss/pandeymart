@@ -216,6 +216,7 @@ model Order {
   paymentMethod PaymentMethod
   paymentStatus PaymentStatus @default(PENDING)
   status        OrderStatus   @default(PENDING)
+  esewaTransactionId String?
 
   customerName  String
   customerEmail String

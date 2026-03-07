@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from '@tanstack/react-router'
+import { initiateEsewaPayment } from "../../server/functions/InitiateEsewaPayment";
 import { requireAuth } from '@/middleware/auth'
 import { useCart } from "@/hooks/use-cart";
 import { getProducts } from "@/server/functions/getProducts";
@@ -64,37 +65,6 @@ interface ValidationResult {
   isAvailable: boolean;
 }
 
-interface OrderItem {
-  productId: string;
-  productName: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  customizations: Array<{ groupTitle: string; options: Array<string> }>;
-}
-
-interface Order {
-  orderId: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  items: Array<OrderItem>;
-  subtotal: number;
-  shippingCost: number;
-  totalAmount: number;
-  paymentMethod: "Online" | "Cash on Delivery";
-  paymentStatus: "Pending" | "Paid";
-  orderStatus: "Pending";
-  shippingAddress: string;
-  createdAt: string;
-  notes?: string;
-}
-
-interface OrderMutationPayload {
-  order: Order;
-  addressToSave: SavedAddress | null;
-}
-
 interface SavedAddress {
   id: string;
   label: string;
@@ -103,6 +73,20 @@ interface SavedAddress {
   city: string;
   stateProvince: string;
   postalCode: string;
+}
+
+interface CheckoutFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  stateProvince: string;
+  postalCode: string;
+  notes?: string;
+  paymentMethod: "Online" | "Cash on Delivery";
 }
 
 const SAVED_ADDRESSES_KEY = "checkout_saved_addresses";
@@ -148,16 +132,6 @@ function calculateItemUnitPrice(
     .flatMap((group) => group.options)
     .reduce((sum, option) => sum + option.additionalPrice, 0);
   return basePrice + additionalTotal;
-}
-
-async function submitOrder({ order }: OrderMutationPayload): Promise<{ orderId: string }> {
-  const response = await fetch("/api/orders", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(order),
-  });
-  if (!response.ok) throw new Error("Order failed");
-  return response.json();
 }
 
 function validateCartAgainstProducts(
@@ -382,6 +356,7 @@ function RouteComponent() {
 
   const [step, setStep] = useState<"details" | "payment" | "confirmed">("details");
   const [isValidating, setIsValidating] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState<Array<SavedAddress>>([]);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState<string | null>(null);
   const [saveForLater, setSaveForLater] = useState(false);
@@ -438,7 +413,7 @@ function RouteComponent() {
 
   const { subtotal, shippingCost, grandTotal } = useMemo(() => {
     const subtotalAmount = cart.reduce((sum, cartItem) => {
-      const validation = validations.find((validationEntity) => validationEntity.cartItemId === cartItem.cartItemId);
+      const validation = validations.find((v) => v.cartItemId === cartItem.cartItemId);
       const price = validation?.correctedPrice ?? cartItem.basePrice;
       const quantity = validation?.correctedQuantity ?? cartItem.quantity;
       const unitPrice = calculateItemUnitPrice(price, cartItem.customizations ?? []);
@@ -450,15 +425,6 @@ function RouteComponent() {
 
   const unavailableItems = validations.filter((v) => !v.isAvailable);
   const canProceed = unavailableItems.length === 0 && cart.length > 0;
-
-  const { mutate: placeOrder, isPending: isPlacing } = useMutation({
-    mutationFn: createOrder,
-    onSuccess: ({ orderId }) => {
-      setConfirmedOrderId(orderId);
-      setStep("confirmed");
-      clearCart();
-    },
-  });
 
   function updateField(field: keyof typeof form, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -508,99 +474,49 @@ function RouteComponent() {
     return Object.keys(fieldErrors).length === 0;
   }
 
-  function handleSubmit() {
-    if (!validate()) return;
-
-    const shippingAddress = [
-      form.addressLine1,
-      form.addressLine2,
-      form.city,
-      form.stateProvince,
-      form.postalCode,
-    ]
-      .filter(Boolean)
-      .join(", ");
-
-    const addressToSave: SavedAddress | null = saveForLater
-      ? {
-        id: `addr_${Date.now()}`,
-        label: `${form.addressLine1}, ${form.city}`,
-        addressLine1: form.addressLine1,
-        addressLine2: form.addressLine2,
-        city: form.city,
-        stateProvince: form.stateProvince,
-        postalCode: form.postalCode,
-      }
-      : null;
-
-    if (addressToSave) {
-      const updated = addSavedAddress(addressToSave);
-      setSavedAddresses(updated);
-    }
-
-    const orderItems: Array<OrderItem> = cart
-      .filter((cartItem) => {
-        const validation = validations.find((v) => v.cartItemId === cartItem.cartItemId);
-        return !validation || validation.isAvailable;
-      })
-      .map((cartItem) => {
-        const validation = validations.find((v) => v.cartItemId === cartItem.cartItemId);
-        const product = productMap.get(cartItem.productId);
-        const price = validation?.correctedPrice ?? cartItem.basePrice;
-        const quantity = validation?.correctedQuantity ?? cartItem.quantity;
-        const unitPrice = calculateItemUnitPrice(price, cartItem.customizations ?? []);
-        return {
-          productId: cartItem.productId,
-          productName: product?.productName ?? cartItem.productId,
-          quantity,
-          unitPrice,
-          totalPrice: unitPrice * quantity,
-          customizations: (cartItem.customizations ?? []).map((group) => ({
-            groupTitle: group.title,
-            options: group.options.map((option) => option.label),
+  async function handleSubmit(formValues: CheckoutFormValues) {
+    setIsSubmitting(true);
+    try {
+      const { orderId } = await createOrder({
+        data: {
+          paymentMethod: formValues.paymentMethod,
+          customerName: `${formValues.firstName} ${formValues.lastName}`,
+          customerEmail: formValues.email,
+          customerPhone: formValues.phone,
+          shippingAddress1: formValues.addressLine1,
+          shippingAddress2: formValues.addressLine2,
+          shippingCity: formValues.city,
+          shippingState: formValues.stateProvince,
+          shippingPostalCode: formValues.postalCode,
+          orderNotes: formValues.notes,
+          items: cart.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            customizations: item.customizations,
           })),
-        };
+        },
       });
 
-    const order: Order = {
-      orderId: `ORD-${Date.now()}`,
-      customerName: `${form.firstName} ${form.lastName}`,
-      customerEmail: form.email,
-      customerPhone: form.phone,
-      items: orderItems,
-      subtotal,
-      shippingCost,
-      totalAmount: grandTotal,
-      paymentMethod: form.paymentMethod,
-      paymentStatus: form.paymentMethod === "Cash on Delivery" ? "Pending" : "Paid",
-      orderStatus: "Pending",
-      shippingAddress,
-      notes: form.notes || undefined,
-      createdAt: new Date().toISOString(),
-    };
+      if (formValues.paymentMethod === "Online") {
+        const { paymentUrl } = await initiateEsewaPayment({
+          data: {
+            orderId,
+            amount: grandTotal,
+          },
+        });
 
-    placeOrder({
-      data: {
-        paymentMethod: form.paymentMethod,
-        customerName: `${form.firstName} ${form.lastName}`,
-        customerEmail: form.email,
-        customerPhone: form.phone,
-
-        shippingAddress1: form.addressLine1,
-        shippingAddress2: form.addressLine2,
-        shippingCity: form.city,
-        shippingState: form.stateProvince,
-        shippingPostalCode: form.postalCode,
-
-        orderNotes: form.notes,
-
-        items: cart.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          customizations: item.customizations ?? null,
-        }))
+        window.location.href = paymentUrl;
+        return;
       }
-    })
+
+      clearCart();
+      window.location.href = `/payment-success?order=${orderId}`;
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("Failed to create order. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (cart.length === 0) {
@@ -610,7 +526,6 @@ function RouteComponent() {
       </div>
     );
   }
-
 
   if (step === "confirmed") {
     return (
@@ -952,11 +867,12 @@ function RouteComponent() {
                     </div>
 
                     <Button
-                      onClick={handleSubmit}
-                      disabled={isPlacing}
+                      onClick={() => handleSubmit(form)}
+                      disabled={!canProceed || isSubmitting}
                       className="w-full"
                     >
-                      {isPlacing ? (
+                      {/* ✅ Fix: use local isSubmitting instead of the unused mutation's isPlacing */}
+                      {isSubmitting ? (
                         <span className="flex items-center gap-2">
                           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                           Placing Order…
