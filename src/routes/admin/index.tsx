@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Admin from '@/components/container/Admin'
 import { requireAdminAccess } from '@/middleware/auth'
-import { getAdminPanelProductsData, getAdminPanelStatsData } from '@/server/functions/AdminFunctions'
+import { getAdminPanelOrdersData, getAdminPanelProductsData, getAdminPanelStatsData, getAdminPanelUsersData } from '@/server/functions/AdminFunctions'
 
 export const Route = createFileRoute('/admin/')({
   async beforeLoad() {
@@ -10,9 +10,13 @@ export const Route = createFileRoute('/admin/')({
   async loader() {
     const stats = await getAdminPanelStatsData();
     const products = await getAdminPanelProductsData()
+    const orders = await getAdminPanelOrdersData()
+    const users = await getAdminPanelUsersData()
     return {
       stats,
-      products
+      products,
+      orders,
+      users
     }
   },
   component: RouteComponent,
@@ -21,11 +25,11 @@ export const Route = createFileRoute('/admin/')({
 
 
 function RouteComponent() {
-  const { stats, products } = Route.useLoaderData()
-  console.log("Admin stats:", stats)
+  const { stats, products, orders, users } = Route.useLoaderData()
+  console.log("Admin orders:", orders)
   return (
     <>
-      <Admin stats={stats} products={products} />
+      <Admin stats={stats} products={products} orders={orders} users={users} />
     </>
   )
 }

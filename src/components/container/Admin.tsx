@@ -1,6 +1,6 @@
 import DataManagement from "../layout/admin/DataManagement"
 import { StatsBar } from "../layout/admin/StatsBar"
-import type { Product } from "@/types/Product"
+import type { AdminPanelOrder, AdminPanelProduct, AdminPanelUser } from "@/server/functions/AdminFunctions"
 import { mapStatsToUI } from "@/utils/mapStats"
 
 type AdminStats = {
@@ -36,7 +36,7 @@ const dummyStats = [{
     positive: null,
 }]
 
-function Admin({ stats, products }: { stats?: AdminStats, products: Array<Product> }) {
+function Admin({ stats, products, orders, users }: { stats?: AdminStats, products: Array<AdminPanelProduct>, orders: Array<AdminPanelOrder>, users: Array<AdminPanelUser> }) {
     const mappedStats = stats ? mapStatsToUI(stats) : dummyStats;
 
     return (
@@ -53,7 +53,7 @@ function Admin({ stats, products }: { stats?: AdminStats, products: Array<Produc
                 </div>
 
                 <StatsBar stats={mappedStats}></StatsBar>
-                <DataManagement products={products} />
+                <DataManagement products={products} orders={orders} users={users} />
             </main>
         </div>
     )

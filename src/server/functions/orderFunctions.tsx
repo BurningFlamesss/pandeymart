@@ -39,10 +39,6 @@ export const createOrder = createServerFn({ method: "POST" })
 
             return await prisma.$transaction(async (transaction) => {
                 const productIds = data.items.map(item => item.productId)
-
-                // ✅ The same product can appear multiple times in the cart with different
-                // customizations. findMany returns each product once, so comparing
-                // products.length to productIds.length (with duplicates) always fails.
                 const uniqueProductIds = [...new Set(productIds)]
 
                 const products = await transaction.product.findMany({
