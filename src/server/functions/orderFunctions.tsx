@@ -1,7 +1,18 @@
 import { createServerFn } from "@tanstack/react-start"
 import { z } from "zod"
 import { prisma } from "@/db"
+import { Prisma } from "@/generated/prisma/client"
 import { getSessionMiddleware } from "@/middleware/auth"
+
+const CustomizationOptionSchema = z.object({
+    label: z.string(),
+    additionalPrice: z.number().min(0),
+})
+
+const CustomizationGroupSchema = z.object({
+    title: z.string(),
+    options: z.array(CustomizationOptionSchema),
+})
 
 export const CreateOrderInput = z.object({
     paymentMethod: z.enum(["Online", "Cash on Delivery"]),
@@ -21,7 +32,7 @@ export const CreateOrderInput = z.object({
         z.object({
             productId: z.string(),
             quantity: z.number().int().positive(),
-            customizations: z.any().optional(),
+            customizations: z.array(CustomizationGroupSchema).optional(),
         })
     ).min(1),
 })
@@ -30,7 +41,6 @@ export const createOrder = createServerFn({ method: "POST" })
     .middleware([getSessionMiddleware])
     .inputValidator(CreateOrderInput)
     .handler(async ({ data, context }) => {
-
         try {
             const user = context.session?.user
             if (!user) {
@@ -42,7 +52,7 @@ export const createOrder = createServerFn({ method: "POST" })
                 const uniqueProductIds = [...new Set(productIds)]
 
                 const products = await transaction.product.findMany({
-                    where: { productId: { in: uniqueProductIds } }
+                    where: { productId: { in: uniqueProductIds } },
                 })
 
                 if (products.length !== uniqueProductIds.length) {
@@ -62,31 +72,41 @@ export const createOrder = createServerFn({ method: "POST" })
                         throw new Error(`Not enough stock for ${product.productName}`)
                     }
 
-                    const price = product.productPrice ?? 0
-                    const lineTotal = price * item.quantity
+                    const basePrice = product.productPrice ?? 0
 
+                    const customizationTotal = (item.customizations ?? []).reduce(
+                        (groupSum, group) =>
+                            groupSum + group.options.reduce(
+                                (optionSum, option) => optionSum + option.additionalPrice,
+                                0
+                            ),
+                        0
+                    )
+
+                    const unitPrice = basePrice + customizationTotal
+                    const lineTotal = unitPrice * item.quantity
                     total += lineTotal
 
                     return {
                         productId: product.productId,
-                        productName: product.productName,
-                        productPrice: price,
-                        quantity: item.quantity,
-                        customizations: item.customizations ?? null,
+                        orderItem: {
+                            product: { connect: { productId: product.productId } },
+                            productName: product.productName,
+                            productPrice: unitPrice,
+                            quantity: item.quantity,
+                            customizations: item.customizations?.length
+                                ? item.customizations
+                                : Prisma.JsonNull,
+                        },
                     }
                 })
 
-                const prismaPaymentMethod =
-                    data.paymentMethod === "Cash on Delivery"
-                        ? "COD"
-                        : "ESEWA"
+                const shippingCost = total >= 2000 ? 0 : 100
+                total += shippingCost
 
+                const prismaPaymentMethod = data.paymentMethod === "Cash on Delivery" ? "COD" : "ESEWA"
                 const paymentStatus = "PENDING"
-
-                const orderStatus =
-                    prismaPaymentMethod === "COD"
-                        ? "PROCESSING"
-                        : "PENDING"
+                const orderStatus = prismaPaymentMethod === "COD" ? "PROCESSING" : "PENDING"
 
                 const order = await transaction.order.create({
                     data: {
@@ -109,25 +129,21 @@ export const createOrder = createServerFn({ method: "POST" })
                         orderNotes: data.orderNotes,
 
                         items: {
-                            create: orderItemsData
-                        }
-                    }
+                            create: orderItemsData.map(item => item.orderItem),
+                        },
+                    },
                 })
 
-                for (const item of orderItemsData) {
-                    await transaction.product.update({
-                        where: { productId: item.productId },
-                        data: {
-                            quantity: {
-                                decrement: item.quantity
-                            }
-                        }
-                    })
-                }
+                await Promise.all(
+                    orderItemsData.map(item =>
+                        transaction.product.update({
+                            where: { productId: item.productId },
+                            data: { quantity: { decrement: item.orderItem.quantity } },
+                        })
+                    )
+                )
 
-                return {
-                    orderId: order.orderId,
-                }
+                return { orderId: order.orderId, total: order.total }
             })
         } catch (error) {
             console.error("Error creating order:", error)

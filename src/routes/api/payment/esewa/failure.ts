@@ -14,15 +14,34 @@ const esewaCallbackSchema = z.object({
     signature: z.string(),
 })
 
-export const Route = createFileRoute("/api/payment/esewa/success")({
+export const Route = createFileRoute("/api/payment/esewa/failure")({
     server: {
         handlers: {
             GET: async ({ request }) => {
                 const url = new URL(request.url)
                 const origin = url.origin
 
+                const orderId = url.searchParams.get("order")
                 const rawData = url.searchParams.get("data")
-                if (!rawData) return Response.redirect(`${origin}/payment-failed`)
+
+                if (!rawData) {
+                    if (orderId) {
+                        const order = await prisma.order.findUnique({
+                            where: { orderId },
+                            select: { paymentStatus: true },
+                        })
+                        if (order?.paymentStatus === "PENDING") {
+                            await prisma.order.update({
+                                where: { orderId },
+                                data: {
+                                    paymentStatus: "FAILED",
+                                    status: "CANCELLED",
+                                },
+                            })
+                        }
+                    }
+                    return Response.redirect(`${origin}/payment-failed`)
+                }
 
                 let decoded: unknown
                 try {
@@ -63,54 +82,23 @@ export const Route = createFileRoute("/api/payment/esewa/success")({
 
                 const order = await prisma.order.findUnique({
                     where: { orderId: transaction_uuid },
-                    select: { paymentStatus: true, total: true },
+                    select: { paymentStatus: true },
                 })
 
-                if (!order) return Response.redirect(`${origin}/payment-failed`)
-
-                if (order.paymentStatus === "PAID") {
-                    return Response.redirect(`${origin}/payment-success?order=${transaction_uuid}`)
-                }
-
-                if (order.paymentStatus !== "PENDING") {
-                    return Response.redirect(`${origin}/payment-failed`)
-                }
-
-                if (status !== "COMPLETE") {
-                    await prisma.order.update({
-                        where: { orderId: transaction_uuid },
-                        data: {
-                            paymentStatus: "FAILED",
-                            status: "CANCELLED",
-                            esewaTransactionId: transaction_code,
-                        },
-                    })
-                    return Response.redirect(`${origin}/payment-failed`)
-                }
-
-                const reportedAmount = parseFloat(total_amount.replace(/,/g, ""))
-                if (isNaN(reportedAmount) || Math.abs(reportedAmount - order.total) > 1) {
-                    await prisma.order.update({
-                        where: { orderId: transaction_uuid },
-                        data: {
-                            paymentStatus: "FAILED",
-                            status: "CANCELLED",
-                            esewaTransactionId: transaction_code,
-                        },
-                    })
+                if (!order || order.paymentStatus !== "PENDING") {
                     return Response.redirect(`${origin}/payment-failed`)
                 }
 
                 await prisma.order.update({
                     where: { orderId: transaction_uuid },
                     data: {
-                        paymentStatus: "PAID",
-                        status: "PROCESSING",
+                        paymentStatus: "FAILED",
+                        status: "CANCELLED",
                         esewaTransactionId: transaction_code,
                     },
                 })
 
-                return Response.redirect(`${origin}/payment-success?order=${transaction_uuid}`)
+                return Response.redirect(`${origin}/payment-failed`)
             },
         },
     },

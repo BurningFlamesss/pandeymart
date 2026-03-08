@@ -154,12 +154,6 @@ const ProductListing = ({ product, index }: productListingProps) => {
             addToCart(cartItem)
             toast("Added to the Cart")
         }
-
-        console.log("Added to cart:", {
-            productId: product.productId,
-            quantity,
-            customizations: selectedCustomizations,
-        });
     };
 
 
@@ -266,16 +260,16 @@ const ProductListing = ({ product, index }: productListingProps) => {
                                     variant="outline"
                                     className={cn(
                                         "text-xs",
-                                        (product.quantity) > 50
+                                        product.inStock ? (product.quantity) > 50
                                             ? "border-green-300 text-green-700 bg-green-50"
                                             : (product.quantity) > 0
                                                 ? "border-yellow-300 text-yellow-700 bg-yellow-50"
-                                                : "border-red-300 text-red-700 bg-red-50"
+                                                : "border-red-300 text-red-700 bg-red-50" : "border-red-300 text-red-700 bg-red-50"
                                     )}
                                 >
-                                    {(product.quantity) > 0
+                                    {product.inStock ? (product.quantity) > 0
                                         ? `${product.quantity} units available`
-                                        : product.inStock ? "Available" : "Out of stock"}
+                                        : "Available" : "Out of stock"}
                                 </Badge>
                             )}
                         </div>

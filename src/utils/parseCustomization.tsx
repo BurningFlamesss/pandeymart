@@ -1,9 +1,8 @@
 import type { Prisma } from "@/generated/prisma/client"
 
-export type CustomizationGroup = {
-    optionGroupId: string
-    groupName: string
-    options: Array<string>
+export type ParsedCustomizationGroup = {
+    title: string
+    options: Array<{ label: string; additionalPrice: number }>
 }
 
 export type AdminPanelOrder = Prisma.OrderGetPayload<{
@@ -13,15 +12,15 @@ export type AdminPanelOrder = Prisma.OrderGetPayload<{
     }
 }>
 
-export function parseCustomizations(raw: Prisma.JsonValue): Array<CustomizationGroup> {
+export function parseCustomizations(raw: Prisma.JsonValue): Array<ParsedCustomizationGroup> {
     if (!Array.isArray(raw)) return []
     return raw.filter(
-        (group): group is CustomizationGroup =>
+        (group): group is ParsedCustomizationGroup =>
             typeof group === "object" &&
             group !== null &&
-            "optionGroupId" in group &&
-            "groupName" in group &&
+            "title" in group &&
+            typeof (group as ParsedCustomizationGroup).title === "string" &&
             "options" in group &&
-            Array.isArray((group as CustomizationGroup).options)
+            Array.isArray((group as ParsedCustomizationGroup).options)
     )
 }

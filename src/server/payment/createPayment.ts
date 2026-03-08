@@ -1,5 +1,5 @@
 import { ESEWA_CONFIG } from "@/server/payment/paymentConfig"
-import { generateEsewaSignature } from "@/server/payment/paymentFunctions"
+import { formatEsewaAmount, generateEsewaSignature } from "@/server/payment/paymentFunctions"
 
 export function createEsewaPayment({
     amount,
@@ -9,6 +9,7 @@ export function createEsewaPayment({
     orderId: string
 }) {
     const transaction_uuid = orderId
+    const formattedAmount = formatEsewaAmount(amount)
     const signature = generateEsewaSignature(
         amount,
         transaction_uuid,
@@ -18,15 +19,15 @@ export function createEsewaPayment({
     return {
         url: ESEWA_CONFIG.PAYMENT_URL,
         fields: {
-            amount: amount.toString(),
+            amount: formattedAmount,
             tax_amount: "0",
-            total_amount: amount.toString(),
+            total_amount: formattedAmount,
             transaction_uuid,
             product_code: ESEWA_CONFIG.MERCHANT_ID,
             product_service_charge: "0",
             product_delivery_charge: "0",
             success_url: `${process.env.APP_URL}/api/payment/esewa/success`,
-            failure_url: `${process.env.APP_URL}/payment-failed`,
+            failure_url: `${process.env.APP_URL}/api/payment/esewa/failure?order=${orderId}`,
             signed_field_names: "total_amount,transaction_uuid,product_code",
             signature,
         },

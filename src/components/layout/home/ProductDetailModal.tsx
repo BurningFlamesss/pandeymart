@@ -250,13 +250,13 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
 
                     <div className="flex items-center gap-2 border-b border-gray-200 pb-5 pt-2 mb-4">
                         <div className="relative w-4 h-4">
-                            <div className="absolute inset-0 rounded-full bg-green-400/30" />
-                            <div className="absolute inset-1 rounded-full bg-green-500" />
+                            <div className={cn("absolute inset-0 rounded-full", product.inStock && product.quantity ? "bg-green-400/30" : "bg-red-400/30")} />
+                            <div className={cn("absolute inset-1 rounded-full", product.inStock && product.quantity ? "bg-green-500" : "bg-red-500")} />
                         </div>
                         <span className="text-gray-700">
-                            {product.quantity
+                            {product.inStock ? product.quantity
                                 ? `${product.quantity} in stock`
-                                : "In stock"}
+                                : "In stock" : "Out of stock"}
                         </span>
                     </div>
 

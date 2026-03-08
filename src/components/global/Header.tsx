@@ -41,9 +41,6 @@ function Header() {
 
 const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session'], signOut: () => void }) => {
     const { cart, totalPrice } = useCart()
-
-    console.log(session, "session in header")
-
     const { data: realProducts = [], isError, isPending } = useQuery({
         queryKey: ['cart-products', cart.map(cartItem => cartItem.productId).sort().join(",")],
         queryFn: () => {

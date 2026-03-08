@@ -518,7 +518,8 @@ function OrdersTable({
                                         {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{format.currency(order.total)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4 whitespace-nowrap flex gap-2">
+                                        {order.paymentMethod}
                                         <InlineSelect
                                             value={order.paymentStatus as PaymentStatus}
                                             options={PAYMENT_STATUSES}
@@ -569,8 +570,8 @@ function OrdersTable({
                                                                         {customizations.length > 0 && (
                                                                             <div className="flex flex-wrap gap-1.5 mt-1.5">
                                                                                 {customizations.map(group => (
-                                                                                    <span key={group.optionGroupId} className="text-xs bg-yellow-500/60 px-2 py-0.5 rounded-full">
-                                                                                        {group.groupName}: {group.options.join(', ')}
+                                                                                    <span key={group.title} className="text-xs bg-yellow-500/60 px-2 py-0.5 rounded-full">
+                                                                                        {group.title}: {group.options.map(option => option.label).join(', ')}
                                                                                     </span>
                                                                                 ))}
                                                                             </div>
@@ -594,10 +595,10 @@ function OrdersTable({
                                                         <div className="space-y-1 text-xs text-gray-700">
                                                             <div className="flex gap-2"><span>Placed</span><span>{format.dateD(order.createdAt)} at {format.timeD(order.createdAt)}</span></div>
                                                             <div className="flex gap-2"><span>Method</span><span>{order.paymentMethod}</span></div>
-                                                            {order.sellerNotes && (
+                                                            {order.orderNotes && (
                                                                 <div className="flex gap-2 mt-1">
                                                                     <span>Note</span>
-                                                                    <span className="text-yellow-800 italic">{order.sellerNotes}</span>
+                                                                    <span className="text-yellow-800">'{order.orderNotes}'</span>
                                                                 </div>
                                                             )}
                                                         </div>
