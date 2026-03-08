@@ -19,7 +19,6 @@ interface ProductSheetProps {
     onSave: (updatedProduct: Product) => void;
 }
 
-const CATEGORIES = ['Apparel', 'Accessories', 'Home', 'Beauty', 'Electronics'];
 const UNITS = ['kg', 'g', 'ltr', 'pcs', 'unit'];
 const LABELS = ['Best Seller', 'Super Saver', 'New Arrival', 'Limited', 'Hot Deal'];
 
@@ -119,21 +118,6 @@ export function ProductSheet({ open, onOpenChange, mode, product, onSave }: Prod
                                 <Input id="slug" value={data.slug ?? ''} onChange={(e) => patch({ slug: e.target.value })} />
                             </div>
                             <div className='space-y-2'>
-                                <Label htmlFor="category">Category</Label>
-                                <Select value={data.category ?? ''} onValueChange={(v) => patch({ category: v })}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {CATEGORIES.map((cat) => (
-                                            <SelectItem key={cat} value={cat}>
-                                                {cat}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className='space-y-2'>
                                 <Label htmlFor="description">Description</Label>
                                 <Textarea id="description" value={data.description ?? ''} onChange={(e) => patch({ description: e.target.value })} />
                             </div>
@@ -149,9 +133,9 @@ export function ProductSheet({ open, onOpenChange, mode, product, onSave }: Prod
                                             <SelectValue placeholder="None" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {LABELS.map((lbl) => (
-                                                <SelectItem key={lbl} value={lbl}>
-                                                    {lbl}
+                                            {LABELS.map((label) => (
+                                                <SelectItem key={label} value={label}>
+                                                    {label}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import z from "zod";
 import type { Product } from "@/types/Product";
 import type { Prisma } from "@/generated/prisma/client";
 import { requireAdminAccess } from "@/middleware/auth";
@@ -118,7 +119,7 @@ export const getAdminPanelOrdersData = createServerFn({ method: "GET" }).handler
 export type AdminPanelUser = Prisma.UserGetPayload<{
     include: {
         orders: {
-            select: { _count: true, total: true }
+            include: { _count: true }
         }
     }
 }>
@@ -130,7 +131,7 @@ export const getAdminPanelUsersData = createServerFn({ method: "GET" }).handler(
         const users = await prisma.user.findMany({
             include: {
                 orders: {
-                    select: { _count: true, total: true }
+                    include: { _count: true }
                 }
             }
         })
@@ -141,3 +142,142 @@ export const getAdminPanelUsersData = createServerFn({ method: "GET" }).handler(
         throw error
     }
 })
+
+export const deleteProducts = createServerFn({ method: "POST" }).inputValidator(z.array(z.uuid())).handler(async ({ data: productIds }) => {
+    await requireAdminAccess()
+
+    try {
+        await prisma.product.deleteMany({
+            where: {
+                productId: {
+                    in: productIds
+                }
+            }
+        })
+    } catch (error) {
+        console.error("Error deleting products:", error)
+        throw error
+    }
+})
+export const deleteUsers = createServerFn({ method: "POST" }).inputValidator(z.array(z.uuid())).handler(async ({ data: userIds }) => {
+    await requireAdminAccess()
+
+    try {
+        await prisma.user.deleteMany({
+            where: {
+                id: {
+                    in: userIds
+                }
+            }
+        })
+    } catch (error) {
+        console.error("Error deleting users:", error)
+        throw error
+    }
+})
+export const deleteOrders = createServerFn({ method: "POST" }).inputValidator(z.array(z.uuid())).handler(async ({ data: orderIds }) => {
+    await requireAdminAccess()
+
+    try {
+        await prisma.order.deleteMany({
+            where: {
+                orderId: {
+                    in: orderIds
+                }
+            }
+        })
+    } catch (error) {
+        console.error("Error deleting orders:", error)
+        throw error
+    }
+})
+
+export const updateOrderStatus = createServerFn({ method: "POST" })
+    .inputValidator(
+        z.object({
+            orderId: z.string().uuid(),
+            paymentStatus: z.enum(["PENDING", "PAID", "FAILED", "REFUNDED"]).optional(),
+            status: z.enum(["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(),
+            sellerNotes: z.string().optional(),
+        })
+    )
+    .handler(async ({ data }) => {
+        await requireAdminAccess();
+
+        try {
+            const updated = await prisma.order.update({
+                where: { orderId: data.orderId },
+                data: {
+                    ...(data.paymentStatus !== undefined && { paymentStatus: data.paymentStatus }),
+                    ...(data.status !== undefined && { status: data.status }),
+                    ...(data.sellerNotes !== undefined && { sellerNotes: data.sellerNotes }),
+                },
+                include: { items: true, user: true },
+            });
+
+            return updated;
+        } catch (error) {
+            console.error("Error updating order:", error);
+            throw error;
+        }
+    });
+
+export const updateUserVerification = createServerFn({ method: "POST" })
+    .inputValidator(
+        z.object({
+            userId: z.string(),
+            emailVerified: z.boolean(),
+        })
+    )
+    .handler(async ({ data }) => {
+        await requireAdminAccess();
+
+        try {
+            const updated = await prisma.user.update({
+                where: { id: data.userId },
+                data: { emailVerified: data.emailVerified },
+            });
+
+            return updated;
+        } catch (error) {
+            console.error("Error updating user verification:", error);
+            throw error;
+        }
+    });
+
+export const updateProductStock = createServerFn({ method: "POST" })
+    .inputValidator(
+        z.object({
+            productId: z.uuid(),
+            quantity: z.number().int().min(0).optional(),
+            inStock: z.boolean().optional(),
+            isFeatured: z.boolean().optional(),
+            isActive: z.boolean().optional(),
+        })
+    )
+    .handler(async ({ data }) => {
+        await requireAdminAccess();
+
+        try {
+            const updated = await prisma.product.update({
+                where: { productId: data.productId },
+                data: {
+                    ...(data.quantity !== undefined && { quantity: data.quantity }),
+                    ...(data.inStock !== undefined && { inStock: data.inStock }),
+                    ...(data.isFeatured !== undefined && { isFeatured: data.isFeatured }),
+                    ...(data.isActive !== undefined && { isActive: data.isActive }),
+                },
+                include: {
+                    productImages: true,
+                    category: true,
+                    tags: true,
+                    ratings: true,
+                },
+            });
+
+            return mapProduct(updated);
+        } catch (error) {
+            console.error("Error updating product stock:", error);
+            throw error;
+        }
+    });
