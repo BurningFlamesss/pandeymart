@@ -16,23 +16,23 @@ type AdminStats = {
 
 const dummyStats = [{
     label: "Total Revenue",
-    value: "Rs. 45099.89",
-    change: "+12%",
+    value: "Rs. 0",
+    change: "0%",
     positive: true,
 }, {
     label: "Active Orders",
-    value: "3",
-    change: "2 pending",
+    value: "0",
+    change: "0 pending",
     positive: null,
 }, {
     label: "Products",
-    value: "6",
-    change: "2 low stock",
+    value: "0",
+    change: "0 low stock",
     positive: false,
 }, {
     label: "Active Users",
-    value: "4",
-    change: "1 suspended",
+    value: "0",
+    change: "0 suspended",
     positive: null,
 }]
 
