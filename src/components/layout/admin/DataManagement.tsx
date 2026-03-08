@@ -918,14 +918,18 @@ function UsersTable({
                                         {user.orders.length === 0 ? (
                                             <p className="text-xs text-gray-400">No orders yet.</p>
                                         ) : (
-                                            <div className="flex flex-wrap gap-2">
-                                                {user.orders.map((order, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className="font-mono text-xs bg-white border border-gray-200 px-2 py-1 rounded"
-                                                    >
-                                                        {order.orderId.slice(0, 8)}…
-                                                    </span>
+                                            <div className="flex flex-col gap-2">
+                                                {user.orders.map((order) => (
+                                                    <div key={`${user.id}-${order.orderId}`} className="flex items-start gap-3 bg-white rounded-lg p-3 border border-gray-100">
+                                                        <div className="flex-1">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-sm font-medium">{order.orderId}</span>
+                                                                <span className="text-zinc-700 text-xs">(x{order._count.items} items)</span>
+                                                                <span className="text-xs ml-auto">{format.currency(order.total)}</span>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
                                                 ))}
                                             </div>
                                         )}
