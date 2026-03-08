@@ -51,22 +51,99 @@ export const getProducts = createServerFn({ method: "GET" }).inputValidator(para
     }
 })
 
+// export const getAllProducts = createServerFn({ method: "GET" }).handler(async () => {
+//     try {
+//         const products = await prisma.product.findMany({
+//             where: {
+//                 isActive: true
+//             },
+//             include: {
+//                 productImages: true,
+//                 category: true,
+//                 tags: true,
+//                 orderItems: true
+//             },
+//             orderBy: {
+//                 createdAt: "desc"
+//             }
+//         }) 
+
+//         return products.map(mapProduct)
+//     } catch (error) {
+//         console.error("Error fetching all products data:", error)
+//         throw error
+//     }
+// })
+
 export const getAllProducts = createServerFn({ method: "GET" }).handler(async () => {
     try {
-        const products = await prisma.product.findMany({
-            where: {
-                isActive: true
-            },
-            include: {
-                productImages: true,
-                category: true,
-                tags: true
-            }
-        })
+        return await prisma.$transaction(async (transaction) => {
+            const mostOrderedRaw = await transaction.orderItem.groupBy({
+                by: ["productId"],
+                _sum: { quantity: true },
+                orderBy: { _sum: { quantity: "desc" } },
+                take: 10,
+            });
 
-        return products.map(mapProduct)
+            const mostOrderedProductIds = mostOrderedRaw.map(item => item.productId);
+
+            const [allProducts, mostOrderedProducts, featuredProducts] = await Promise.all([
+                transaction.product.findMany({
+                    where: { isActive: true },
+                    include: {
+                        productImages: true,
+                        category: true,
+                        tags: true,
+                        orderItems: true,
+                    },
+                    orderBy: { createdAt: "desc" },
+                }),
+
+                transaction.product.findMany({
+                    where: {
+                        OR: [
+                            { productId: { in: mostOrderedProductIds } },
+                            { label: "Best Seller" }
+                        ],
+                        isActive: true
+                    },
+                    include: {
+                        productImages: true,
+                        category: true,
+                        tags: true,
+                        orderItems: true,
+                    },
+                }),
+
+                transaction.product.findMany({
+                    where: { isActive: true, OR: [{ isFeatured: true }, { label: "Hot Deal" }] },
+                    include: {
+                        productImages: true,
+                        category: true,
+                        tags: true,
+                        orderItems: true,
+                    },
+                    orderBy: { createdAt: "desc" },
+                }),
+            ]);
+
+            const mostOrderedSorted = [
+                ...mostOrderedProductIds
+                    .map(id => mostOrderedProducts.find(product => product.productId === id))
+                    .filter((product): product is typeof mostOrderedProducts[number] => product !== undefined),
+                ...mostOrderedProducts.filter(
+                    product => !mostOrderedProductIds.includes(product.productId)
+                ),
+            ];
+
+            return {
+                all: allProducts.map(mapProduct),
+                mostOrdered: mostOrderedSorted.map(mapProduct),
+                featured: featuredProducts.map(mapProduct),
+            };
+        });
     } catch (error) {
-        console.error("Error fetching all products data:", error)
-        throw error
+        console.error("Error fetching all products data:", error);
+        throw error;
     }
-})
+});
