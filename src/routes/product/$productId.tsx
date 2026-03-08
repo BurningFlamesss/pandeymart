@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Minus, Plus, ShoppingBag, Star } from "lucide-react";
 import { toast } from 'sonner';
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getProduct } from '@/server/functions/getProducts';
 import { useCart } from '@/hooks/use-cart';
+import { faqs } from '@/utils/faqs';
 
 export const Route = createFileRoute('/product/$productId')({
     component: RouteComponent,
@@ -32,33 +33,10 @@ export const Route = createFileRoute('/product/$productId')({
     }
 })
 
-
-const faqs = [
-    {
-        question: "What is your return policy?",
-        answer: "We offer a 30-day return window for all products. Items must be unused and in original packaging. Return shipping is free for defective items."
-    },
-    {
-        question: "How long does shipping take?",
-        answer: "Standard shipping takes 3-5 business days. Express shipping (1-2 days) is available at checkout. Free shipping on orders over Rs. 2,000."
-    },
-    {
-        question: "Are your products organic certified?",
-        answer: "Yes, all our organic products are certified by recognized organic certification bodies. Certificates are available upon request."
-    },
-    {
-        question: "Do you offer bulk discounts?",
-        answer: "Yes! Orders of 10kg or more receive a 15% discount. Contact our customer service for custom bulk pricing on larger orders."
-    },
-    {
-        question: "How should I store the products?",
-        answer: "Store in a cool, dry place away from direct sunlight. Refrigerate after opening if indicated on the packaging. Check product labels for specific storage instructions."
-    }
-];
-
 function RouteComponent() {
     const product = Route.useLoaderData();
     const { addToCart, updateQuantity, cart } = useCart()
+    const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [selectedCustomizations, setSelectedCustomizations] =
@@ -147,12 +125,28 @@ function RouteComponent() {
             addToCart(cartItem)
             toast("Added to the Cart")
         }
+    };
 
-        console.log("Added to cart:", {
+    const handleBuyItNow = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        const cartItem = {
+            cartItemId,
             productId: product.productId,
             quantity,
-            customizations: selectedCustomizations,
-        });
+            basePrice: product.productPrice ?? product.originalPrice ?? 0,
+            customizations: resolvedCustomizations
+        }
+
+        if (existingCartItem) {
+            updateQuantity(cartItemId, existingCartItem.quantity + quantity)
+            toast("Updated the Cart and proceeding to checkout")
+        } else {
+            addToCart(cartItem)
+            toast("Added to the Cart and proceeding to checkout")
+        }
+
+        navigate({to: "/checkout"})
     };
 
 
@@ -187,7 +181,7 @@ function RouteComponent() {
                     onClick={(e) => e.stopPropagation()}
                 >
 
-                    <div className="w-full lg:w-1/2 h-full sticky top-16">
+                    <div className="w-full lg:w-1/2 h-full lg:sticky top-16">
                         <div
                             className="overflow-hidden border border-gray-200 rounded-lg relative"
                             onMouseEnter={() => setIsZooming(true)}
@@ -251,7 +245,7 @@ function RouteComponent() {
                                 className="ml-auto bg-yellow-100 text-yellow-700 hover:bg-yellow-100 font-bold h-7"
                             >
                                 <Star className="h-3 w-3 mr-1 fill-yellow-700" />
-                                {product.rating?.toFixed(1) || "0"}
+                                {product.rating?.toFixed(1) ?? "N/A"}
                             </Badge>
                         </div>
 
@@ -269,7 +263,7 @@ function RouteComponent() {
 
                         <p className="mb-4 text-gray-600 leading-relaxed">
                             {product.description ||
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry dummy text and typesetting industry"}
+                                ""}
                         </p>
 
                         {product.customizations && product.customizations.map((group) => (
@@ -314,8 +308,6 @@ function RouteComponent() {
                             </div>
                         ))}
 
-
-
                         <div className="flex items-center border-2 border-gray-200 rounded-lg w-fit mb-5">
                             <Button
                                 size="icon"
@@ -348,7 +340,7 @@ function RouteComponent() {
                             </Button>
                             <Button
                                 className="bg-black hover:bg-[#FAA016] text-white px-6 py-6 rounded-lg transition-all duration-300 w-full font-bold text-base cursor-pointer"
-                                onClick={() => console.log("Buy now", { product, quantity })}
+                                onClick={handleBuyItNow}
                             >
                                 BUY IT NOW
                             </Button>
@@ -358,21 +350,14 @@ function RouteComponent() {
                             <span className="text-xl font-semibold mb-3 block">Payment & Security</span>
                             <div className="flex gap-2 items-center mb-4 flex-wrap">
                                 <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                    VISA
+                                    COD
                                 </div>
                                 <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                    MC
-                                </div>
-                                <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                    AMEX
-                                </div>
-                                <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                    PP
+                                    Esewa
                                 </div>
                             </div>
                             <p className="text-sm text-gray-500">
-                                Your payment information is processed securely. We do not store credit
-                                card details nor have access to your credit card information.
+                                Your payment information is processed securely. We do not store your payment details nor have access to your sensitive information.
                             </p>
                         </div>
 

@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { X, Minus, Plus, ShoppingBag, ChevronDown, Star } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
 import type { Product } from "@/types/Product";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/use-cart";
+import { faqs } from "@/utils/faqs";
 
 interface ProductDetailModalProps {
     product: Product;
@@ -13,31 +15,9 @@ interface ProductDetailModalProps {
     onClose: () => void;
 }
 
-const faqs = [
-    {
-        question: "What is your return policy?",
-        answer: "We offer a 30-day return window for all products. Items must be unused and in original packaging. Return shipping is free for defective items."
-    },
-    {
-        question: "How long does shipping take?",
-        answer: "Standard shipping takes 3-5 business days. Express shipping (1-2 days) is available at checkout. Free shipping on orders over Rs. 2,000."
-    },
-    {
-        question: "Are your products organic certified?",
-        answer: "Yes, all our organic products are certified by recognized organic certification bodies. Certificates are available upon request."
-    },
-    {
-        question: "Do you offer bulk discounts?",
-        answer: "Yes! Orders of 10kg or more receive a 15% discount. Contact our customer service for custom bulk pricing on larger orders."
-    },
-    {
-        question: "How should I store the products?",
-        answer: "Store in a cool, dry place away from direct sunlight. Refrigerate after opening if indicated on the packaging. Check product labels for specific storage instructions."
-    }
-];
-
 const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProps) => {
     const { addToCart, updateQuantity, cart } = useCart()
+    const navigate = useNavigate()
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [selectedCustomizations, setSelectedCustomizations] =
@@ -125,12 +105,28 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
             addToCart(cartItem)
             toast("Added to the Cart")
         }
+    };
 
-        console.log("Added to cart:", {
+    const handleBuyItNow = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        const cartItem = {
+            cartItemId,
             productId: product.productId,
             quantity,
-            customizations: selectedCustomizations,
-        });
+            basePrice: product.productPrice ?? product.originalPrice ?? 0,
+            customizations: resolvedCustomizations
+        }
+
+        if (existingCartItem) {
+            updateQuantity(cartItemId, existingCartItem.quantity + quantity)
+            toast("Updated the Cart and proceeding to checkout")
+        } else {
+            addToCart(cartItem)
+            toast("Added to the Cart and proceeding to checkout")
+        }
+
+        navigate({to: "/checkout"})
     };
 
 
@@ -248,7 +244,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
                             className="ml-auto bg-yellow-100 text-yellow-700 hover:bg-yellow-100 font-bold h-7"
                         >
                             <Star className="h-3 w-3 mr-1 fill-yellow-700" />
-                            {product.rating?.toFixed(1) || "0"}
+                            {product.rating?.toFixed(1) ?? "N/A"}
                         </Badge>
                     </div>
 
@@ -266,7 +262,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
 
                     <p className="mb-4 text-gray-600 leading-relaxed">
                         {product.description ||
-                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry dummy text and typesetting industry"}
+                            ""}
                     </p>
 
                     {product.customizations && product.customizations.map((group) => (
@@ -345,33 +341,26 @@ const ProductDetailModal = ({ product, isOpen, onClose }: ProductDetailModalProp
                         </Button>
                         <Button
                             className="bg-black hover:bg-[#FAA016] text-white px-6 py-6 rounded-lg transition-all duration-300 w-full font-bold text-base cursor-pointer"
-                            // onClick={handleAddToCart}
+                            onClick={handleBuyItNow}
                         >
                             BUY IT NOW
                         </Button>
                     </div>
 
                     <div className="py-5 border-t border-gray-200">
-                        <span className="text-xl font-semibold mb-3 block">Payment & Security</span>
-                        <div className="flex gap-2 items-center mb-4 flex-wrap">
-                            <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                VISA
+                            <span className="text-xl font-semibold mb-3 block">Payment & Security</span>
+                            <div className="flex gap-2 items-center mb-4 flex-wrap">
+                                <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
+                                    COD
+                                </div>
+                                <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
+                                    Esewa
+                                </div>
                             </div>
-                            <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                MC
-                            </div>
-                            <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                AMEX
-                            </div>
-                            <div className="w-12 h-8 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-xs font-bold">
-                                PP
-                            </div>
+                            <p className="text-sm text-gray-500">
+                                Your payment information is processed securely. We do not store your payment details nor have access to your sensitive information.
+                            </p>
                         </div>
-                        <p className="text-sm text-gray-500">
-                            Your payment information is processed securely. We do not store credit
-                            card details nor have access to your credit card information.
-                        </p>
-                    </div>
 
                     <div className="grid grid-cols-3 gap-4 border border-gray-200 p-5 rounded-lg mb-6">
                         <div className="flex flex-col items-center text-center">

@@ -381,7 +381,7 @@ const ProductListing = ({ product, index }: productListingProps) => {
                                 className="ml-auto bg-yellow-100 text-yellow-700 hover:bg-yellow-100 font-bold h-7"
                             >
                                 <Star className="h-3 w-3 mr-1 fill-yellow-700" />
-                                {product.rating?.toFixed(1) || "0"}
+                                {product.rating?.toFixed(1) ?? "N/A"}
                             </Badge>
                         </div>
 

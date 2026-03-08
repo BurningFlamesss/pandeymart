@@ -23,11 +23,12 @@ export const requireAuth = createServerFn().middleware([getSessionMiddleware]).h
 
 export const requireAdminAccess = createServerFn().middleware([getSessionMiddleware]).handler(
     ({ context }) => {
+        console.log("Checking admin access for user:", context)
         if (!context.session) {
             throw redirect({ to: "/authenticate", search: { mode: "signup" } })
         }
 
-        if (!context.session.user.id) {
+        if (context.session.user.email !== process.env.VITE_ADMIN_EMAIL) {
             throw redirect({to: '/'})
         }
     }

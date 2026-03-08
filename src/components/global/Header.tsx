@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ShoppingCart } from 'lucide-react'
+import { Package, Server, ShoppingCart } from 'lucide-react'
 import { FaRegHeart } from "react-icons/fa6";
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -42,6 +42,8 @@ function Header() {
 const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session'], signOut: () => void }) => {
     const { cart, totalPrice } = useCart()
 
+    console.log(session, "session in header")
+
     const { data: realProducts = [], isError, isPending } = useQuery({
         queryKey: ['cart-products', cart.map(cartItem => cartItem.productId).sort().join(",")],
         queryFn: () => {
@@ -51,9 +53,6 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
             return getProducts({ data: uniqueIds })
         },
     })
-
-    console.log("Cart: ", cart)
-    console.log("Products: ", realProducts)
 
     const productMap = useMemo(() => {
         return new Map(realProducts.map(product => [product.productId, product]))
@@ -134,7 +133,23 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
                         <AvatarFallback>UR</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='w-60' align='end'>
+                <DropdownMenuContent className='w-60 flex flex-col gap-2' align='end'>
+                    {
+                        session.user.email == import.meta.env.VITE_ADMIN_EMAIL && (
+                            <DropdownMenuItem className='cursor-pointer'>
+                                <Link to="/admin" className="flex items-center gap-2">
+                                    <Server className="h-4 w-4" />
+                                    Admin Panel
+                                </Link>
+                            </DropdownMenuItem>
+                        )
+                    }
+                    <DropdownMenuItem className='cursor-pointer'>
+                        <Link to="/" className="flex items-center gap-2">
+                            <Package className="h-4 w-4" />
+                            My Orders
+                        </Link>
+                    </DropdownMenuItem>
                     <Button onClick={() => signOut()} variant={'destructive'} className='cursor-pointer w-full'>
                         Logout
                     </Button>

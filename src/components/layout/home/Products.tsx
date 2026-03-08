@@ -7,6 +7,7 @@ const Products = ({ products, children }: { products?: Array<Product>, children?
             <div className="w-full max-w-300">
                 {children}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-3">
+                    {products?.length === 0 && <p className="text-center text-gray-500 col-span-full">No products found.</p>}
                     {products?.map((product, i) => (
                         <ProductListing
                             key={`product-${product.productId || i}`}

@@ -26,7 +26,6 @@ export const Route = createFileRoute('/admin/')({
 
 function RouteComponent() {
   const { stats, products, orders, users } = Route.useLoaderData()
-  console.log("Admin orders:", orders)
   return (
     <>
       <Admin stats={stats} products={products} orders={orders} users={users} />
