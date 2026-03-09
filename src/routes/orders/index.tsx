@@ -24,6 +24,8 @@ import {
 import { requireAuth } from "@/middleware/auth"
 import { cancelOrder, getMyOrders, requestRefund, submitReview } from "@/server/functions/getOrders"
 import { parseCustomizations } from "@/utils/parseCustomization"
+import { Star } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/orders/")({
     async beforeLoad() {
@@ -137,7 +139,7 @@ function StarRating({
     const [hovered, setHovered] = useState(0)
     return (
         <div className="flex gap-0.5">
-            {[1, 2, 3, 4, 5].map((star) => (
+            {[1, 2, 3, 4, 5].map((star, index) => (
                 <button
                     key={star}
                     type="button"
@@ -147,9 +149,15 @@ function StarRating({
                     onMouseLeave={() => !readonly && setHovered(0)}
                     className={`text-base leading-none transition-transform ${readonly ? "cursor-default" : "cursor-pointer"} ${star <= (hovered || value) ? "scale-110" : ""}`}
                 >
-                    <span className={star <= (hovered || value) ? "text-amber-400" : "text-stone-200"}>
-                        &#9733;
-                    </span>
+                    <Star
+                    key={`${star}-${index}`}
+                    className={cn(
+                        readonly ? "h-3 w-3" : "h-5 w-5",
+                        star <= (hovered || value)
+                            ? "fill-[#FAA016] text-[#FAA016]"
+                            : "fill-gray-200 text-gray-200"
+                    )}
+                />
                 </button>
             ))}
         </div>

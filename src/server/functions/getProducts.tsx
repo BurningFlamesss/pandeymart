@@ -1,9 +1,21 @@
 import { createServerFn } from "@tanstack/react-start"
 import z from "zod"
+import type { Prisma } from "@/generated/prisma/client"
 import { prisma } from "@/db"
 import { mapProduct } from "@/utils/mapProducts"
 
 const paramSchema = z.array(z.string())
+
+export type reviewType = Prisma.ProductRatingGetPayload<{
+    include: {
+        user: {
+            select: {
+                name: true,
+                image: true
+            }
+        }
+    }
+}>
 
 export const getProduct = createServerFn({ method: "GET" }).inputValidator(z.string()).handler(async ({ data }) => {
     try {
@@ -15,13 +27,26 @@ export const getProduct = createServerFn({ method: "GET" }).inputValidator(z.str
             include: {
                 productImages: true,
                 category: true,
-                tags: true
+                tags: true,
+                ratings: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                image: true
+                            }
+                        }
+                    }
+                }
             }
         })
 
         if (!product) return null
 
-        return mapProduct(product)
+        return {
+            product: mapProduct(product),
+            reviews: product.ratings
+        }
     } catch (error) {
         console.error("Error fetching product data:", error)
         throw error
@@ -40,7 +65,8 @@ export const getProducts = createServerFn({ method: "GET" }).inputValidator(para
             include: {
                 productImages: true,
                 category: true,
-                tags: true
+                tags: true,
+                ratings: true
             }
         })
 
@@ -95,6 +121,7 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(async ()
                         category: true,
                         tags: true,
                         orderItems: true,
+                        ratings: true
                     },
                     orderBy: { createdAt: "desc" },
                 }),
@@ -112,6 +139,7 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(async ()
                         category: true,
                         tags: true,
                         orderItems: true,
+                        ratings: true,
                     },
                 }),
 
@@ -122,6 +150,7 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(async ()
                         category: true,
                         tags: true,
                         orderItems: true,
+                        ratings: true
                     },
                     orderBy: { createdAt: "desc" },
                 }),

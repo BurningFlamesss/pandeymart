@@ -8,21 +8,22 @@ import { Badge } from "@/components/ui/badge";
 import { getProduct } from '@/server/functions/getProducts';
 import { useCart } from '@/hooks/use-cart';
 import { faqs } from '@/utils/faqs';
+import { ReviewsSection } from '@/components/layout/products/Reviews';
 
 export const Route = createFileRoute('/product/$productId')({
     component: RouteComponent,
     async loader({ params }) {
         const { productId } = params;
         console.log("Loading product with ID:", productId);
-        const product = await getProduct({
+        const data = await getProduct({
             data: productId
         });
 
-        if (!product) {
+        if (!data) {
             throw new Error("Product Not Found!")
         }
 
-        return product
+        return data
     },
     errorComponent: () => {
         return (
@@ -34,7 +35,7 @@ export const Route = createFileRoute('/product/$productId')({
 })
 
 function RouteComponent() {
-    const product = Route.useLoaderData();
+    const { product, reviews } = Route.useLoaderData();
     const { addToCart, updateQuantity, cart } = useCart()
     const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(0);
@@ -423,6 +424,13 @@ function RouteComponent() {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        </div>
+
+                        <div className="border-t border-gray-200 mt-6 pt-6">
+                            <h4 className="text-xl font-semibold mb-4">Reviews & Ratings</h4>
+                            <div className="space-y-3">
+                                <ReviewsSection reviews={reviews}></ReviewsSection>
                             </div>
                         </div>
                     </div>
