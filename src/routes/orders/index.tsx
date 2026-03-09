@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { Star } from "lucide-react"
 import { useCart } from "@/hooks/use-cart"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -24,7 +25,6 @@ import {
 import { requireAuth } from "@/middleware/auth"
 import { cancelOrder, getMyOrders, requestRefund, submitReview } from "@/server/functions/getOrders"
 import { parseCustomizations } from "@/utils/parseCustomization"
-import { Star } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/orders/")({
@@ -92,11 +92,12 @@ function OrderStatusStepper({ status }: { status: string }) {
                                     ? "bg-red-400"
                                     : isCancelled
                                         ? "bg-stone-200"
-                                        : isCompleted
-                                            ? isCurrent
-                                                ? "bg-stone-800 ring-2 ring-stone-300 ring-offset-1"
-                                                : "bg-stone-700"
-                                            : "bg-stone-200"
+                                        : status === "DELIVERED" && step === "DELIVERED" ? "bg-green-500 ring-2 ring-green-200 ring-offset-1"
+                                            : isCompleted
+                                                ? isCurrent
+                                                    ? "bg-stone-800 ring-2 ring-stone-300 ring-offset-1"
+                                                    : "bg-stone-700"
+                                                : "bg-stone-200"
                                     }`}
                             />
                             <span
@@ -150,14 +151,14 @@ function StarRating({
                     className={`text-base leading-none transition-transform ${readonly ? "cursor-default" : "cursor-pointer"} ${star <= (hovered || value) ? "scale-110" : ""}`}
                 >
                     <Star
-                    key={`${star}-${index}`}
-                    className={cn(
-                        readonly ? "h-3 w-3" : "h-5 w-5",
-                        star <= (hovered || value)
-                            ? "fill-[#FAA016] text-[#FAA016]"
-                            : "fill-gray-200 text-gray-200"
-                    )}
-                />
+                        key={`${star}-${index}`}
+                        className={cn(
+                            readonly ? "h-3 w-3" : "h-5 w-5",
+                            star <= (hovered || value)
+                                ? "fill-[#FAA016] text-[#FAA016]"
+                                : "fill-gray-200 text-gray-200"
+                        )}
+                    />
                 </button>
             ))}
         </div>
@@ -405,18 +406,15 @@ function OrderCard({ order }: { order: Order }) {
                                             <p className="text-xs font-semibold text-stone-700 tabular-nums">
                                                 Rs. {(item.productPrice * item.quantity).toFixed(2)}
                                             </p>
-                                            <p className="text-[10px] text-stone-400 mt-0.5">for {item.quantity} {item.product?.unit ?? "units"}</p>
+                                            <p className="text-[10px] text-stone-400 mt-0.5">for {item.quantity} {item.product?.unit ?? item.quantity > 1 ? "units" : "unit"}</p>
                                         </div>
                                     </div>
 
                                     {customizations.length > 0 && (
                                         <div className="flex flex-wrap gap-1 mt-1.5">
                                             {customizations.map((group) => (
-                                                <span
-                                                    key={group.title}
-                                                    className="text-[10px] bg-stone-50 border border-stone-100 text-stone-500 px-1.5 py-0.5 rounded-md"
-                                                >
-                                                    {group.title}: {group.options.map((option) => option.label).join(", ")}
+                                                <span key={group.title} className="text-xs bg-yellow-500/60 px-2 py-0.5 rounded-full">
+                                                    {group.title}: {group.options.map(option => option.label).join(', ')}
                                                 </span>
                                             ))}
                                         </div>

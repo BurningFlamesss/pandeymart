@@ -21,15 +21,15 @@ function RouteComponent() {
     <>
       <HomeBanner />
       <Products products={featured} >
-        <SectionStarter title="Featured Products" src="/sectionstarter/spicy.png" description="Shop the latest and greatest products" />
+        <SectionStarter title="Featured Products" src="/pandeymart.png" description="Discover the greatest products" />
       </Products>
       <HomeAd />
       <Products products={mostOrdered} >
-        <SectionStarter title="Top Selling Products" src="/sectionstarter/skincare.png" description="Find your new favorite products" />
+        <SectionStarter title="Top Selling Products" src="/pandeymart.png" description="Find the best selling products" />
       </Products>
       <WhyChooseUs></WhyChooseUs>
       <Products products={all} >
-        <SectionStarter title="All Products" src="/sectionstarter/skincare.png" description="Shop all our products" />
+        <SectionStarter title="All Products" src="/pandeymart.png" description="Shop all our products" />
       </Products>
       {/* <Reviews></Reviews> */}
       {/* <Offers></Offers> */}
