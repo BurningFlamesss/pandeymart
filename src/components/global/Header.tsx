@@ -133,20 +133,20 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
                 <DropdownMenuContent className='w-60 flex flex-col gap-2' align='end'>
                     {
                         session.user.email == import.meta.env.VITE_ADMIN_EMAIL && (
-                            <DropdownMenuItem className='cursor-pointer'>
-                                <Link to="/admin" className="flex items-center gap-2">
+                            <Link to="/admin" className="flex items-center gap-2">
+                                <DropdownMenuItem className='cursor-pointer w-full'>
                                     <Server className="h-4 w-4" />
                                     Admin Panel
-                                </Link>
-                            </DropdownMenuItem>
+                                </DropdownMenuItem>
+                            </Link>
                         )
                     }
-                    <DropdownMenuItem className='cursor-pointer'>
-                        <Link to="/" className="flex items-center gap-2">
+                    <Link to="/orders" className="flex items-center gap-2">
+                        <DropdownMenuItem className='cursor-pointer w-full'>
                             <Package className="h-4 w-4" />
                             My Orders
-                        </Link>
-                    </DropdownMenuItem>
+                        </DropdownMenuItem>
+                    </Link>
                     <Button onClick={() => signOut()} variant={'destructive'} className='cursor-pointer w-full'>
                         Logout
                     </Button>
