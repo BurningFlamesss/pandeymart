@@ -37,6 +37,7 @@ const EMPTY_PRODUCT: Partial<Product> = {
     inStock: true,
     isActive: true,
     isFeatured: false,
+    labelColor: "#f59e0b",
 };
 
 export function ProductSheet({ open, onOpenChange, mode, product, onSave }: ProductSheetProps) {

@@ -204,6 +204,9 @@ const ProductListing = ({ product, index }: productListingProps) => {
                                 "absolute top-3 left-3 text-white text-xs font-semibold px-3 py-1 rounded-md z-10",
                                 getLabelColor(product.label)
                             )}
+                            style={{
+                                backgroundColor: product.labelColor
+                            }}
                         >
                             {product.label}
                         </span>
@@ -274,7 +277,7 @@ const ProductListing = ({ product, index }: productListingProps) => {
                             )}
                         </div>
 
-                        <div className="flex items-center justify-between mb-3 gap-3 h-10 overflow-x-auto overflow-y-hidden">
+                        <div className="flex items-center justify-between px-1 mb-3 gap-3 h-12 overflow-x-auto overflow-y-hidden">
                             {product.customizations?.length ? (
                                 product.customizations.map((group) => (
                                     <Select
@@ -286,6 +289,7 @@ const ProductListing = ({ product, index }: productListingProps) => {
                                                 [group.title]: value,
                                             }))
                                         }
+                                        
                                     >
                                         <SelectTrigger className="w-28 h-10">
                                             <SelectValue placeholder={group.title} />

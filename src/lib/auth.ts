@@ -12,11 +12,6 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     async sendResetPassword({ user, url, token }, request) {
-      console.table({
-        to: user.email,
-        subject: 'Reset your password',
-        text: `Click the link to reset your password: ${url}`
-      })
       await sendEmails({
         type: "reset",
         receiverEmail: user.email,
@@ -29,12 +24,6 @@ export const auth = betterAuth({
   },
   emailVerification: {
     async sendVerificationEmail({ user, url, token }, request) {
-
-      console.table({
-        to: user.email,
-        subject: 'Verify your email address',
-        text: `Click the link to verify your email: ${url}`
-      })
       await sendEmails({
         type: "verify",
         receiverEmail: user.email,

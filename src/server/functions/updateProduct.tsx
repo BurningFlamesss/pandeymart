@@ -6,7 +6,7 @@ import { requireAdminAccess } from "@/middleware/auth"
 
 const customizationOptionSchema = z.object({
     label: z.string(),
-    additionalPrice: z.number().min(0)
+    additionalPrice: z.number()
 })
 
 const customizationGroupSchema = z.object({

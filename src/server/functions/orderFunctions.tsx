@@ -6,7 +6,7 @@ import { getSessionMiddleware } from "@/middleware/auth"
 
 const CustomizationOptionSchema = z.object({
     label: z.string(),
-    additionalPrice: z.number().min(0),
+    additionalPrice: z.number(),
 })
 
 const CustomizationGroupSchema = z.object({

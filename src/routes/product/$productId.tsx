@@ -14,7 +14,6 @@ export const Route = createFileRoute('/product/$productId')({
     component: RouteComponent,
     async loader({ params }) {
         const { productId } = params;
-        console.log("Loading product with ID:", productId);
         const data = await getProduct({
             data: productId
         });
