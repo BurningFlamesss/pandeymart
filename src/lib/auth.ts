@@ -1,7 +1,6 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
-import { passkey } from "@better-auth/passkey"
 import { prisma } from '@/db';
 import { sendEmails } from '@/helper/sendEmail';
 
@@ -47,5 +46,5 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true
   },
-  plugins: [tanstackStartCookies(), passkey()]
+  plugins: [tanstackStartCookies()]
 })

@@ -139,32 +139,13 @@ function AuthenticationPage() {
 		try {
 			await authClient.requestPasswordReset({
 				email,
-				redirectTo: "http://localhost:3000/reset-password"
+				redirectTo: `${import.meta.env.VITE_APP_URL || 'http://localhost:3000'}/reset-password`
 			})
 
 			toast.success("Reset Password email sent successfully. Please check out your mail!")
 		} catch (error: any) {
 			toast.error("Something went wrong");
 		}
-	}
-
-	const handlePasskeyLogin = async () => {
-		try {
-			await authClient.signIn.passkey({
-				fetchOptions: {
-					onRequest: () => {
-						setLoading(1)
-					},
-					onResponse: () => {
-						setLoading(0)
-					},
-				},
-			})
-		} catch (error: any) {
-			toast.error("Something went wrong");
-
-		}
-
 	}
 
 	const handleGoogleLogin = async () => {
@@ -296,24 +277,6 @@ function AuthenticationPage() {
 												<Separator></Separator>
 
 												<div className="flex flex-col gap-2">
-
-													<Button
-														variant="secondary"
-														type='button'
-														disabled={isSubmitting}
-														className="gap-2"
-														onClick={() => handlePasskeyLogin()}
-													>
-														{loading === 1 ? (
-															<Loader2 size={16} className="animate-spin" />
-														) : (
-															<>
-																<Key size={16} />
-																Sign-in with Passkey
-															</>
-														)}
-
-													</Button>
 													<div className={cn(
 														"w-full gap-2 flex items-center",
 														"justify-between flex-col"

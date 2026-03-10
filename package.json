@@ -18,7 +18,6 @@
     "db:seed": "dotenv -e .env.local -- prisma db seed"
   },
   "dependencies": {
-    "@better-auth/passkey": "^1.4.17",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.0",
