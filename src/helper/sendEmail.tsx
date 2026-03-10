@@ -27,9 +27,6 @@ export async function sendEmails(emailRequest: {
                 user: user,
                 pass: password
             },
-            tls: {
-                rejectUnauthorized: false
-            }
         })
 
         await transporter.verify()

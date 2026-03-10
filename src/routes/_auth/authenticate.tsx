@@ -37,6 +37,7 @@ function AuthenticationPage() {
 			onSubmit: signInSchema
 		},
 		async onSubmit({ value }) {
+			toast.info("Logging you in...")
 			await authClient.signIn.email({
 				email: value.email,
 				password: value.password,
@@ -46,6 +47,7 @@ function AuthenticationPage() {
 						toast.error(ctx.error.message);
 					},
 					onSuccess: () => {
+						toast.success("Login successful!");
 						navigate({ to: "/product" })
 					}
 				},
@@ -77,6 +79,7 @@ function AuthenticationPage() {
 			onSubmit: signUpSchema
 		},
 		async onSubmit({ value }) {
+			toast.info("Creating your account...")
 			await authClient.signUp.email({
 				email: value.email,
 				password: value.password,
@@ -139,7 +142,7 @@ function AuthenticationPage() {
 		try {
 			await authClient.requestPasswordReset({
 				email,
-				redirectTo: `${import.meta.env.VITE_APP_URL || 'http://localhost:3000'}/reset-password`
+				redirectTo: `${import.meta.env.VITE_APP_URL || 'https://www.pandeymart.tech'}/reset-password`
 			})
 
 			toast.success("Reset Password email sent successfully. Please check out your mail!")
