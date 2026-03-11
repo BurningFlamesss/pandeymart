@@ -126,7 +126,7 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
             <DropdownMenu>
                 <DropdownMenuTrigger className='cursor-pointer'>
                     <Avatar className='border border-muted p-0.5'>
-                        <AvatarImage src={session.user.image ? session.user.image : "/pandeymart.png"} alt="User Avatar" />
+                        <AvatarImage className='scale-120' src={session.user.image ? session.user.image : "/pandeymart.png"} alt="User Avatar" />
                         <AvatarFallback>UR</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>

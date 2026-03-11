@@ -37,7 +37,7 @@ function ReviewCard({ review }: { review: Review }) {
                     <img
                         src={review.user.image}
                         alt={review.user.name}
-                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                        className="w-10 h-10 rounded-full object-cover scale-120 border border-gray-200"
                     />
                 ) : (
                     <div className="w-10 h-10 rounded-full bg-[#FAA016]/10 border border-[#FAA016]/20 flex items-center justify-center">
