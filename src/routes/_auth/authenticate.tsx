@@ -155,7 +155,7 @@ function AuthenticationPage() {
 		try {
 			await authClient.signIn.social({
 				provider: "google",
-				callbackURL: "/dashboard",
+				callbackURL: "/product",
 				fetchOptions: {
 					onRequest: () => {
 						setLoading(2)
