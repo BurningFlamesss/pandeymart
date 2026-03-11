@@ -35,5 +35,13 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true
   },
+  baseURL: process.env.BETTER_AUTH_URL,
+  socialProviders: {
+    google: {
+      prompt: "select_account",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
   plugins: [tanstackStartCookies()]
 })
