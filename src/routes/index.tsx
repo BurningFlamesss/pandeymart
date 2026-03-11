@@ -3,11 +3,12 @@ import Landing from '@/components/container/Landing'
 import FooterSection from '@/components/layout/landing/FooterSection'
 import HeroSection from '@/components/layout/landing/HeroSection'
 import ContentSection from '@/components/layout/landing/ContentSection'
+import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-
+  const { data: session } = authClient.useSession()
 
   return (
     <Landing>
@@ -33,8 +34,8 @@ function App() {
       />
       <FooterSection
         Heading="Get Started"
-        CTA="Sign Up"
-        CTALink="/authenticate?mode=signup"
+        CTA={session?.user.id ? "View Products" : "Sign Up"}
+        CTALink={session?.user.id ? "/product" : "/authenticate?mode=signup"}
         LogoSrc="/pandeymart.png"
         LogoAlt="PandeyMart Logo"
         Links={[

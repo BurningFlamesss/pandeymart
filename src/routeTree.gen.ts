@@ -13,10 +13,13 @@ import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
 import { Route as PaymentFailedRouteImport } from './routes/payment-failed'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductIndexRouteImport } from './routes/product/index'
+import { Route as PrivacyIndexRouteImport } from './routes/privacy/index'
 import { Route as OrdersIndexRouteImport } from './routes/orders/index'
 import { Route as FavouriteIndexRouteImport } from './routes/favourite/index'
+import { Route as ContactIndexRouteImport } from './routes/contact/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as ProductProductIdRouteImport } from './routes/product/$productId'
 import { Route as AuthAuthenticateRouteImport } from './routes/_auth/authenticate'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -43,6 +46,11 @@ const ProductIndexRoute = ProductIndexRouteImport.update({
   path: '/product/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyIndexRoute = PrivacyIndexRouteImport.update({
+  id: '/privacy/',
+  path: '/privacy/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersIndexRoute = OrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
@@ -53,6 +61,11 @@ const FavouriteIndexRoute = FavouriteIndexRouteImport.update({
   path: '/favourite/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactIndexRoute = ContactIndexRouteImport.update({
+  id: '/contact/',
+  path: '/contact/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
   id: '/checkout/',
   path: '/checkout/',
@@ -61,6 +74,11 @@ const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductProductIdRoute = ProductProductIdRouteImport.update({
@@ -95,10 +113,13 @@ export interface FileRoutesByFullPath {
   '/payment-success': typeof PaymentSuccessRoute
   '/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/about/': typeof AboutIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/contact/': typeof ContactIndexRoute
   '/favourite/': typeof FavouriteIndexRoute
   '/orders/': typeof OrdersIndexRoute
+  '/privacy/': typeof PrivacyIndexRoute
   '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/payment/esewa/failure': typeof ApiPaymentEsewaFailureRoute
@@ -110,10 +131,13 @@ export interface FileRoutesByTo {
   '/payment-success': typeof PaymentSuccessRoute
   '/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/about': typeof AboutIndexRoute
   '/admin': typeof AdminIndexRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/contact': typeof ContactIndexRoute
   '/favourite': typeof FavouriteIndexRoute
   '/orders': typeof OrdersIndexRoute
+  '/privacy': typeof PrivacyIndexRoute
   '/product': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/payment/esewa/failure': typeof ApiPaymentEsewaFailureRoute
@@ -126,10 +150,13 @@ export interface FileRoutesById {
   '/payment-success': typeof PaymentSuccessRoute
   '/_auth/authenticate': typeof AuthAuthenticateRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/about/': typeof AboutIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/contact/': typeof ContactIndexRoute
   '/favourite/': typeof FavouriteIndexRoute
   '/orders/': typeof OrdersIndexRoute
+  '/privacy/': typeof PrivacyIndexRoute
   '/product/': typeof ProductIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/payment/esewa/failure': typeof ApiPaymentEsewaFailureRoute
@@ -143,10 +170,13 @@ export interface FileRouteTypes {
     | '/payment-success'
     | '/authenticate'
     | '/product/$productId'
+    | '/about/'
     | '/admin/'
     | '/checkout/'
+    | '/contact/'
     | '/favourite/'
     | '/orders/'
+    | '/privacy/'
     | '/product/'
     | '/api/auth/$'
     | '/api/payment/esewa/failure'
@@ -158,10 +188,13 @@ export interface FileRouteTypes {
     | '/payment-success'
     | '/authenticate'
     | '/product/$productId'
+    | '/about'
     | '/admin'
     | '/checkout'
+    | '/contact'
     | '/favourite'
     | '/orders'
+    | '/privacy'
     | '/product'
     | '/api/auth/$'
     | '/api/payment/esewa/failure'
@@ -173,10 +206,13 @@ export interface FileRouteTypes {
     | '/payment-success'
     | '/_auth/authenticate'
     | '/product/$productId'
+    | '/about/'
     | '/admin/'
     | '/checkout/'
+    | '/contact/'
     | '/favourite/'
     | '/orders/'
+    | '/privacy/'
     | '/product/'
     | '/api/auth/$'
     | '/api/payment/esewa/failure'
@@ -189,10 +225,13 @@ export interface RootRouteChildren {
   PaymentSuccessRoute: typeof PaymentSuccessRoute
   AuthAuthenticateRoute: typeof AuthAuthenticateRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
+  AboutIndexRoute: typeof AboutIndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
+  ContactIndexRoute: typeof ContactIndexRoute
   FavouriteIndexRoute: typeof FavouriteIndexRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
+  PrivacyIndexRoute: typeof PrivacyIndexRoute
   ProductIndexRoute: typeof ProductIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiPaymentEsewaFailureRoute: typeof ApiPaymentEsewaFailureRoute
@@ -229,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy/': {
+      id: '/privacy/'
+      path: '/privacy'
+      fullPath: '/privacy/'
+      preLoaderRoute: typeof PrivacyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orders/': {
       id: '/orders/'
       path: '/orders'
@@ -243,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavouriteIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact/': {
+      id: '/contact/'
+      path: '/contact'
+      fullPath: '/contact/'
+      preLoaderRoute: typeof ContactIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/': {
       id: '/checkout/'
       path: '/checkout'
@@ -255,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$productId': {
@@ -301,10 +361,13 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentSuccessRoute: PaymentSuccessRoute,
   AuthAuthenticateRoute: AuthAuthenticateRoute,
   ProductProductIdRoute: ProductProductIdRoute,
+  AboutIndexRoute: AboutIndexRoute,
   AdminIndexRoute: AdminIndexRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
+  ContactIndexRoute: ContactIndexRoute,
   FavouriteIndexRoute: FavouriteIndexRoute,
   OrdersIndexRoute: OrdersIndexRoute,
+  PrivacyIndexRoute: PrivacyIndexRoute,
   ProductIndexRoute: ProductIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiPaymentEsewaFailureRoute: ApiPaymentEsewaFailureRoute,
