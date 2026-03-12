@@ -57,7 +57,7 @@ function HomeBanner() {
                                         alt=""
                                     />
 
-                                    <Button href='/' title="BUY NOW"></Button>
+                                    <Button href='/checkout' title="BUY NOW"></Button>
                                 </div>
                             </CarouselItem>
                         ))}

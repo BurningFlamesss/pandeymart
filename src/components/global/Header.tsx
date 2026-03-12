@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Package, Server, ShoppingCart } from 'lucide-react'
+import { Package, Server, ShoppingCart, Store } from 'lucide-react'
 import { FaRegHeart } from "react-icons/fa6";
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -141,6 +141,12 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
                             </Link>
                         )
                     }
+                    <Link to="/product" className="flex items-center gap-2">
+                        <DropdownMenuItem className='cursor-pointer w-full'>
+                            <Store className="h-4 w-4" />
+                            Products
+                        </DropdownMenuItem>
+                    </Link>
                     <Link to="/orders" className="flex items-center gap-2">
                         <DropdownMenuItem className='cursor-pointer w-full'>
                             <Package className="h-4 w-4" />
