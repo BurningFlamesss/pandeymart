@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { initiateEsewaPayment } from "../../server/functions/InitiateEsewaPayment";
+import type { CustomizationGroup, IndividualProduct, Product } from "@/types/Product";
 import { requireAuth } from '@/middleware/auth'
 import { useCart } from "@/hooks/use-cart";
 import { getProducts } from "@/server/functions/getProducts";
@@ -12,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import ImageSlider from "@/components/shared/ImageSlider";
 import { createOrder } from "@/server/functions/orderFunctions";
-import type { CustomizationGroup, IndividualProduct, Product } from "@/types/Product";
 
 export const Route = createFileRoute('/checkout/')({
     async beforeLoad() {

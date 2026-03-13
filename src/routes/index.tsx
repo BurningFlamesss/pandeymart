@@ -1,14 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Suspense, lazy } from 'react'
 import Landing from '@/components/container/Landing'
-import FooterSection from '@/components/layout/landing/FooterSection'
 import HeroSection from '@/components/layout/landing/HeroSection'
 import ContentSection from '@/components/layout/landing/ContentSection'
-import { authClient } from '@/lib/auth-client'
+
+const FooterSection = lazy(() => import('@/components/layout/landing/FooterSection'))
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-  const { data: session } = authClient.useSession()
 
   return (
     <Landing>
@@ -32,19 +32,19 @@ function App() {
         leftImageSrc="/fast-delivery.svg"
         leftImageAlt="Left Image"
       />
-      <FooterSection
-        Heading="Get Started"
-        CTA={session?.user.id ? "View Products" : "Sign Up"}
-        CTALink={session?.user.id ? "/product" : "/authenticate?mode=signup"}
-        LogoSrc="/pandeymart.png"
-        LogoAlt="PandeyMart Logo"
-        Links={[
-          { href: "/about", text: "About Us" },
-          { href: "/contact", text: "Contact" },
-          { href: "/privacy", text: "Privacy Policy" }
-        ]}
-        Attribution="© 2026 PandeyMart. All rights reserved."
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <FooterSection
+          Heading="Get Started"
+          LogoSrc="/pandeymart.png"
+          LogoAlt="PandeyMart Logo"
+          Links={[
+            { href: "/about", text: "About Us" },
+            { href: "/contact", text: "Contact" },
+            { href: "/privacy", text: "Privacy Policy" }
+          ]}
+          Attribution="© 2026 PandeyMart. All rights reserved."
+        />
+      </Suspense>
     </Landing>
   )
 }

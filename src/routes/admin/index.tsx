@@ -8,10 +8,12 @@ export const Route = createFileRoute('/admin/')({
     await requireAdminAccess()
   },
   async loader() {
-    const stats = await getAdminPanelStatsData();
-    const products = await getAdminPanelProductsData()
-    const orders = await getAdminPanelOrdersData()
-    const users = await getAdminPanelUsersData()
+    const [stats, products, orders, users] = await Promise.all([
+      await getAdminPanelStatsData(),
+      await getAdminPanelProductsData(),
+      await getAdminPanelOrdersData(),
+      await getAdminPanelUsersData()
+    ]);
     return {
       stats,
       products,

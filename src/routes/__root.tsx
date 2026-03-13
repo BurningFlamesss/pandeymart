@@ -1,14 +1,15 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import appCss from '../styles.css?url'
 import "../styles/globals.css"
-import Header from '@/components/global/Header'
 import GlobalProvider from '@/provider/GlobalProvider'
+
+const Header = lazy(() => import('@/components/global/Header'))
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -93,7 +94,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <GlobalProvider>
-        <Header />
+          <Suspense fallback={
+            <header className='site-header'>
+              <div className='header-inner'></div>
+            </header>
+          }>
+            <Header />
+          </Suspense>
           {children}
         </GlobalProvider>
         <TanStackDevtools

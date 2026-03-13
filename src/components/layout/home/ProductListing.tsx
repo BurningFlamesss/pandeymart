@@ -4,7 +4,6 @@ import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import ProductDetailModal from "./ProductDetailModal";
 import type { Product } from "@/types/Product";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,6 +19,7 @@ import { cn } from "@/lib/utils";
 import ImageSlider from "@/components/shared/ImageSlider";
 import { useFavourite } from "@/hooks/use-favourite";
 import { useCart } from "@/hooks/use-cart";
+import { ProductPlaceholder } from "@/routes/product";
 
 interface productListingProps {
     product: Product | null;
@@ -402,26 +402,6 @@ const ProductListing = ({ product, index }: productListingProps) => {
                 />
             )}
         </>
-    );
-};
-
-const ProductPlaceholder = () => {
-    return (
-        <div className="flex flex-col w-full border border-gray-200 rounded-lg bg-white h-full">
-            <div className="relative bg-zinc-100 h-64 w-full overflow-hidden rounded-t-lg shrink-0">
-                <Skeleton className="h-full w-full" />
-            </div>
-            <div className="p-5 flex flex-col grow">
-                <Skeleton className="h-14 w-3/4 mb-3" />
-                <Skeleton className="h-6 w-32 mb-3" />
-                <div className="flex gap-3 mb-3">
-                    <Skeleton className="h-10 w-24" />
-                    <Skeleton className="h-10 flex-1" />
-                </div>
-                <Skeleton className="h-8 w-full mb-3" />
-                <Skeleton className="h-10 w-full mt-auto" />
-            </div>
-        </div>
     );
 };
 

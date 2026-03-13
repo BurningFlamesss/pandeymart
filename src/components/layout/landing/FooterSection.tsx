@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import Button from "@/components/shared/Button";
+import { authClient } from "@/lib/auth-client";
 
 interface LinksType {
     href: string;
@@ -8,15 +9,17 @@ interface LinksType {
 
 interface FooterSectionProps {
     Heading: string;
-    CTA: string;
-    CTALink: string;
     LogoSrc: string;
     LogoAlt: string;
     Links: Array<LinksType>;
     Attribution: string;
 }
 
-function FooterSection({ Heading, CTA, CTALink, LogoSrc, LogoAlt, Links, Attribution }: FooterSectionProps) {
+function FooterSection({ Heading, LogoSrc, LogoAlt, Links, Attribution }: FooterSectionProps) {
+    const { data: session } = authClient.useSession()
+    const CTA = session?.user.id ? "View Products" : "Sign Up"
+    const CTALink = session?.user.id ? "/product" : "/authenticate?mode=signup"
+
     return (
         <div className="footer">
             <div className="cta">

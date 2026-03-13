@@ -77,30 +77,6 @@ export const getProducts = createServerFn({ method: "GET" }).inputValidator(para
     }
 })
 
-// export const getAllProducts = createServerFn({ method: "GET" }).handler(async () => {
-//     try {
-//         const products = await prisma.product.findMany({
-//             where: {
-//                 isActive: true
-//             },
-//             include: {
-//                 productImages: true,
-//                 category: true,
-//                 tags: true,
-//                 orderItems: true
-//             },
-//             orderBy: {
-//                 createdAt: "desc"
-//             }
-//         }) 
-
-//         return products.map(mapProduct)
-//     } catch (error) {
-//         console.error("Error fetching all products data:", error)
-//         throw error
-//     }
-// })
-
 export const getAllProducts = createServerFn({ method: "GET" }).handler(async () => {
     try {
         return await prisma.$transaction(async (transaction) => {
@@ -141,6 +117,7 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(async ()
                         orderItems: true,
                         ratings: true,
                     },
+                    take: 10
                 }),
 
                 transaction.product.findMany({
@@ -153,6 +130,7 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(async ()
                         ratings: true
                     },
                     orderBy: { createdAt: "desc" },
+                    take: 10
                 }),
             ]);
 
