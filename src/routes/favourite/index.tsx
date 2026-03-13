@@ -19,7 +19,6 @@ function RouteComponent() {
 
       return getProducts({ data: favourite })
     },
-    enabled: favourite.length > 0
   })
 
   if (isPending) {
