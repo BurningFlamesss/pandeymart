@@ -691,14 +691,14 @@ function RouteComponent() {
                                                         key={method}
                                                         className={`flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all ${form.paymentMethod === method ? "border-stone-800 bg-stone-50" : "border-stone-200 bg-white hover:border-stone-300"}`}
                                                     >
-                                                        <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${form.paymentMethod === method ? "border-stone-800" : "border-stone-300"}`}>
+                                                        <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${form.paymentMethod === method ? "border-stone-800" : method === "Online" && import.meta.env.VITE_IS_ONLINE_PAYMENT_RUNNING === "false" ? "border-red-500" : "border-stone-300"}`}>
                                                             {form.paymentMethod === method && <div className="w-2 h-2 rounded-full bg-stone-800" />}
                                                         </div>
                                                         <input disabled={method === "Online" && import.meta.env.VITE_IS_ONLINE_PAYMENT_RUNNING === "false"} type="radio" className="sr-only" checked={form.paymentMethod === method} onChange={() => setForm((prev) => ({ ...prev, paymentMethod: method }))} />
                                                         <div>
                                                             <p className="text-sm font-medium text-stone-800">{method}</p>
                                                             <p className="text-xs text-stone-400">
-                                                                {method === "Online" ? `${import.meta.env.VITE_IS_ONLINE_PAYMENT_RUNNING ? "Pay securely via eSewa, card or bank transfer" : "Sorry, Currently Esewa is Not Available"} ` : "Pay in cash when your order arrives"}
+                                                                {method === "Online" ? `${import.meta.env.VITE_IS_ONLINE_PAYMENT_RUNNING === "true" ? "Pay securely via eSewa, card or bank transfer" : "Sorry, Currently Esewa is Not Available"} ` : "Pay in cash when your order arrives"}
                                                             </p>
                                                         </div>
                                                     </label>
