@@ -27,8 +27,10 @@ export const requireAdminAccess = createServerFn().middleware([getSessionMiddlew
             throw redirect({ to: "/authenticate", search: { mode: "signup" } })
         }
 
-        if (context.session.user.email !== process.env.VITE_ADMIN_EMAIL) {
-            throw redirect({to: '/'})
+        if (context.session.user.email !== process.env.ADMIN_EMAIL) {
+            if (process.env.VITE_ALLOW_ADMIN_ACCESS_TO_ALL !== "true") {
+                throw redirect({to: '/'})
+            }
         }
     }
 )

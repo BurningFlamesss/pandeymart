@@ -132,7 +132,7 @@ const DropdownUserMenu = ({ session, signOut }: { session: AppContext['session']
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-60 flex flex-col gap-2' align='end'>
                     {
-                        session.user.email == import.meta.env.VITE_ADMIN_EMAIL && (
+                        (session.user.email == import.meta.env.VITE_ADMIN_EMAIL || import.meta.env.VITE_ALLOW_ADMIN_ACCESS_TO_ALL === "true") && (
                             <Link to="/admin" className="flex items-center gap-2">
                                 <DropdownMenuItem className='cursor-pointer w-full'>
                                     <Server className="h-4 w-4" />
