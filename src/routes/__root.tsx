@@ -91,6 +91,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <meta name="description" content="My Awesome App description" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" sizes="180x180" />
+        <link rel="mask-icon" href="/maskable-icon-512x512.png" color="#FFFFFF" />
+        <meta name="theme-color" content="#FAA016"></meta>
+        <link rel="manifest" href="manifest.json" />
       </head>
       <body>
         <GlobalProvider>

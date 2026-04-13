@@ -7,6 +7,7 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import tailwindcss from '@tailwindcss/vite'
 import { nitro } from 'nitro/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 const config = defineConfig({
   resolve: {
@@ -23,6 +24,34 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     viteReact(),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifest: {
+        name: "Pandey Mart",
+        short_name: "PandeyMart",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#ffffff",
+        theme_color: "#FAA016",
+        icons: [
+          {
+            src: "/pwa-64x64.png",
+            sizes: "64x64",
+            type: "image/png"
+          },
+          {
+            src: "/pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "/pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ],
+      }
+    })
   ],
   nitro: {}
 })
