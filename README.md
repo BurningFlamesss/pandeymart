@@ -99,6 +99,13 @@ npm run build
 
 Step 6: Once you have glimpse of the project and its code, you can contribute to make this good as gold.
 
+## eSewa Test Credentials
+
+eSewa ID: 9806800001/2/3/4/5 (e.g. 9806800001)
+Password: Nepal@123
+Token: 123456
+
+
 ## Disclaimer
 
 The app currently might not support some features either due to reliance on third party services like vercel, neon, esewa, prisma, better auth, etc, or due to the issue not in my control. It doesnot mean that features arenot there. I inputted my best to make this thing to get live and add all the features as promised and also optimised it further more to resolve many errors including `"Transaction API error: Unable to start a transaction in the given time."` however the issue isnot yet 100% resolved. So, just try refreshing the app whenever app shows this error. 
